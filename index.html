@@ -9,8 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F3F6F5;--surface:#FFFFFF;--ink:#13221F;--muted:#536760;--line:#D6DFDB;
-  --teal:#1F6F63;--teal-ink:#0C4A40;--teal-bg:#D9EFE8;
+  --bg:#F3F8F7;--surface:#FFFFFF;--ink:#0F2A2E;--muted:#4D6A6D;--line:#D2E2DF;
+  --teal:#1E5F66;--teal-ink:#113F44;--teal-bg:#D4F2E6;
+  --deep:#15363A;--mint:#3FD3A0;--on-deep:#BFD8D4;
   --amber:#B8730F;--amber-ink:#6E4306;--amber-bg:#FBEACB;
   --red:#B4433A;--red-ink:#7A241D;--red-bg:#F7DCD8;
   --sans:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -21,15 +22,17 @@
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0E1917;--surface:#15231F;--ink:#E6EFEC;--muted:#9AB0A8;--line:#283A35;
-    --teal:#5FC6AF;--teal-ink:#C3EEE3;--teal-bg:#173A33;
+    --bg:#0D1C1E;--surface:#132729;--ink:#E4F0EE;--muted:#98B3B0;--line:#24403F;
+    --teal:#4FD6A8;--teal-ink:#C6F2E3;--teal-bg:#173D37;
+    --deep:#0A1A1C;--mint:#4FD6A8;--on-deep:#A9C6C2;
     --amber:#E8A84A;--amber-ink:#F6D9A8;--amber-bg:#3A2B12;
     --red:#E8857B;--red-ink:#F6C9C3;--red-bg:#3D1F1B;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0E1917;--surface:#15231F;--ink:#E6EFEC;--muted:#9AB0A8;--line:#283A35;
-  --teal:#5FC6AF;--teal-ink:#C3EEE3;--teal-bg:#173A33;
+  --bg:#0D1C1E;--surface:#132729;--ink:#E4F0EE;--muted:#98B3B0;--line:#24403F;
+  --teal:#4FD6A8;--teal-ink:#C6F2E3;--teal-bg:#173D37;
+  --deep:#0A1A1C;--mint:#4FD6A8;--on-deep:#A9C6C2;
   --amber:#E8A84A;--amber-ink:#F6D9A8;--amber-bg:#3A2B12;
   --red:#E8857B;--red-ink:#F6C9C3;--red-bg:#3D1F1B;
 }
@@ -41,14 +44,14 @@ img{max-width:100%}
 button{font:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:4px}
 
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--deep);border-bottom:1px solid var(--deep)}
 .top-inner{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.brand{font-weight:700;font-size:18px;letter-spacing:-0.01em;color:var(--ink);text-decoration:none;margin-right:auto}
-.brand span{font-weight:400;color:var(--muted)}
+.brand{font-weight:700;font-size:18px;letter-spacing:-0.01em;color:#fff;text-decoration:none;margin-right:auto}
+.brand span{font-weight:400;color:var(--on-deep)}
 .nav{display:flex;gap:4px;flex-wrap:wrap}
-.nav a{color:var(--muted);text-decoration:none;font-size:15px;padding:6px 10px;border-radius:6px}
-.nav a:hover{color:var(--ink);background:var(--surface)}
-.nav a[aria-current="page"]{color:var(--teal-ink);background:var(--teal-bg)}
+.nav a{color:var(--on-deep);text-decoration:none;font-size:15px;padding:6px 10px;border-radius:6px}
+.nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav a[aria-current="page"]{color:var(--mint);background:rgba(63,211,160,.12)}
 
 main{max-width:1120px;margin:0 auto;padding:0 24px 96px}
 section.page{padding-top:56px}
@@ -67,7 +70,7 @@ p{margin:0 0 1em;max-width:66ch}
 .hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
 .hero .lede{margin-top:24px}
 .hero-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.btn{display:inline-block;border:1px solid var(--teal);background:var(--teal);color:var(--bg);padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:500;font-size:16px}
+.btn{display:inline-block;border:1px solid var(--teal);background:var(--teal);color:#fff;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:500;font-size:16px}
 .btn.ghost{background:transparent;color:var(--teal-ink);border-color:var(--line)}
 .btn:hover{filter:brightness(1.08)}
 .btn[disabled]{opacity:.5;cursor:default}
@@ -88,7 +91,7 @@ p{margin:0 0 1em;max-width:66ch}
 .journey{margin-top:96px}
 .journey-list{list-style:none;margin:32px 0 0;padding:0;counter-reset:j}
 .journey-list li{display:grid;grid-template-columns:56px 1fr 1fr;gap:24px;padding:28px 0;border-top:1px solid var(--line);counter-increment:j}
-.journey-list li::before{content:counter(j);font-size:40px;font-weight:700;color:var(--teal);line-height:1}
+.journey-list li::before{content:counter(j);font-size:40px;font-weight:700;color:var(--mint);line-height:1;-webkit-text-stroke:1px var(--teal)}
 .quote{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.5;color:var(--ink)}
 .quote small{display:block;font-style:normal;font-family:var(--sans);font-size:14px;color:var(--muted);margin-top:6px}
 .journey-list h3 a{color:var(--ink);text-decoration-color:var(--teal);text-underline-offset:4px}
@@ -101,7 +104,7 @@ p{margin:0 0 1em;max-width:66ch}
 
 /* spec pages */
 .spec-head{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:end;margin-bottom:40px}
-.spec-head .quote{border-left:3px solid var(--teal);padding-left:18px}
+.spec-head .quote{border-left:3px solid var(--mint);padding-left:18px}
 .demo{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px}
 .demo-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 .demo-bar h3{font-size:18px}
@@ -120,7 +123,7 @@ p{margin:0 0 1em;max-width:66ch}
 /* migration */
 .scan-wrap{display:grid;grid-template-columns:1.6fr 1fr;gap:28px}
 .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:16px}
-.progress i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+.progress i{display:block;height:100%;width:0;background:var(--mint);transition:width .3s}
 .maptable{width:100%;border-collapse:collapse;font-size:15px}
 .tablebox{overflow-x:auto}
 .maptable th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:8px 8px;border-bottom:1px solid var(--line)}
@@ -143,7 +146,7 @@ p{margin:0 0 1em;max-width:66ch}
 .coach-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:28px}
 .toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .toggle button{border:0;background:transparent;color:var(--muted);padding:8px 14px;font-size:14px}
-.toggle button[aria-pressed="true"]{background:var(--teal);color:var(--bg)}
+.toggle button[aria-pressed="true"]{background:var(--teal);color:#fff}
 .chartbox{overflow-x:auto}
 .chart text{font-family:var(--sans);font-size:12px;fill:var(--muted)}
 .gapnum{font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1}
@@ -224,7 +227,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px;color:var(--muted);font-size:
   <div class="hero">
     <div>
       <h1>Three things I would build at Superleap</h1>
-      <p class="lede">A product pitch from Smrity, written in response to Subham's ET Insights conversation on AI moving people from operators to supervisors. Each build has a one-page spec and a working demo you can try.</p>
+      <p class="lede">A product pitch from Smrity, written in response to Superleap's ET Insights conversation on AI moving people from operators to supervisors. Each build has a one-page spec and a working demo you can try.</p>
       <div class="hero-actions">
         <a class="btn" href="#letter">Read the letter</a>
         <a class="btn ghost" href="#prospect">Try the Prospect agent</a>
@@ -266,27 +269,27 @@ footer{max-width:1120px;margin:0 auto;padding:24px;color:var(--muted);font-size:
 <!-- LETTER -->
 <section class="page" id="letter" hidden>
   <article class="letter">
-    <p>Hi Subham,</p>
-    <p>I've watched your ET Insights conversation more than ten times now, and it hasn't left my head. Each time I picked up something new, and eventually I stopped just listening and started building around it. That led me deep into Superleap, and the more I studied it, the more it felt like the exact problem space I've been working toward my whole career.</p>
+    <p>Hi Superleap team,</p>
+    <p>I've watched Superleap's ET Insights conversation on enterprise AI more than ten times now, and it hasn't left my head. Each time I picked up something new, and eventually I stopped just listening and started building around it. That led me deep into Superleap, and the more I studied it, the more it felt like the exact problem space I've been working toward my whole career.</p>
     <p>A bit about me so the rest makes sense. I have 8 years in B2B SaaS product, and since 2020 I've been at Xorosoft, a cloud ERP serving around 200 retail, ecommerce and wholesale clients across the US, Canada and Australia. It's an ERP, but at its core it works much like a customer system of record: customer records, contacts, pricing rules, orders, invoices, payments, credit limits and account activity, all in one place. I own about 20 enterprise accounts end to end, from onboarding and data migration through renewal and expansion, with 90%+ retention and 10 to 20% ARR growth. Alongside that, I've spent the last year studying the revenue tech landscape closely, from Apollo, Clay and Instantly to AI SDR players like AiSDR, Reply.io and Artisan, to understand the full sales cycle from prospecting to close.</p>
-    <p>I broke your conversation into four ideas, and for each one I've designed a concept with a working demo. They're in the order a Superleap customer would experience them.</p>
+    <p>I broke that conversation into four ideas, and for each one I've designed a concept with a working demo. They're in the order a Superleap customer would experience them.</p>
 
     <h3>1. From filing cabinet to doer, and why migration is where that shift begins</h3>
-    <p>You described how enterprise software spent decades as a filing cabinet that remembers what humans did, and how AI moves the human from operator to supervisor. For an enterprise buyer, that shift doesn't start with an agent. It starts with the migration. Before a team ever sees AI doing the work, they have to trust that their years of data made it across intact.</p>
+    <p>The conversation described how enterprise software spent decades as a filing cabinet that remembers what humans did, and how AI moves the human from operator to supervisor. For an enterprise buyer, that shift doesn't start with an agent. It starts with the migration. Before a team ever sees AI doing the work, they have to trust that their years of data made it across intact.</p>
     <p>I know this pain firsthand. At Xorosoft I've migrated customers off Shopify and legacy systems many times, moving customer records, contacts, price lists, credit limits and order history. Customers rarely churn over missing features. They churn when, in the first few weeks, a rep can't find their own accounts, a price looks wrong, or a report doesn't match what they had before. The migrations that go well are the ones where customers see their own world working before go-live.</p>
     <p>So I designed the <a href="#migration">Migration Scanner</a>. A customer uploads an export from their legacy CRM. The scanner maps fields to the Superleap data model, flags duplicates, orphaned records, missing owners and stale pipeline stages, gives a readiness score, and previews their day-one pipeline inside Superleap. The AI does the mapping and cleaning; the customer's admin supervises every decision. I think it could shorten your sales cycle as much as your implementation time.</p>
 
     <h3>2. Measuring AI beyond cost: customer experience outside, the performer gap inside</h3>
-    <p>You called it a trap to measure AI only by cost savings and productivity. Externally, the prize is a far better customer experience. Internally, it's how fast the gap between low and high performers closes.</p>
+    <p>It called measuring AI only by cost savings and productivity a trap. Externally, the prize is a far better customer experience. Internally, it's how fast the gap between low and high performers closes.</p>
     <p>The external side is the work I'm proudest of. At Xorosoft I've helped drive 80% CSAT, a 22% reduction in repeat tickets, and a 4.9 out of 5 G2 rating across 94 reviews. I learned that customer experience isn't a support function. It's a product outcome.</p>
-    <p>The internal metric is where I see your Coach agent becoming powerful. My <a href="#coach">Performer Gap Coach</a> learns patterns from your customers' top reps, like speed to first follow-up, objection handling and channel choice by stage, and gives lower performers specific next best actions in the moment. Leadership gets a weekly trend line showing whether the gap between top and bottom quartiles is narrowing. That turns your metric into something a CXO can see, report on, and renew for.</p>
+    <p>The internal metric is where I see your Coach agent becoming powerful. My <a href="#coach">Performer Gap Coach</a> learns patterns from your customers' top reps, like speed to first follow-up, objection handling and channel choice by stage, and gives lower performers specific next best actions in the moment. Leadership gets a weekly trend line showing whether the gap between top and bottom quartiles is narrowing. That turns the metric into something a CXO can see, report on, and renew for.</p>
 
     <h3>3. AI is coming for the admin side of knowledge work</h3>
     <p>In sales, one of the heaviest admin layers sits before a conversation even starts: research. Who to reach, why now, and what to say. Superleap's agents do a great job working the leads a team already has. What I didn't see was an agent that goes and finds new pipeline.</p>
     <p>So I designed the <a href="#prospect">Prospect agent</a>. Its advantage over Apollo or Clay is that it lives inside the CRM. It learns the ideal customer profile from a company's own closed-won deals, watches for buying signals like hiring, funding or expansion, and drafts outreach across email and WhatsApp in the company's voice. Outbound tools have to guess who a good customer is. Superleap already knows.</p>
 
     <h3>4. The human keeps the judgment</h3>
-    <p>The part that stayed with me most was your advice that AI should let one person do the work of three, without them outsourcing their thinking. That became the design principle across all three builds, and I borrowed it from my approach to AI demand forecasting and automated reordering at Xorosoft. Automation was never all or nothing: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner's approval, and unusual demand patterns were flagged as anomalies rather than acted on.</p>
+    <p>The part that stayed with me most was the idea that AI should let one person do the work of three, without them outsourcing their thinking. That became the design principle across all three builds, and I borrowed it from my approach to AI demand forecasting and automated reordering at Xorosoft. Automation was never all or nothing: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner's approval, and unusual demand patterns were flagged as anomalies rather than acted on.</p>
     <p>I call this Confidence-Tiered Autonomy. In the Prospect agent, high-confidence, low-stakes messages, like a timely follow-up to an engaged lead, go out on their own with the reasoning logged. Medium-confidence or higher-stakes ones, like a first touch to a large account, are drafted with an explanation and wait for the rep. Anything that doesn't add up, such as a contact already in another rep's open deal or a regulated claim for a BFSI customer, is flagged for a person to look into.</p>
     <p>Two things make it work. Confidence and stakes are measured separately, because a message can be very likely right and still too important to send unseen. And autonomy is earned: when a rep approves drafts without changes, the thresholds for that kind of message loosen; when they edit or reject, they tighten. Strong reps get leverage faster, while newer reps stay in the review lane longer, which is exactly where Coach can help close the performer gap. The AI takes over the execution, and the judgment stays with the people, growing with them.</p>
     <p>The same lanes run through the other two builds. In the Migration Scanner, clean mappings apply on their own, ambiguous ones wait for the admin, and conflicting records get flagged. In Coach, every suggestion comes with its reason, so the rep decides, not the tool.</p>
@@ -479,7 +482,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px;color:var(--muted);font-size:
       </div>
       <h3 style="margin-top:32px">Why Superleap</h3>
       <p>It sits exactly where my experience in customer records, migrations and retention meets the work I most want to do next: AI-native products for enterprise revenue teams.</p>
-      <p><a class="btn" href="https://smrity.online">Visit smrity.online</a></p>
+      <p><a class="btn" href="https://smritybuilds.com">Visit smritybuilds.com</a></p>
     </div>
   </div>
   <div class="next"><a href="#prospect">Previous: Prospect agent</a><a href="#overview">Back to overview</a></div>
