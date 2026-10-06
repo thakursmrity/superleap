@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Three builds for Superleap, by Smrity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6F5;--surface:#FFFFFF;--ink:#13221F;--muted:#536760;--line:#D6DFDB;
+  --teal:#1F6F63;--teal-ink:#0C4A40;--teal-bg:#D9EFE8;
+  --amber:#B8730F;--amber-ink:#6E4306;--amber-bg:#FBEACB;
+  --red:#B4433A;--red-ink:#7A241D;--red-bg:#F7DCD8;
+  --sans:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1917;--surface:#15231F;--ink:#E6EFEC;--muted:#9AB0A8;--line:#283A35;
+    --teal:#5FC6AF;--teal-ink:#C3EEE3;--teal-bg:#173A33;
+    --amber:#E8A84A;--amber-ink:#F6D9A8;--amber-bg:#3A2B12;
+    --red:#E8857B;--red-ink:#F6C9C3;--red-bg:#3D1F1B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1917;--surface:#15231F;--ink:#E6EFEC;--muted:#9AB0A8;--line:#283A35;
+  --teal:#5FC6AF;--teal-ink:#C3EEE3;--teal-bg:#173A33;
+  --amber:#E8A84A;--amber-ink:#F6D9A8;--amber-bg:#3A2B12;
+  --red:#E8857B;--red-ink:#F6C9C3;--red-bg:#3D1F1B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+a{color:var(--teal)}
+img{max-width:100%}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:4px}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-inner{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:18px;letter-spacing:-0.01em;color:var(--ink);text-decoration:none;margin-right:auto}
+.brand span{font-weight:400;color:var(--muted)}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:var(--muted);text-decoration:none;font-size:15px;padding:6px 10px;border-radius:6px}
+.nav a:hover{color:var(--ink);background:var(--surface)}
+.nav a[aria-current="page"]{color:var(--teal-ink);background:var(--teal-bg)}
+
+main{max-width:1120px;margin:0 auto;padding:0 24px 96px}
+section.page{padding-top:56px}
+section.page[hidden]{display:none}
+
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-0.02em;line-height:1.08}
+h1{font-size:clamp(40px,6.4vw,76px);max-width:14ch}
+h2{font-size:clamp(28px,3.4vw,40px);max-width:22ch}
+h3{font-size:20px;letter-spacing:-0.01em;line-height:1.25}
+p{margin:0 0 1em;max-width:66ch}
+.lede{font-size:20px;color:var(--muted);max-width:56ch}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+.hero .lede{margin-top:24px}
+.hero-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-block;border:1px solid var(--teal);background:var(--teal);color:var(--bg);padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:500;font-size:16px}
+.btn.ghost{background:transparent;color:var(--teal-ink);border-color:var(--line)}
+.btn:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+.flow{position:relative;height:420px;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.flow-src{position:absolute;left:18px;top:18px;bottom:18px;width:150px;border-right:1px dashed var(--line)}
+.flow-src b{display:block;font-size:13px;font-weight:500;color:var(--muted)}
+.lanes{position:absolute;right:18px;top:18px;bottom:18px;left:200px;display:grid;grid-template-rows:repeat(3,1fr);gap:10px}
+.lane{border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.lane b{font-size:13px;font-weight:500}
+.lane.auto{background:var(--teal-bg);color:var(--teal-ink)}
+.lane.review{background:var(--amber-bg);color:var(--amber-ink)}
+.lane.anom{background:var(--red-bg);color:var(--red-ink)}
+.lane .slot{font-size:12px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{position:absolute;left:24px;font-size:12px;padding:5px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--ink);white-space:nowrap;transition:transform 1.4s cubic-bezier(.6,.05,.3,1),opacity .4s;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+
+/* journey */
+.journey{margin-top:96px}
+.journey-list{list-style:none;margin:32px 0 0;padding:0;counter-reset:j}
+.journey-list li{display:grid;grid-template-columns:56px 1fr 1fr;gap:24px;padding:28px 0;border-top:1px solid var(--line);counter-increment:j}
+.journey-list li::before{content:counter(j);font-size:40px;font-weight:700;color:var(--teal);line-height:1}
+.quote{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.5;color:var(--ink)}
+.quote small{display:block;font-style:normal;font-family:var(--sans);font-size:14px;color:var(--muted);margin-top:6px}
+.journey-list h3 a{color:var(--ink);text-decoration-color:var(--teal);text-underline-offset:4px}
+
+/* letter */
+.letter{max-width:720px;margin:0 auto;font-family:var(--serif);font-size:19px;line-height:1.72}
+.letter p{max-width:none}
+.letter h3{font-family:var(--sans);margin:40px 0 12px;font-size:21px}
+.letter .sig{margin-top:32px}
+
+/* spec pages */
+.spec-head{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:end;margin-bottom:40px}
+.spec-head .quote{border-left:3px solid var(--teal);padding-left:18px}
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px}
+.demo-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.demo-bar h3{font-size:18px}
+.sample{font-size:13px;color:var(--muted)}
+.spec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 56px;margin-top:56px}
+.spec-grid h3{margin-bottom:10px}
+.spec-grid ul{margin:0;padding-left:20px}
+.spec-grid li{margin-bottom:6px}
+.spec-grid .wide{grid-column:1/-1}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill.auto{background:var(--teal-bg);color:var(--teal-ink)}
+.pill.review{background:var(--amber-bg);color:var(--amber-ink)}
+.pill.anom{background:var(--red-bg);color:var(--red-ink)}
+.pill.done{background:var(--teal-bg);color:var(--teal-ink)}
+
+/* migration */
+.scan-wrap{display:grid;grid-template-columns:1.6fr 1fr;gap:28px}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+.maptable{width:100%;border-collapse:collapse;font-size:15px}
+.tablebox{overflow-x:auto}
+.maptable th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:8px 8px;border-bottom:1px solid var(--line)}
+.maptable td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.maptable td .note{display:block;font-size:13px;color:var(--muted)}
+.maptable tr{animation:none}
+.rowbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;padding:4px 9px;border-radius:6px;margin-top:6px;margin-right:4px}
+.rowbtn:hover{border-color:var(--teal)}
+.empty{padding:40px 0;color:var(--muted);text-align:center}
+.score{display:flex;align-items:baseline;gap:6px}
+.score b{font-size:64px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:var(--teal)}
+.health{list-style:none;padding:0;margin:20px 0 0;font-size:15px}
+.health li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.health li span:last-child{font-weight:500}
+.pipe{margin-top:20px}
+.pipe-row{display:grid;grid-template-columns:96px 1fr 56px;align-items:center;gap:8px;font-size:13px;margin-bottom:6px}
+.pipe-row i{display:block;height:10px;border-radius:5px;background:var(--teal);width:0;transition:width .8s ease}
+
+/* coach */
+.coach-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:28px}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.toggle button{border:0;background:transparent;color:var(--muted);padding:8px 14px;font-size:14px}
+.toggle button[aria-pressed="true"]{background:var(--teal);color:var(--bg)}
+.chartbox{overflow-x:auto}
+.chart text{font-family:var(--sans);font-size:12px;fill:var(--muted)}
+.gapnum{font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1}
+.nudge{border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:20px;background:var(--bg)}
+.nudge p{font-size:15px;margin-bottom:8px}
+.nudge .why{font-size:13px;color:var(--muted)}
+.patterns{list-style:none;padding:0;margin:12px 0 0;font-size:15px}
+.patterns li{padding:8px 0;border-bottom:1px solid var(--line)}
+
+/* prospect */
+.pro-wrap{display:grid;grid-template-columns:1.35fr 1fr;gap:28px}
+.matrix text{font-family:var(--sans);font-size:12px;fill:var(--muted)}
+.matrix .dot{cursor:pointer}
+.slider{display:flex;flex-direction:column;gap:6px;margin:4px 0 18px}
+.slider label{font-size:14px;color:var(--muted)}
+.slider input{width:100%;accent-color:var(--teal)}
+.lanecols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.lanecol{border-radius:10px;padding:12px;font-size:13px;min-height:120px}
+.lanecol h4{margin:0 0 8px;font-size:14px;font-weight:500}
+.lanecol button{display:block;width:100%;text-align:left;border:0;background:transparent;color:inherit;padding:4px 0;font-size:13px;line-height:1.35}
+.lanecol button:hover{text-decoration:underline}
+.lanecol.auto{background:var(--teal-bg);color:var(--teal-ink)}
+.lanecol.review{background:var(--amber-bg);color:var(--amber-ink)}
+.lanecol.anom{background:var(--red-bg);color:var(--red-ink)}
+.detail{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--bg)}
+.detail h4{margin:8px 0 6px;font-size:16px}
+.detail p{font-size:15px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;margin-top:40px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line)}
+.stats div{padding:20px 0;border-bottom:1px solid var(--line)}
+.stats b{display:block;font-size:34px;letter-spacing:-0.02em;line-height:1.1}
+.stats span{font-size:14px;color:var(--muted)}
+.taglist{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.taglist span{font-size:14px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--surface)}
+.next{display:flex;justify-content:space-between;gap:16px;margin-top:72px;padding-top:24px;border-top:1px solid var(--line);flex-wrap:wrap}
+.next a{text-decoration:none;font-weight:500}
+footer{max-width:1120px;margin:0 auto;padding:24px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .hero,.spec-head,.scan-wrap,.coach-wrap,.pro-wrap,.about-grid{grid-template-columns:1fr}
+  .journey-list li{grid-template-columns:40px 1fr}
+  .journey-list li > div:last-child{grid-column:2}
+  .spec-grid{grid-template-columns:1fr}
+  .lanecols{grid-template-columns:1fr}
+  .flow{height:380px}
+  .flow-src{width:120px}
+  .lanes{left:150px}
+}
+@media (prefers-reduced-motion:reduce){
+  .chip,.pipe-row i,.progress i{transition:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="#overview">Smrity <span>for Superleap</span></a>
+    <nav class="nav" aria-label="Pages">
+      <a href="#overview">Overview</a>
+      <a href="#letter">The letter</a>
+      <a href="#migration">Migration Scanner</a>
+      <a href="#coach">Performer Gap Coach</a>
+      <a href="#prospect">Prospect agent</a>
+      <a href="#about">About me</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- OVERVIEW -->
+<section class="page" id="overview">
+  <div class="hero">
+    <div>
+      <h1>Three things I would build at Superleap</h1>
+      <p class="lede">A product pitch from Smrity, written in response to Subham's ET Insights conversation on AI moving people from operators to supervisors. Each build has a one-page spec and a working demo you can try.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#letter">Read the letter</a>
+        <a class="btn ghost" href="#prospect">Try the Prospect agent</a>
+      </div>
+    </div>
+    <div class="flow" id="flow" aria-label="Animation: incoming sales work being routed into three lanes, runs on its own, waits for a person, and flagged to look at">
+      <div class="flow-src"><b>Incoming work</b></div>
+      <div class="lanes">
+        <div class="lane auto"><b>Runs on its own</b><div class="slots"></div></div>
+        <div class="lane review"><b>Waits for a person</b><div class="slots"></div></div>
+        <div class="lane anom"><b>Flagged to look at</b><div class="slots"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="journey">
+    <h2>Four ideas from the conversation, in the order a customer lives them</h2>
+    <ol class="journey-list">
+      <li>
+        <div class="quote">Software used to be a filing cabinet that remembers what humans did. Now the human moves from operator to supervisor.<small>On how AI changes enterprise software</small></div>
+        <div><h3><a href="#migration">Migration Scanner</a></h3><p class="muted">For an enterprise buyer, that shift starts with migration. Before anyone trusts an agent, they need to trust that their data arrived intact.</p></div>
+      </li>
+      <li>
+        <div class="quote">Cost and productivity are a trap. Look at customer experience outside, and how fast the gap between low and high performers closes inside.<small>On measuring AI success</small></div>
+        <div><h3><a href="#coach">Performer Gap Coach</a></h3><p class="muted">Turns the gap between top and bottom reps into a number a CXO can watch narrow every week, and gives lagging reps the moves top reps make.</p></div>
+      </li>
+      <li>
+        <div class="quote">This revolution is coming for the admin side of knowledge work: logging, remembering, reporting.<small>On AI and the industrial revolution</small></div>
+        <div><h3><a href="#prospect">Prospect agent</a></h3><p class="muted">Research before the first conversation is the heaviest admin in sales. Superleap already knows who a good customer is, so it can go find more of them.</p></div>
+      </li>
+      <li>
+        <div class="quote">Let AI help you do the work of three people, without outsourcing your thinking.<small>On what stays human</small></div>
+        <div><h3><a href="#prospect">Confidence-Tiered Autonomy</a></h3><p class="muted">The design principle across all three builds. Work is routed by confidence and stakes: some runs on its own, some waits for a person, some gets flagged.</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- LETTER -->
+<section class="page" id="letter" hidden>
+  <article class="letter">
+    <p>Hi Subham,</p>
+    <p>I've watched your ET Insights conversation more than ten times now, and it hasn't left my head. Each time I picked up something new, and eventually I stopped just listening and started building around it. That led me deep into Superleap, and the more I studied it, the more it felt like the exact problem space I've been working toward my whole career.</p>
+    <p>A bit about me so the rest makes sense. I have 8 years in B2B SaaS product, and since 2020 I've been at Xorosoft, a cloud ERP serving around 200 retail, ecommerce and wholesale clients across the US, Canada and Australia. It's an ERP, but at its core it works much like a customer system of record: customer records, contacts, pricing rules, orders, invoices, payments, credit limits and account activity, all in one place. I own about 20 enterprise accounts end to end, from onboarding and data migration through renewal and expansion, with 90%+ retention and 10 to 20% ARR growth. Alongside that, I've spent the last year studying the revenue tech landscape closely, from Apollo, Clay and Instantly to AI SDR players like AiSDR, Reply.io and Artisan, to understand the full sales cycle from prospecting to close.</p>
+    <p>I broke your conversation into four ideas, and for each one I've designed a concept with a working demo. They're in the order a Superleap customer would experience them.</p>
+
+    <h3>1. From filing cabinet to doer, and why migration is where that shift begins</h3>
+    <p>You described how enterprise software spent decades as a filing cabinet that remembers what humans did, and how AI moves the human from operator to supervisor. For an enterprise buyer, that shift doesn't start with an agent. It starts with the migration. Before a team ever sees AI doing the work, they have to trust that their years of data made it across intact.</p>
+    <p>I know this pain firsthand. At Xorosoft I've migrated customers off Shopify and legacy systems many times, moving customer records, contacts, price lists, credit limits and order history. Customers rarely churn over missing features. They churn when, in the first few weeks, a rep can't find their own accounts, a price looks wrong, or a report doesn't match what they had before. The migrations that go well are the ones where customers see their own world working before go-live.</p>
+    <p>So I designed the <a href="#migration">Migration Scanner</a>. A customer uploads an export from their legacy CRM. The scanner maps fields to the Superleap data model, flags duplicates, orphaned records, missing owners and stale pipeline stages, gives a readiness score, and previews their day-one pipeline inside Superleap. The AI does the mapping and cleaning; the customer's admin supervises every decision. I think it could shorten your sales cycle as much as your implementation time.</p>
+
+    <h3>2. Measuring AI beyond cost: customer experience outside, the performer gap inside</h3>
+    <p>You called it a trap to measure AI only by cost savings and productivity. Externally, the prize is a far better customer experience. Internally, it's how fast the gap between low and high performers closes.</p>
+    <p>The external side is the work I'm proudest of. At Xorosoft I've helped drive 80% CSAT, a 22% reduction in repeat tickets, and a 4.9 out of 5 G2 rating across 94 reviews. I learned that customer experience isn't a support function. It's a product outcome.</p>
+    <p>The internal metric is where I see your Coach agent becoming powerful. My <a href="#coach">Performer Gap Coach</a> learns patterns from your customers' top reps, like speed to first follow-up, objection handling and channel choice by stage, and gives lower performers specific next best actions in the moment. Leadership gets a weekly trend line showing whether the gap between top and bottom quartiles is narrowing. That turns your metric into something a CXO can see, report on, and renew for.</p>
+
+    <h3>3. AI is coming for the admin side of knowledge work</h3>
+    <p>In sales, one of the heaviest admin layers sits before a conversation even starts: research. Who to reach, why now, and what to say. Superleap's agents do a great job working the leads a team already has. What I didn't see was an agent that goes and finds new pipeline.</p>
+    <p>So I designed the <a href="#prospect">Prospect agent</a>. Its advantage over Apollo or Clay is that it lives inside the CRM. It learns the ideal customer profile from a company's own closed-won deals, watches for buying signals like hiring, funding or expansion, and drafts outreach across email and WhatsApp in the company's voice. Outbound tools have to guess who a good customer is. Superleap already knows.</p>
+
+    <h3>4. The human keeps the judgment</h3>
+    <p>The part that stayed with me most was your advice that AI should let one person do the work of three, without them outsourcing their thinking. That became the design principle across all three builds, and I borrowed it from my approach to AI demand forecasting and automated reordering at Xorosoft. Automation was never all or nothing: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner's approval, and unusual demand patterns were flagged as anomalies rather than acted on.</p>
+    <p>I call this Confidence-Tiered Autonomy. In the Prospect agent, high-confidence, low-stakes messages, like a timely follow-up to an engaged lead, go out on their own with the reasoning logged. Medium-confidence or higher-stakes ones, like a first touch to a large account, are drafted with an explanation and wait for the rep. Anything that doesn't add up, such as a contact already in another rep's open deal or a regulated claim for a BFSI customer, is flagged for a person to look into.</p>
+    <p>Two things make it work. Confidence and stakes are measured separately, because a message can be very likely right and still too important to send unseen. And autonomy is earned: when a rep approves drafts without changes, the thresholds for that kind of message loosen; when they edit or reject, they tighten. Strong reps get leverage faster, while newer reps stay in the review lane longer, which is exactly where Coach can help close the performer gap. The AI takes over the execution, and the judgment stays with the people, growing with them.</p>
+    <p>The same lanes run through the other two builds. In the Migration Scanner, clean mappings apply on their own, ambiguous ones wait for the admin, and conflicting records get flagged. In Coach, every suggestion comes with its reason, so the rep decides, not the tool.</p>
+
+    <p>This is the kind of work I've been aiming for: enterprise B2B SaaS product work in the revenue space, close to customers and their real problems. Superleap sits right where my experience in customer data, migrations and retention meets my interest in AI-native revenue systems. I'd love 20 minutes to walk you through these and explore the Product Manager role with your team.</p>
+    <p>Thank you for a conversation that genuinely changed how I think about where enterprise software is going.</p>
+    <p class="sig">Warm regards,<br>Smrity</p>
+  </article>
+  <div class="next"><span class="muted">Next build</span><a href="#migration">Migration Scanner</a></div>
+</section>
+
+<!-- MIGRATION -->
+<section class="page" id="migration" hidden>
+  <div class="spec-head">
+    <div>
+      <h2>Migration Scanner</h2>
+      <p class="lede" style="margin-top:16px">See your own pipeline working in Superleap before you commit to the switch.</p>
+    </div>
+    <div class="quote">The shift from filing cabinet to doer starts at migration. Teams only hand work to an agent once they trust their data arrived intact.</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Scan a legacy CRM export</h3>
+      <span class="sample">Sample data: an edtech company moving 48,600 lead records off a legacy CRM</span>
+    </div>
+    <div class="scan-wrap">
+      <div>
+        <div class="progress" aria-hidden="true"><i id="scanbar"></i></div>
+        <div class="tablebox">
+          <table class="maptable">
+            <thead><tr><th>Legacy field</th><th>Superleap field</th><th>Lane</th></tr></thead>
+            <tbody id="maprows"><tr><td colspan="3" class="empty">Run the scan to map fields and check record health.</td></tr></tbody>
+          </table>
+        </div>
+        <div style="margin-top:18px"><button class="btn" id="runscan">Run scan</button></div>
+      </div>
+      <div>
+        <div class="muted small">Migration readiness</div>
+        <div class="score"><b id="scoreval">0</b><span class="muted">/ 100</span></div>
+        <p class="small muted" id="scorenote" style="margin-top:8px">Score rises as the admin approves mappings and resolves flags.</p>
+        <ul class="health" id="health" aria-live="polite"></ul>
+        <div class="pipe" id="pipe" hidden>
+          <div class="muted small" style="margin-bottom:10px">Day-one pipeline preview</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Superleap's wedge is replacing legacy CRMs, and migration is where those deals stall or churn. Buyers fear losing years of data, sales cycles stretch while IT validates exports, and in the first weeks after go-live, reps who can't find their own accounts quietly stop using the system.</p></div>
+    <div><h3>Who it's for</h3><ul><li>The customer's CRM admin or sales ops lead, who owns the move</li><li>The sales head, who needs confidence before signing</li><li>Superleap's implementation team, who today map fields by hand</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Upload a CSV or connect a legacy CRM export</li><li>AI maps fields to Superleap's data model with a confidence score per field</li><li>Clean mappings apply on their own, ambiguous ones wait for the admin, conflicts get flagged</li><li>Record health check: duplicates, orphans, missing owners, stale stages</li><li>Preview of the day-one pipeline, with the customer's own stages and numbers</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>Days from signed contract to go-live</li><li>Share of fields mapped without human edits</li><li>Rep logins and records touched in the first 30 days</li><li>Win rate when the scanner is used during the sales cycle</li></ul></div>
+    <div><h3>First version</h3><p>CSV upload, field mapping with confidence, the three lanes, and four health checks for the two most common legacy CRMs among Superleap's prospects. Pipeline preview as a read-only view.</p></div>
+    <div><h3>Risks and open questions</h3><ul><li>Customers may hesitate to upload data before signing; a masked sample mode could help</li><li>Custom objects vary widely, so mapping accuracy needs a per-industry starting template</li></ul></div>
+    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I've moved customers off Shopify and legacy systems many times, carrying over customer records, contacts, price lists, credit limits and order history. Every rule in this scanner comes from something that went wrong, or right, in one of those migrations.</p></div>
+  </div>
+  <div class="next"><a href="#letter">Back to the letter</a><a href="#coach">Next: Performer Gap Coach</a></div>
+</section>
+
+<!-- COACH -->
+<section class="page" id="coach" hidden>
+  <div class="spec-head">
+    <div>
+      <h2>Performer Gap Coach</h2>
+      <p class="lede" style="margin-top:16px">A weekly number that shows the gap between your best and newest reps closing, and the moves that close it.</p>
+    </div>
+    <div class="quote">The internal measure of AI success: how fast the gap between low and high performers is bridging.</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Conversion rate, top vs bottom quartile reps</h3>
+      <div class="toggle" role="group" aria-label="Compare">
+        <button id="tWithout" aria-pressed="true">Without Coach</button>
+        <button id="tWith" aria-pressed="false">With Coach</button>
+      </div>
+    </div>
+    <div class="coach-wrap">
+      <div>
+        <div class="chartbox"><svg class="chart" id="chart" viewBox="0 0 600 280" width="100%" role="img" aria-label="Line chart of conversion rate over 12 weeks for top and bottom quartile reps"></svg></div>
+        <div class="legend"><span><i style="background:var(--teal)"></i>Top quartile</span><span><i style="background:var(--amber)"></i>Bottom quartile</span></div>
+        <p class="sample" style="margin-top:12px">Illustrative numbers for an inside-sales team of 80 reps over one quarter.</p>
+      </div>
+      <div>
+        <div class="muted small">Performer gap in week 12</div>
+        <div class="gapnum" id="gapnum">20 pts</div>
+        <p class="small muted" id="gapnote" style="margin-top:8px">Unchanged from week 1.</p>
+        <div class="muted small" style="margin-top:20px">Patterns learned from top reps</div>
+        <ul class="patterns">
+          <li>Call within 15 minutes of a brochure or pricing page open</li>
+          <li>Switch to WhatsApp after two missed calls</li>
+          <li>Answer fee objections with EMI options before discounts</li>
+        </ul>
+        <div class="nudge" id="nudge">
+          <p><b>For Ankit, right now:</b> Riya opened the fee brochure twice in the last hour. Top reps call within 15 minutes of this.</p>
+          <p class="why">Why: 3 of your top 5 reps convert 2x more leads with this move.</p>
+          <button class="rowbtn" id="nAct">Call Riya now</button><button class="rowbtn" id="nSkip">Skip with a reason</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Sales leaders can see who is underperforming, but not why, and coaching happens in weekly reviews long after the moment has passed. AI ROI gets reported as hours saved, which doesn't help a CXO justify renewal.</p></div>
+    <div><h3>Who it's for</h3><ul><li>Reps in their first year, who get in-the-moment guidance</li><li>Team leads, who see which behaviours separate their reps</li><li>CXOs, who get one metric that shows AI is changing outcomes</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Learns behaviour patterns from calls, messages and stage changes of top-quartile reps</li><li>Spots the same moments in other reps' pipelines and suggests the move, with its reason</li><li>The rep acts or skips with a reason; skips improve the model</li><li>A weekly performer gap index on the leadership dashboard</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>Performer gap index, week over week</li><li>Nudge acceptance rate, and conversion on accepted nudges</li><li>Time to productivity for new reps</li><li>Renewal and expansion rate of accounts using Coach</li></ul></div>
+    <div><h3>First version</h3><p>Three high-signal patterns per industry, built on call summaries and activity data Superleap already captures, with nudges inside the lead view and the gap index on one dashboard tile.</p></div>
+    <div><h3>Risks and open questions</h3><ul><li>Reps may read nudges as surveillance; framing as "what top reps do" matters</li><li>Small teams may lack enough data per pattern; pooled industry benchmarks could fill the gap</li></ul></div>
+    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I helped drive 80% CSAT, a 22% drop in repeat tickets and a 4.9 out of 5 G2 rating across 94 reviews, by finding the patterns behind good outcomes and making them repeatable. Coach applies the same idea to sales reps.</p></div>
+  </div>
+  <div class="next"><a href="#migration">Previous: Migration Scanner</a><a href="#prospect">Next: Prospect agent</a></div>
+</section>
+
+<!-- PROSPECT -->
+<section class="page" id="prospect" hidden>
+  <div class="spec-head">
+    <div>
+      <h2>Prospect agent</h2>
+      <p class="lede" style="margin-top:16px">Finds new pipeline from what your CRM already knows about who buys, and decides which outreach it can send on its own.</p>
+    </div>
+    <div class="quote">AI can help one person do the work of three, without them outsourcing their thinking.</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Confidence-Tiered Autonomy</h3>
+      <span class="sample">Sample queue: 10 drafted messages for an edtech and BFSI sales team</span>
+    </div>
+    <div class="pro-wrap">
+      <div>
+        <div class="slider">
+          <label for="trust">Drafts this rep approves without edits: <b id="trustval">60%</b></label>
+          <input type="range" id="trust" min="50" max="95" step="1" value="60">
+          <span class="small muted">Autonomy is earned. As the rep's approval rate rises, the confidence needed to send on its own drops.</span>
+        </div>
+        <svg class="matrix" id="matrix" viewBox="0 0 520 380" width="100%" role="img" aria-label="Scatter plot of drafted messages by confidence and stakes, with the zone that sends on its own shaded"></svg>
+        <div class="legend"><span><i style="background:var(--teal)"></i>Sends on its own</span><span><i style="background:var(--amber)"></i>Waits for the rep</span><span><i style="background:var(--red);border-radius:2px"></i>Flagged</span></div>
+      </div>
+      <div>
+        <div class="detail" id="detail" aria-live="polite">
+          <span class="muted small">Select any message on the chart or in the lanes to see why it was routed there.</span>
+        </div>
+      </div>
+    </div>
+    <div class="lanecols">
+      <div class="lanecol auto"><h4>Sends on its own</h4><div id="lAuto"></div></div>
+      <div class="lanecol review"><h4>Waits for the rep</h4><div id="lReview"></div></div>
+      <div class="lanecol anom"><h4>Flagged to look at</h4><div id="lAnom"></div></div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Superleap's agents work leads a team already has, so new pipeline still comes from separate tools like Apollo or Clay that sit outside the CRM, guess at fit, and push generic sequences. Teams either review every message, losing the time AI should save, or send everything, risking their brand.</p></div>
+    <div><h3>Who it's for</h3><ul><li>Inside sales teams that need pipeline beyond inbound</li><li>Sales heads who want outbound without a separate tool stack</li><li>Reps, who supervise the agent instead of researching</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Learns the ideal customer profile from the company's own closed-won deals</li><li>Watches buying signals: hiring, funding, expansion, engagement</li><li>Drafts outreach for email and WhatsApp in the company's voice</li><li>Scores each message on confidence and stakes, separately</li><li>Routes to one of three lanes; anomaly checks always override</li></ul></div>
+    <div><h3>Confidence-Tiered Autonomy</h3><ul><li><span class="pill auto">Runs on its own</span> high confidence, low stakes, no flags</li><li><span class="pill review">Waits for a person</span> medium confidence, or high stakes</li><li><span class="pill anom">Flagged</span> conflicts like an open deal, a complaint, a job change, or a regulated claim</li><li>Thresholds loosen or tighten per rep and per message type, based on approvals and edits</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>Qualified pipeline created per rep per week</li><li>Reply and meeting rate by lane</li><li>Share of messages sent without review, over time</li><li>Flags caught before send</li></ul></div>
+    <div><h3>Risks and open questions</h3><ul><li>Cold outreach rules differ by channel; WhatsApp needs opt-in handling</li><li>Thin closed-won history makes the profile weak; start with an industry template</li><li>Should high-stakes accounts ever be eligible for autopilot?</li></ul></div>
+    <div class="wide"><h3>Where the idea comes from</h3><p>I borrowed the lanes from my approach to AI demand forecasting and automated reordering at Xorosoft: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner, and unusual demand was flagged rather than acted on. Sales outreach has the same shape. Most of it is routine, some of it matters too much to send unseen, and a little of it is plainly wrong.</p></div>
+  </div>
+  <div class="next"><a href="#coach">Previous: Performer Gap Coach</a><a href="#about">Next: About me</a></div>
+</section>
+
+<!-- ABOUT -->
+<section class="page" id="about" hidden>
+  <h2>About me</h2>
+  <p class="lede" style="margin-top:16px">I'm Smrity, a product builder with 8 years in B2B SaaS, based in Mohali and open to relocating to Bengaluru. I like sitting with enterprise customers, finding the real problem, and turning it into product.</p>
+  <div class="about-grid">
+    <div>
+      <div class="stats">
+        <div><b>8 years</b><span>in SaaS product, from product analyst to product and customer success</span></div>
+        <div><b>~200</b><span>clients on Xorosoft's cloud ERP across the US, Canada and Australia</span></div>
+        <div><b>20 accounts</b><span>owned end to end with 90%+ retention and 10 to 20% ARR growth</span></div>
+        <div><b>4.9 / 5</b><span>G2 rating across 94 reviews</span></div>
+        <div><b>80%</b><span>CSAT</span></div>
+        <div><b>22%</b><span>fewer repeat tickets</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>What I've built and worked on</h3>
+      <div class="taglist">
+        <span>MCP server, internal then client-facing</span><span>AI demand forecasting</span><span>AI workflow automation engine</span><span>Pricing rules engine</span><span>Multi-currency FX</span><span>Omnichannel order fulfillment</span><span>Shopify App Store listing</span><span>Customer data migrations</span>
+      </div>
+      <h3 style="margin-top:32px">Revenue tools I've studied closely</h3>
+      <div class="taglist">
+        <span>Apollo.io</span><span>Clay</span><span>Instantly</span><span>Reply.io</span><span>AiSDR</span><span>Artisan</span>
+      </div>
+      <h3 style="margin-top:32px">Why Superleap</h3>
+      <p>It sits exactly where my experience in customer records, migrations and retention meets the work I most want to do next: AI-native products for enterprise revenue teams.</p>
+      <p><a class="btn" href="https://smrity.online">Visit smrity.online</a></p>
+    </div>
+  </div>
+  <div class="next"><a href="#prospect">Previous: Prospect agent</a><a href="#overview">Back to overview</a></div>
+</section>
+
+</main>
+<footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap.</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* router */
+  var pages = Array.prototype.slice.call(document.querySelectorAll('section.page'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  function show(){
+    var id = (location.hash || '#overview').slice(1);
+    if(!document.getElementById(id) || !document.getElementById(id).classList.contains('page')) id = 'overview';
+    pages.forEach(function(p){ p.hidden = p.id !== id; });
+    links.forEach(function(a){ if(a.getAttribute('href') === '#'+id){ a.setAttribute('aria-current','page'); } else { a.removeAttribute('aria-current'); } });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange', show);
+  show();
+
+  /* hero flow */
+  var flow = document.getElementById('flow');
+  var items = [
+    ['Follow-up: Neha opened pricing','auto'],
+    ['First touch: VP Sales, NBFC','review'],
+    ['Contact in Rohit\'s open deal','anom'],
+    ['Reply: inbound fee question','auto'],
+    ['Map field: Lead Src','review'],
+    ['Owner deactivated: 212 records','anom'],
+    ['Webinar attendee follow-up','auto'],
+    ['Re-engage lost 2025 deal','review'],
+    ['Message mentions interest rate','anom'],
+    ['Map field: Email ID','auto']
+  ];
+  var laneEls = flow.querySelectorAll('.lane');
+  var laneIdx = {auto:0, review:1, anom:2};
+  function addSlot(lane, text){
+    var slots = laneEls[laneIdx[lane]].querySelector('.slots');
+    var d = document.createElement('div'); d.className = 'slot'; d.textContent = text;
+    slots.insertBefore(d, slots.firstChild);
+    while(slots.children.length > 2) slots.removeChild(slots.lastChild);
+  }
+  if(reduce){
+    items.slice(0,6).forEach(function(it){ addSlot(it[1], it[0]); });
+  } else {
+    var n = 0;
+    function spawn(){
+      var it = items[n % items.length]; n++;
+      var chip = document.createElement('div'); chip.className = 'chip'; chip.textContent = it[0];
+      var fh = flow.clientHeight;
+      var startY = 50 + Math.random() * (fh - 100);
+      chip.style.top = startY + 'px';
+      flow.appendChild(chip);
+      var lane = laneEls[laneIdx[it[1]]];
+      var fr = flow.getBoundingClientRect(), lr = lane.getBoundingClientRect();
+      var dx = (lr.left - fr.left) + 12 - 24;
+      var dy = (lr.top - fr.top) + lr.height/2 - startY - 12;
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        chip.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      });});
+      setTimeout(function(){ chip.style.opacity = '0'; addSlot(it[1], it[0]); }, 1400);
+      setTimeout(function(){ chip.remove(); }, 1900);
+    }
+    spawn();
+    setInterval(function(){ if(!document.getElementById('overview').hidden && !document.hidden) spawn(); }, 1300);
+  }
+
+  /* migration scanner */
+  var maps = [
+    {src:'Lead Name', dst:'Lead name', lane:'auto', note:'Exact match, 99% confident'},
+    {src:'Email ID', dst:'Email', lane:'auto', note:'Format check passed, 99% confident'},
+    {src:'Mobile', dst:'Phone', lane:'auto', note:'Country code added to 3,204 numbers'},
+    {src:'City', dst:'City', lane:'auto', note:'Spellings normalised, 98% confident'},
+    {src:'Lead Src', dst:'Source', lane:'review', note:'"FB", "fb_ads" and "Facebook" look like one source. Merge them?', action:'Merge into Facebook'},
+    {src:'Stage_2', dst:'Pipeline stage', lane:'review', note:'Three legacy stages map to "Counselling". 71% confident.', action:'Approve mapping'},
+    {src:'Owner', dst:'Owner', lane:'anom', note:'212 records belong to deactivated users.', action:'Reassign to team leads'},
+    {src:'Cust_Type', dst:'No match', lane:'anom', note:'No Superleap field fits. Values: Scholar, Repeat, Referral.', action:'Create custom field'}
+  ];
+  var laneLabel = {auto:'Applied on its own', review:'Waits for admin', anom:'Flagged'};
+  var score = 0, scoreShown = 0;
+  var scoreEl = document.getElementById('scoreval');
+  function animateScore(target){
+    if(reduce){ scoreShown = target; scoreEl.textContent = target; return; }
+    var start = scoreShown, t0 = performance.now();
+    function step(t){
+      var k = Math.min(1,(t-t0)/700);
+      scoreShown = Math.round(start + (target-start)*k);
+      scoreEl.textContent = scoreShown;
+      if(k<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var runBtn = document.getElementById('runscan');
+  runBtn.addEventListener('click', function(){
+    runBtn.disabled = true; runBtn.textContent = 'Scanning';
+    var tb = document.getElementById('maprows'); tb.innerHTML = '';
+    var bar = document.getElementById('scanbar');
+    document.getElementById('health').innerHTML = '';
+    var pipe = document.getElementById('pipe'); pipe.hidden = true;
+    score = 0; animateScore(0);
+    maps.forEach(function(m, i){
+      setTimeout(function(){
+        var tr = document.createElement('tr');
+        var c3 = '<span class="pill ' + m.lane + '">' + laneLabel[m.lane] + '</span>';
+        if(m.action){ c3 += '<br><button class="rowbtn" data-i="' + i + '">' + m.action + '</button>'; }
+        tr.innerHTML = '<td>' + m.src + '</td><td>' + m.dst + '<span class="note">' + m.note + '</span></td><td>' + c3 + '</td>';
+        tb.appendChild(tr);
+        bar.style.width = ((i+1)/maps.length*100) + '%';
+        if(i === maps.length-1) finishScan();
+      }, reduce ? 0 : 320*(i+1));
+    });
+  });
+  function finishScan(){
+    var health = [['Records scanned','48,600'],['Duplicates to merge','1,240'],['Orphaned contacts','312'],['Records with no active owner','212'],['Deals untouched for 180+ days','4,118']];
+    var ul = document.getElementById('health');
+    ul.innerHTML = health.map(function(h){ return '<li><span>' + h[0] + '</span><span>' + h[1] + '</span></li>'; }).join('');
+    score = 72; animateScore(score);
+    var pipe = document.getElementById('pipe'); pipe.hidden = false;
+    var stages = [['New',12400],['Contacted',9800],['Counselling',6200],['Application',3100],['Enrolled',1450]];
+    pipe.querySelectorAll('.pipe-row').forEach(function(r){ r.remove(); });
+    stages.forEach(function(s){
+      var row = document.createElement('div'); row.className = 'pipe-row';
+      row.innerHTML = '<span>' + s[0] + '</span><span><i></i></span><span>' + s[1].toLocaleString('en-IN') + '</span>';
+      pipe.appendChild(row);
+      var bar = row.querySelector('i');
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = (s[1]/12400*100) + '%'; }); });
+    });
+    runBtn.disabled = false; runBtn.textContent = 'Run scan again';
+  }
+  document.getElementById('maprows').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-i]'); if(!b) return;
+    var m = maps[+b.getAttribute('data-i')];
+    var cell = b.parentNode;
+    cell.innerHTML = '<span class="pill done">' + (m.lane === 'review' ? 'Approved by admin' : 'Resolved by admin') + '</span>';
+    score += (m.lane === 'review') ? 5 : 6;
+    animateScore(Math.min(score,100));
+    if(score >= 94) document.getElementById('scorenote').textContent = 'Ready to migrate. Every open decision has a person behind it.';
+  });
+
+  /* coach chart */
+  var svg = document.getElementById('chart');
+  var NS = 'http://www.w3.org/2000/svg';
+  var top = [31,31,32,31,32,32,33,32,33,33,34,33];
+  var without = [13,12,13,12,13,13,12,13,13,14,13,13];
+  var withC = [13,14,15,15,17,18,19,20,21,22,23,24];
+  var X = function(i){ return 50 + i*(530/11); };
+  var Y = function(v){ return 250 - v/40*220; };
+  function el(name, attrs){ var e = document.createElementNS(NS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  [0,10,20,30,40].forEach(function(v){
+    svg.appendChild(el('line',{x1:50,x2:580,y1:Y(v),y2:Y(v),stroke:'var(--line)','stroke-width':1}));
+    var t = el('text',{x:40,y:Y(v)+4,'text-anchor':'end'}); t.textContent = v + '%'; svg.appendChild(t);
+  });
+  [0,3,7,11].forEach(function(i){ var t = el('text',{x:X(i),y:272,'text-anchor':'middle'}); t.textContent = 'Week ' + (i+1); svg.appendChild(t); });
+  function pts(arr){ return arr.map(function(v,i){ return X(i) + ',' + Y(v); }).join(' '); }
+  var gapArea = el('polygon',{fill:'var(--amber-bg)',opacity:0.7});
+  svg.appendChild(gapArea);
+  svg.appendChild(el('polyline',{points:pts(top),fill:'none',stroke:'var(--teal)','stroke-width':3,'stroke-linejoin':'round'}));
+  var bottomLine = el('polyline',{fill:'none',stroke:'var(--amber)','stroke-width':3,'stroke-linejoin':'round'});
+  svg.appendChild(bottomLine);
+  var cur = without.slice();
+  function drawBottom(arr){
+    bottomLine.setAttribute('points', pts(arr));
+    var poly = top.map(function(v,i){ return X(i)+','+Y(v); }).concat(arr.slice().reverse().map(function(v,j){ return X(arr.length-1-j)+','+Y(v); }));
+    gapArea.setAttribute('points', poly.join(' '));
+    var gap = Math.round(top[11]-arr[11]);
+    document.getElementById('gapnum').textContent = gap + ' pts';
+  }
+  drawBottom(cur);
+  function morph(target, note){
+    var from = cur.slice(), t0 = performance.now();
+    function step(t){
+      var k = reduce ? 1 : Math.min(1,(t-t0)/800);
+      var e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
+      cur = from.map(function(v,i){ return v + (target[i]-v)*e; });
+      drawBottom(cur);
+      if(k<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    document.getElementById('gapnote').textContent = note;
+  }
+  var tW = document.getElementById('tWith'), tWo = document.getElementById('tWithout');
+  tW.addEventListener('click', function(){ tW.setAttribute('aria-pressed','true'); tWo.setAttribute('aria-pressed','false'); morph(withC,'Down from 18 pts in week 1, as bottom-quartile reps adopt top-rep moves.'); });
+  tWo.addEventListener('click', function(){ tWo.setAttribute('aria-pressed','true'); tW.setAttribute('aria-pressed','false'); morph(without,'Unchanged from week 1.'); });
+  var nudge = document.getElementById('nudge');
+  document.getElementById('nAct').addEventListener('click', function(){
+    nudge.innerHTML = '<p><b>Call started with Riya.</b> Coach logged the move, so Ankit\'s pattern score and the team gap index update tonight.</p>';
+  });
+  document.getElementById('nSkip').addEventListener('click', function(){
+    nudge.innerHTML = '<p><b>Skipped:</b> "Riya asked to be called after 6 pm." Coach will remind Ankit at 6 pm and learn that stated call times outrank speed.</p>';
+  });
+
+  /* prospect matrix */
+  var msgs = [
+    {t:'Follow-up to Neha, opened pricing twice', c:92, s:20, why:'Strong ICP match with 14 closed-won lookalikes, fresh engagement, clean data, and it is a follow-up, not a first touch.'},
+    {t:'First touch: VP Sales at a mid-size NBFC', c:81, s:78, why:'Good fit, but a large target account where a weak first impression is costly. High stakes always go to the rep.'},
+    {t:'Follow-up after webinar attendance', c:86, s:30, why:'Attended 40 of 45 minutes and asked a question. Low risk, routine follow-up.'},
+    {t:'First touch: edtech hiring 40 counsellors', c:74, s:42, why:'Hiring signal is strong, but the contact role is a guess from job titles. Moderate confidence.'},
+    {t:'Contact already in Rohit\'s open deal', c:88, s:55, flag:'This person is in an active deal owned by another rep. Sending would cross wires.'},
+    {t:'Re-engage deal lost in 2025', c:58, s:60, why:'Lost on price last year. The new angle may land, but tone matters, so the rep should shape it.'},
+    {t:'Contact changed jobs last week', c:70, s:35, flag:'The email on file belongs to the old company. Needs a person to confirm the new role.'},
+    {t:'Reply to inbound fee question', c:95, s:25, why:'Answers a direct question with approved fee details. The safest kind of message there is.'},
+    {t:'Message mentions loan interest rates', c:83, s:48, flag:'Regulated claim for a BFSI customer. Compliance review is required before any send.'},
+    {t:'Intro to founder, funded 3 days ago', c:79, s:28, why:'Funding signal is fresh and the company matches the profile of past wins. Low stakes for a short intro.'}
+  ];
+  var mx = document.getElementById('matrix');
+  var MX = function(c){ return 50 + (c-40)/60*450; };
+  var MY = function(s){ return 330 - s/100*300; };
+  function laneOf(m, T){ if(m.flag) return 'anom'; if(m.c >= T && m.s < 50) return 'auto'; return 'review'; }
+  var colors = {auto:'var(--teal)', review:'var(--amber)', anom:'var(--red)'};
+  var laneName = {auto:'Sends on its own', review:'Waits for the rep', anom:'Flagged to look at'};
+  var zone = el('rect',{fill:'var(--teal-bg)',opacity:0.8});
+  mx.appendChild(zone);
+  [40,60,80,100].forEach(function(c){ mx.appendChild(el('line',{x1:MX(c),x2:MX(c),y1:30,y2:330,stroke:'var(--line)'})); var t=el('text',{x:MX(c),y:350,'text-anchor':'middle'}); t.textContent=c+'%'; mx.appendChild(t); });
+  [0,50,100].forEach(function(s){ mx.appendChild(el('line',{x1:50,x2:500,y1:MY(s),y2:MY(s),stroke:'var(--line)'})); });
+  var tl = el('text',{x:275,y:372,'text-anchor':'middle'}); tl.textContent='Confidence the message is right'; mx.appendChild(tl);
+  var sl = el('text',{x:56,y:22}); sl.textContent='Stakes if it goes wrong (high at top)'; mx.appendChild(sl);
+  var zl = el('text',{x:496,y:318,'text-anchor':'end',style:'fill:var(--teal-ink)'}); zl.textContent='Sends on its own'; mx.appendChild(zl);
+  var dots = msgs.map(function(m,i){
+    var g;
+    if(m.flag){ g = el('rect',{x:MX(m.c)-7,y:MY(m.s)-7,width:14,height:14,rx:2,transform:'rotate(45 '+MX(m.c)+' '+MY(m.s)+')'}); }
+    else { g = el('circle',{cx:MX(m.c),cy:MY(m.s),r:8}); }
+    g.setAttribute('class','dot'); g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label', m.t);
+    g.addEventListener('click', function(){ select(i); });
+    g.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); select(i); } });
+    mx.appendChild(g); return g;
+  });
+  var T = 90, selected = -1;
+  function render(){
+    var rate = +document.getElementById('trust').value;
+    document.getElementById('trustval').textContent = rate + '%';
+    T = Math.round(92 - (rate-50)*0.5);
+    zone.setAttribute('x', MX(T)); zone.setAttribute('width', MX(100)-MX(T)); zone.setAttribute('y', MY(50)); zone.setAttribute('height', MY(0)-MY(50));
+    var cols = {auto:[], review:[], anom:[]};
+    msgs.forEach(function(m,i){
+      var l = laneOf(m,T); m.lane = l;
+      dots[i].setAttribute('fill', colors[l]);
+      dots[i].setAttribute('stroke', i===selected ? 'var(--ink)' : 'var(--surface)');
+      dots[i].setAttribute('stroke-width', i===selected ? 3 : 2);
+      cols[l].push('<button data-m="'+i+'">'+m.t+'</button>');
+    });
+    document.getElementById('lAuto').innerHTML = cols.auto.join('');
+    document.getElementById('lReview').innerHTML = cols.review.join('');
+    document.getElementById('lAnom').innerHTML = cols.anom.join('');
+    if(selected >= 0) select(selected, true);
+  }
+  function select(i, quiet){
+    selected = i; var m = msgs[i];
+    var reason;
+    if(m.lane === 'anom') reason = m.flag + ' Flags always override confidence.';
+    else if(m.lane === 'auto') reason = m.why + ' Confidence ' + m.c + '% clears this rep\'s current bar of ' + T + '%, and stakes are low.';
+    else if(m.s >= 50) reason = m.why;
+    else reason = m.why + ' Confidence ' + m.c + '% is below this rep\'s current bar of ' + T + '%.';
+    document.getElementById('detail').innerHTML = '<span class="pill '+m.lane+'">'+laneName[m.lane]+'</span><h4>'+m.t+'</h4><p>'+reason+'</p><p class="small muted">Confidence '+m.c+'%, stakes '+m.s+' of 100</p>';
+    if(!quiet) render();
+  }
+  document.querySelector('.lanecols').addEventListener('click', function(e){ var b = e.target.closest('button[data-m]'); if(b) select(+b.getAttribute('data-m')); });
+  document.getElementById('trust').addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
