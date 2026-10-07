@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
 <header class="top">
@@ -37,34 +38,125 @@
         <a class="btn ghost" href="#ideas">See the four ideas</a>
       </div>
     </div>
-    <div class="flow" id="flow" aria-label="Animation: incoming sales work being routed into three lanes, runs on its own, waits for a person, and flagged to look at">
-      <div class="flow-src"><b>Incoming work</b></div>
-      <div class="lanes">
-        <div class="lane auto"><b>Runs on its own</b><div class="slots"></div></div>
-        <div class="lane review"><b>Waits for a person</b><div class="slots"></div></div>
-        <div class="lane anom"><b>Flagged to look at</b><div class="slots"></div></div>
+    <div class="app" id="app" role="region" aria-label="Animated demo of the three builds inside a CRM workspace">
+      <div class="app-bar">
+        <span class="app-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="app-title">superleap / workspace</span>
+        <span class="app-live"><i aria-hidden="true"></i>Live demo</span>
+      </div>
+      <div class="app-tabs" role="tablist" aria-label="Builds">
+        <button class="app-tab" role="tab" data-scene="0"><span>Migration Scanner</span><i class="tab-prog" aria-hidden="true"></i></button>
+        <button class="app-tab" role="tab" data-scene="1"><span>Performer Gap Coach</span><i class="tab-prog" aria-hidden="true"></i></button>
+        <button class="app-tab" role="tab" data-scene="2"><span>Prospect agent</span><i class="tab-prog" aria-hidden="true"></i></button>
+      </div>
+      <div class="app-stage">
+
+        <!-- scene 1: migration -->
+        <div class="scene" data-scene="0">
+          <div class="mig">
+            <div>
+              <div class="mig-file" data-step><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>legacy_leads.csv <small>1,416 rows</small></div>
+              <ul class="mig-rows">
+                <li class="mig-row" data-step><span>Aarav Sharma<small>aarav@nimbus.in</small></span><em class="tag"></em></li>
+                <li class="mig-row" data-step><span>Aarav Sharma<small>AARAV@NIMBUS.IN</small></span><em class="tag" data-bad="Duplicate"></em></li>
+                <li class="mig-row" data-step><span>Neha Gupta<small>owner: blank</small></span><em class="tag" data-bad="No owner"></em></li>
+                <li class="mig-row" data-step><span>Rohan Iyer<small>created 31/02/2025</small></span><em class="tag" data-bad="Bad date"></em></li>
+                <li class="mig-row" data-step><span>Kavya Nair<small>kavya@lotus.in</small></span><em class="tag"></em></li>
+              </ul>
+            </div>
+            <div class="mig-score">
+              <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--line)" stroke-width="10"/>
+                <circle class="mig-arc" cx="60" cy="60" r="48" fill="none" stroke="var(--red)" stroke-width="10" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 60 60)"/>
+              </svg>
+              <b class="mig-num">0</b>
+              <span class="mig-band">Scanning</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- scene 2: coach -->
+        <div class="scene" data-scene="1">
+          <div class="coachv">
+            <div class="coachv-head"><span>Conversion rate, top vs bottom reps</span><span class="coachv-gap"><b class="gap-num">20</b> pts gap</span></div>
+            <svg class="coachv-chart" viewBox="0 0 300 150" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="0" y1="140" x2="300" y2="140" stroke="var(--line)"/>
+              <line x1="0" y1="90" x2="300" y2="90" stroke="var(--line)" stroke-dasharray="3 4"/>
+              <line x1="0" y1="40" x2="300" y2="40" stroke="var(--line)" stroke-dasharray="3 4"/>
+              <path class="cv-area" d="M0 28 L60 27 L120 26 L180 25 L240 24 L300 22 L300 70 L240 78 L180 88 L120 100 L60 108 L0 112 Z" fill="var(--amber-bg)"/>
+              <path class="cv-top" d="M0 28 L60 27 L120 26 L180 25 L240 24 L300 22" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round" pathLength="1"/>
+              <path class="cv-bot" d="M0 112 L60 108 L120 100 L180 88 L240 78 L300 70" fill="none" stroke="var(--amber)" stroke-width="3" stroke-linecap="round" pathLength="1"/>
+            </svg>
+            <div class="coachv-legend"><span><i style="background:var(--teal)"></i>Top quartile</span><span><i style="background:var(--amber)"></i>Bottom quartile</span><span class="muted">Week 1 to 12</span></div>
+            <div class="toast" data-step><span class="avatar">A</span><span><b>For Ankit, right now:</b> Riya opened the fee brochure twice. Top reps call within 15 minutes.</span></div>
+          </div>
+        </div>
+
+        <!-- scene 3: prospect -->
+        <div class="scene" data-scene="2">
+          <div class="pro">
+            <div class="draft" data-step>
+              <div class="draft-to"><span class="spark" aria-hidden="true">&#10022;</span> Draft to <b>VP Sales, Kestrel Fintech</b></div>
+              <p class="draft-body"><span class="typed"></span><i class="caret"></i></p>
+            </div>
+            <div class="plane-wrap">
+              <div class="plane auto"><h5>Sends on its own</h5><div class="pchip" data-step>Follow-up: Neha opened pricing <span class="ok">Sent</span></div></div>
+              <div class="plane review"><h5>Waits for the rep</h5><div class="pchip" data-step>First touch: VP Sales <button class="approve" tabindex="-1">Approve</button></div></div>
+              <div class="plane anom"><h5>Flagged</h5><div class="pchip" data-step>Contact in Rohit's open deal</div></div>
+            </div>
+            <svg class="cursor" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l16 9-7 2-3 7z" fill="var(--ink)" stroke="var(--surface)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+      </div>
+      <div class="app-foot" aria-live="polite"><span class="foot-dot" aria-hidden="true"></span><span class="foot-text">Scanning a legacy CRM export before a go-live date is committed</span></div>
+    </div>
+  </div>
+
+  <!-- 2. Intro: scrolls sideways -->
+  <section class="hscroll" id="intro" aria-label="About Smrity">
+    <div class="hs-sticky">
+      <div class="hs-head">
+        <p class="kicker">Hi, I'm Smrity</p>
+        <div class="hs-bar" aria-hidden="true"><i></i></div>
+      </div>
+      <div class="hs-track">
+        <article class="hs-card hs-lead">
+          <h2>I build product close to enterprise customers and their data</h2>
+          <p>Since 2020 I've been at Xorosoft, a cloud ERP that works like a customer system of record: customer records, contacts, pricing rules, orders, invoices and account activity in one place.</p>
+          <span class="hs-hint" aria-hidden="true">Keep scrolling <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </article>
+        <article class="hs-card hs-stat">
+          <span class="hs-label">Experience</span>
+          <b class="hs-num" data-to="8" data-suffix=" years">8 years</b>
+          <p>in B2B SaaS product, from product analyst to product and customer success, wearing many hats at a startup.</p>
+        </article>
+        <article class="hs-card hs-stat">
+          <span class="hs-label">Scale</span>
+          <b class="hs-num" data-to="200" data-prefix="~">~200</b>
+          <p>retail, ecommerce and wholesale clients on Xorosoft's cloud ERP across the US, Canada and Australia.</p>
+        </article>
+        <article class="hs-card hs-stat">
+          <span class="hs-label">Ownership</span>
+          <b class="hs-num" data-to="40" data-suffix=" accounts">40 accounts</b>
+          <p>owned end to end, from onboarding and data migration through renewal and expansion, with 90%+ retention and 10 to 20% ARR growth.</p>
+        </article>
+        <article class="hs-card hs-stat">
+          <span class="hs-label">Customer experience</span>
+          <b class="hs-num" data-to="4.9" data-dec="1" data-suffix=" / 5">4.9 / 5</b>
+          <p>G2 rating across 94 reviews, with 80% CSAT and 22% fewer repeat tickets.</p>
+        </article>
+        <article class="hs-card hs-end">
+          <span class="hs-label">How I work</span>
+          <p class="hs-big">I've built AI features that keep people in charge of the decisions that matter.</p>
+          <p class="hs-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Based in Mohali, open to relocating to Bengaluru</p>
+        </article>
       </div>
     </div>
-  </div>
-
-  <!-- 2. Intro -->
-  <div class="block intro" id="intro">
-    <div>
-      <p class="kicker">Hi, I'm Smrity</p>
-      <h2>I build product close to enterprise customers and their data</h2>
-      <p class="lede" style="margin-top:16px">I have 8 years in B2B SaaS product. Since 2020 I've been at Xorosoft, a cloud ERP serving around 200 retail, ecommerce and wholesale clients across the US, Canada and Australia. At its core it works like a customer system of record: customer records, contacts, pricing rules, orders, invoices and account activity in one place.</p>
-      <p class="muted">I own enterprise accounts end to end, from onboarding and data migration through renewal and expansion, and I've built AI features that keep people in charge of the decisions that matter. I'm based in Mohali and open to relocating to Bengaluru.</p>
-    </div>
-    <div class="stats">
-      <div><b>8 years</b><span>in SaaS product, from product analyst to product and customer success</span></div>
-      <div><b>~200</b><span>clients on Xorosoft's cloud ERP across the US, Canada and Australia</span></div>
-      <div><b>40 accounts</b><span>owned end to end with 90%+ retention and 10 to 20% ARR growth</span></div>
-      <div><b>4.9 / 5</b><span>G2 rating across 94 reviews, with 80% CSAT</span></div>
-    </div>
-  </div>
+  </section>
 
   <!-- 3. Video -->
-  <div class="block" id="video">
+  <div class="block reveal" id="video">
     <p class="kicker">The conversation behind these builds</p>
     <h2>Subham Kumar Boundia on AI and enterprise software</h2>
     <div class="video">
@@ -86,9 +178,9 @@
 
   <!-- 4. Four ideas -->
   <div class="block" id="ideas">
-    <h2>Four ideas from the conversation, and what I built for each</h2>
+    <h2 class="reveal">Four ideas from the conversation, and what I built for each</h2>
     <ol class="journey-list">
-      <li>
+      <li class="reveal">
         <div class="quote">"The human is not supposed to be the operator anymore and the role is changing from an operator to the supervisor."<small>Subham Kumar Boundia, on how AI changes enterprise software</small></div>
         <div>
           <h3><a href="scanner.html">Migration Scanner</a></h3>
@@ -96,7 +188,7 @@
           <p class="mywork"><b>From my work:</b> I've moved Xorosoft customers off Shopify and legacy systems many times, carrying over customer records, contacts, price lists, credit limits and order history.</p>
         </div>
       </li>
-      <li>
+      <li class="reveal">
         <div class="quote">"The internal metric for the same would be... the difference between my lower performers and the higher performers, how fast that gap is bridging."<small>Subham Kumar Boundia, on why cost and productivity are a trap</small></div>
         <div>
           <h3><a href="coach.html">Performer Gap Coach</a></h3>
@@ -104,7 +196,7 @@
           <p class="mywork"><b>From my work:</b> I helped drive 80% CSAT, a 22% drop in repeat tickets and a 4.9 out of 5 G2 rating at Xorosoft by finding the patterns behind good outcomes and making them repeatable.</p>
         </div>
       </li>
-      <li>
+      <li class="reveal">
         <div class="quote">"The knowledge work of a particular human till now was consumed by a lot of non-knowledge or admin tasks like this data entry, logging into systems."<small>Subham Kumar Boundia, on AI and the industrial revolution</small></div>
         <div>
           <h3><a href="prospect.html">Prospect agent</a></h3>
@@ -112,7 +204,7 @@
           <p class="mywork"><b>From my work:</b> I've studied the revenue tech landscape closely, from Apollo, Clay and Instantly to AI SDR tools like AiSDR, Reply.io and Artisan, to understand the full sales cycle from prospecting to close.</p>
         </div>
       </li>
-      <li>
+      <li class="reveal">
         <div class="quote">"AI is helping me do the work of three people. But at the same time, I'm not outsourcing my thinking to AI."<small>Subham Kumar Boundia, on what stays human</small></div>
         <div>
           <h3><a href="prospect.html">Confidence-Tiered Autonomy</a></h3>
@@ -128,17 +220,17 @@
     <p class="kicker">Superleap's vision</p>
     <h2>From system of record to system of intelligence</h2>
     <div class="vision">
-      <div class="vcard">
+      <div class="vcard reveal">
         <h3>Make companies love their CRM again</h3>
         <p>Superleap's stated ambition is a CRM revenue teams want to use, deployed in weeks without disrupting operations.</p>
         <span class="src">Source: <a href="https://india.entrepreneur.com/?p=98373" target="_blank" rel="noopener">Entrepreneur India</a></span>
       </div>
-      <div class="vcard">
+      <div class="vcard reveal">
         <h3>A system of intelligence</h3>
         <p>Not a database people feed, but a fast, flexible, AI-native system built to handle enterprise complexity at scale.</p>
         <span class="src">Source: <a href="https://jobs.weekday.works/wkdyc8b9sc" target="_blank" rel="noopener">Superleap hiring page</a></span>
       </div>
-      <div class="vcard">
+      <div class="vcard reveal">
         <h3>An agentic operating system for revenue</h3>
         <p>The long-term goal is one platform for the whole revenue function, with people and AI agents working together.</p>
         <span class="src">Source: <a href="https://dealroom.co/news/142843-superleap-raises-rs-36-crore-seed-to-take-on-legacy-crm-giants/" target="_blank" rel="noopener">Dealroom</a></span>
@@ -150,7 +242,7 @@
   <div class="block" id="shift">
     <p class="kicker">Legacy CRM to Superleap CRM</p>
     <h2>What changes, and where each build fits</h2>
-    <div class="tablebox">
+    <div class="tablebox reveal">
       <table class="compare">
         <thead><tr><th scope="col">&nbsp;</th><th scope="col">Legacy CRM</th><th scope="col">Superleap CRM</th><th scope="col">My build</th></tr></thead>
         <tbody>
@@ -165,7 +257,7 @@
   </div>
 
   <!-- 7. Why me -->
-  <div class="whyme" id="why">
+  <div class="whyme reveal" id="why">
     <h2>Why me, for Superleap</h2>
     <p>I've spent my career inside customer systems of record: migrating enterprise data, keeping accounts through renewal, and building AI that leaves the judgment with people. Superleap sits exactly where that experience meets the work I want to do next, AI-native products for enterprise revenue teams.</p>
     <p style="margin-top:24px"><a class="btn" href="https://smritybuilds.com" target="_blank" rel="noopener">Visit smritybuilds.com</a></p>
@@ -178,55 +270,202 @@
 
 <script>
 (function(){
+  "use strict";
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var flow = document.getElementById('flow');
-  var items = [
-    ['Follow-up: Neha opened pricing','auto'],
-    ['First touch: VP Sales, NBFC','review'],
-    ['Contact in Rohit\'s open deal','anom'],
-    ['Reply: inbound fee question','auto'],
-    ['Map field: Lead Src','review'],
-    ['Owner deactivated: 212 records','anom'],
-    ['Webinar attendee follow-up','auto'],
-    ['Re-engage lost 2025 deal','review'],
-    ['Message mentions interest rate','anom'],
-    ['Map field: Email ID','auto']
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  function countTo(el, to, ms, opts){
+    opts = opts || {};
+    var dec = opts.dec || 0, pre = opts.prefix || '', suf = opts.suffix || '';
+    var from = opts.from || 0;
+    if(reduce || ms <= 0){ el.textContent = pre + to.toFixed(dec) + suf; return; }
+    var t0 = performance.now();
+    function step(t){
+      var k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = pre + (from + (to - from) * e).toFixed(dec) + suf;
+      if(k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ================= HERO: product window with three scenes ================= */
+  var app = $('#app');
+  var tabs = $$('.app-tab', app), scenes = $$('.scene', app);
+  var footText = $('.foot-text', app);
+  var DUR = 7000, cur = 0, timers = [], visible = true, started = false;
+  var CAPTIONS = [
+    'Scanning a legacy CRM export before a go-live date is committed',
+    'Watching the gap between top and bottom reps close, week by week',
+    'Drafting outreach and routing it by confidence and stakes'
   ];
-  var laneEls = flow.querySelectorAll('.lane');
-  var laneIdx = {auto:0, review:1, anom:2};
-  function addSlot(lane, text){
-    var slots = laneEls[laneIdx[lane]].querySelector('.slots');
-    var d = document.createElement('div'); d.className = 'slot'; d.textContent = text;
-    slots.insertBefore(d, slots.firstChild);
-    while(slots.children.length > 2) slots.removeChild(slots.lastChild);
+  function at(ms, fn){ timers.push(setTimeout(fn, ms)); }
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+  /* scene 1: migration */
+  var mig = scenes[0];
+  var arc = $('.mig-arc', mig), num = $('.mig-num', mig), band = $('.mig-band', mig);
+  function setRing(score, color, label){
+    arc.style.stroke = color;
+    arc.style.strokeDashoffset = String(301.6 * (1 - score / 100));
+    countTo(num, score, 900, { from: +num.textContent || 0 });
+    band.textContent = label; band.style.color = color;
   }
-  if(reduce){
-    items.slice(0,6).forEach(function(it){ addSlot(it[1], it[0]); });
-    return;
+  function migReset(){
+    $$('[data-step]', mig).forEach(function(e){ e.classList.remove('show'); });
+    $$('.tag', mig).forEach(function(tg){ tg.className = 'tag'; tg.textContent = ''; });
+    arc.style.transition = 'none'; arc.style.strokeDashoffset = '301.6'; arc.getBoundingClientRect(); arc.style.transition = '';
+    num.textContent = '0'; band.textContent = 'Scanning'; band.style.color = '';
   }
-  var n = 0, visible = true;
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(e){ visible = e[0].isIntersecting; }).observe(flow);
+  function migFinal(){
+    $$('[data-step]', mig).forEach(function(e){ e.classList.add('show'); });
+    $$('.tag', mig).forEach(function(tg){ tg.className = 'tag show good'; tg.textContent = tg.dataset.bad ? 'Fixed' : 'Clean'; });
+    arc.style.stroke = 'var(--teal)'; arc.style.strokeDashoffset = String(301.6 * 0.08); num.textContent = '92'; band.textContent = 'Ready'; band.style.color = 'var(--teal)';
   }
-  function spawn(){
-    var it = items[n % items.length]; n++;
-    var chip = document.createElement('div'); chip.className = 'chip'; chip.textContent = it[0];
-    var fh = flow.clientHeight;
-    var startY = 50 + Math.random() * (fh - 100);
-    chip.style.top = startY + 'px';
-    flow.appendChild(chip);
-    var lane = laneEls[laneIdx[it[1]]];
-    var fr = flow.getBoundingClientRect(), lr = lane.getBoundingClientRect();
-    var dx = (lr.left - fr.left) + 12 - 24;
-    var dy = (lr.top - fr.top) + lr.height/2 - startY - 12;
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){
-      chip.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
-    });});
-    setTimeout(function(){ chip.style.opacity = '0'; addSlot(it[1], it[0]); }, 1400);
-    setTimeout(function(){ chip.remove(); }, 1900);
+  function migPlay(){
+    migReset();
+    var file = $('.mig-file', mig), rows = $$('.mig-row', mig), tags = $$('.tag', mig);
+    at(150, function(){ file.classList.add('show'); });
+    rows.forEach(function(r, i){ at(550 + i * 230, function(){ r.classList.add('show'); }); });
+    tags.forEach(function(tg, i){ at(1900 + i * 140, function(){
+      tg.classList.add('show');
+      if(tg.dataset.bad){ tg.classList.add(tg.dataset.bad === 'Duplicate' ? 'bad' : 'warn'); tg.textContent = tg.dataset.bad; }
+      else { tg.classList.add('good'); tg.textContent = 'Clean'; }
+    }); });
+    at(2300, function(){ setRing(64, 'var(--red)', 'Not ready'); });
+    var bad = tags.filter(function(tg){ return tg.dataset.bad; });
+    bad.forEach(function(tg, i){ at(3700 + i * 320, function(){ tg.className = 'tag show good flip'; tg.textContent = 'Fixed'; }); });
+    at(4500, function(){ setRing(92, 'var(--teal)', 'Ready'); });
   }
-  spawn();
-  setInterval(function(){ if(visible && !document.hidden) spawn(); }, 1300);
+
+  /* scene 2: coach */
+  var coach = scenes[1];
+  var cvTop = $('.cv-top', coach), cvBot = $('.cv-bot', coach), cvArea = $('.cv-area', coach), gapNum = $('.gap-num', coach), toast = $('.toast', coach);
+  function coachReset(){
+    [cvTop, cvBot].forEach(function(p){ p.style.transition = 'none'; p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; p.getBoundingClientRect(); p.style.transition = ''; });
+    cvArea.style.opacity = '0'; gapNum.textContent = '20'; toast.classList.remove('show');
+  }
+  function coachFinal(){ cvTop.style.strokeDashoffset = '0'; cvBot.style.strokeDashoffset = '0'; cvArea.style.opacity = '.75'; gapNum.textContent = '9'; toast.classList.add('show'); }
+  function coachPlay(){
+    coachReset();
+    at(150, function(){ cvTop.style.strokeDashoffset = '0'; });
+    at(700, function(){ cvBot.style.strokeDashoffset = '0'; cvArea.style.opacity = '.75'; countTo(gapNum, 9, 2200, { from: 20 }); });
+    at(3300, function(){ toast.classList.add('show'); });
+  }
+
+  /* scene 3: prospect */
+  var pro = scenes[2];
+  var draft = $('.draft', pro), typed = $('.typed', pro), chips = $$('.pchip', pro), cursor = $('.cursor', pro), approve = $('.approve', pro);
+  var MSG = 'Saw Kestrel is hiring 40 sales reps in Pune. Teams scaling that fast usually outgrow their CRM first. Worth a 15 minute look?';
+  function proReset(){
+    draft.classList.remove('show'); typed.textContent = ''; chips.forEach(function(c){ c.classList.remove('show'); });
+    approve.textContent = 'Approve'; approve.classList.remove('done'); cursor.classList.remove('show', 'click'); cursor.style.transform = '';
+  }
+  function proFinal(){ draft.classList.add('show'); typed.textContent = MSG; chips.forEach(function(c){ c.classList.add('show'); }); approve.textContent = 'Approved'; approve.classList.add('done'); }
+  function proPlay(){
+    proReset();
+    at(150, function(){ draft.classList.add('show'); });
+    var i = 0;
+    at(500, function type(){ if(i <= MSG.length){ typed.textContent = MSG.slice(0, i); i += 2; at(28, type); } });
+    chips.forEach(function(c, k){ at(3000 + k * 320, function(){ c.classList.add('show'); }); });
+    at(4300, function(){
+      var stage = pro.getBoundingClientRect(), b = approve.getBoundingClientRect();
+      cursor.classList.add('show');
+      cursor.style.transform = 'translate(' + (b.left - stage.left + b.width / 2) + 'px,' + (b.top - stage.top + b.height / 2) + 'px)';
+    });
+    at(5300, function(){ cursor.classList.add('click'); approve.textContent = 'Approved'; approve.classList.add('done'); });
+    at(5600, function(){ cursor.classList.remove('click'); });
+  }
+
+  var PLAY = [migPlay, coachPlay, proPlay], FINAL = [migFinal, coachFinal, proFinal];
+
+  function show(i, autoplay){
+    clearTimers(); cur = i;
+    tabs.forEach(function(t, k){
+      t.classList.toggle('is-on', k === i); t.setAttribute('aria-selected', k === i ? 'true' : 'false');
+      var bar = $('.tab-prog', t); bar.style.transition = 'none'; bar.style.width = k < i && autoplay ? '100%' : '0';
+    });
+    scenes.forEach(function(s, k){ s.classList.toggle('is-on', k === i); s.setAttribute('aria-hidden', k === i ? 'false' : 'true'); });
+    footText.textContent = CAPTIONS[i];
+    if(!autoplay){ FINAL[i](); $('.tab-prog', tabs[i]).style.width = '100%'; return; }
+    var bar = $('.tab-prog', tabs[i]); bar.getBoundingClientRect();
+    bar.style.transition = 'width ' + DUR + 'ms linear'; bar.style.width = '100%';
+    PLAY[i]();
+    at(DUR, function(){ show((i + 1) % 3, true); });
+  }
+  tabs.forEach(function(t, k){ t.addEventListener('click', function(){ show(k, !reduce); }); });
+  show(0, false);
+  if(reduce){ /* static scenes, tabs still switch */ }
+  else if('IntersectionObserver' in window){
+    new IntersectionObserver(function(e){
+      visible = e[0].isIntersecting;
+      if(visible && !started){ started = true; show(cur, true); }
+      else if(!visible && started){ clearTimers(); started = false; }
+    }, { threshold: 0.25 }).observe(app);
+    document.addEventListener('visibilitychange', function(){ if(document.hidden){ clearTimers(); started = false; } else if(visible){ started = true; show(cur, true); } });
+  } else { show(0, true); }
+
+  /* ================= INTRO: vertical scroll drives horizontal movement ================= */
+  var hs = $('.hscroll'), sticky = $('.hs-sticky', hs), track = $('.hs-track', hs), hbar = $('.hs-bar i', hs);
+  var cards = $$('.hs-card', hs);
+  var counted = new WeakSet();
+  var desktop = window.matchMedia('(min-width: 861px)');
+  var shift = 0, ticking = false;
+  function runCount(card){
+    var n = $('.hs-num', card); if(!n || counted.has(n)) return; counted.add(n);
+    countTo(n, parseFloat(n.dataset.to), 1100, { dec: +(n.dataset.dec || 0), prefix: n.dataset.prefix || '', suffix: n.dataset.suffix || '' });
+  }
+  function layout(){
+    if(reduce || !desktop.matches){
+      hs.style.height = ''; track.style.transform = ''; cards.forEach(function(c){ c.style.transform = ''; c.style.opacity = ''; });
+      return;
+    }
+    var hdr = document.querySelector('.top').offsetHeight;
+    sticky.style.top = hdr + 'px'; sticky.style.height = 'calc(100vh - ' + hdr + 'px)';
+    shift = Math.max(0, track.scrollWidth - sticky.clientWidth);
+    hs.style.height = (sticky.offsetHeight + shift) + 'px';
+    update();
+  }
+  function update(){
+    ticking = false;
+    if(reduce || !desktop.matches) return;
+    var hdr = parseFloat(sticky.style.top) || 0;
+    var r = hs.getBoundingClientRect(), total = hs.offsetHeight - sticky.offsetHeight;
+    var p = total > 0 ? Math.min(1, Math.max(0, (hdr - r.top) / total)) : 0;
+    track.style.transform = 'translate3d(' + (-p * shift) + 'px,0,0)';
+    hbar.style.width = (p * 100) + '%';
+    var sr = sticky.getBoundingClientRect();
+    cards.forEach(function(c){
+      var cr = c.getBoundingClientRect();
+      var enter = (cr.left - (sr.right - cr.width * 0.9)) / (cr.width);  // > 0 while still entering from the right
+      var k = Math.min(1, Math.max(0, enter));
+      c.style.transform = 'perspective(900px) rotateY(' + (-k * 38) + 'deg) translateZ(' + (-k * 60) + 'px)';
+      c.style.opacity = String(1 - k * 0.55);
+      if(k < 0.15) runCount(c);
+    });
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', layout);
+  if(desktop.addEventListener) desktop.addEventListener('change', layout);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  layout();
+  if(reduce || !desktop.matches){
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) runCount(e.target); }); }, { threshold: 0.6 });
+      cards.forEach(function(c){ io.observe(c); });
+    }
+  }
+
+  /* ================= reveal on scroll ================= */
+  var reveals = $$('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){ reveals.forEach(function(e){ e.classList.add('in'); }); }
+  else {
+    var rio = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function(e, i){ rio.observe(e); });
+  }
 })();
 </script>
 </body>
