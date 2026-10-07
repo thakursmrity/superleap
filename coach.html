@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Performer Gap Coach, a concept for Superleap by Smrity</title>
+<meta name="description" content="A weekly number that shows the gap between best and newest reps closing, and the moves that close it.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><clipPath id='r'><rect width='32' height='32' rx='7'/></clipPath><g clip-path='url(%23r)'><rect width='32' height='32' fill='%23111111'/><path d='M0 32 A32 32 0 0 1 32 0 L32 32Z' fill='%2319C584'/><circle cx='22' cy='21.5' r='5.7' fill='%23ffffff'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="index.html">Smrity <span>for Superleap</span></a>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html">Overview</a>
+      <a href="scanner.html">Migration Scanner</a>
+      <a href="coach.html" aria-current="page">Performer Gap Coach</a>
+      <a href="prospect.html">Prospect agent</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="page" id="coach">
+  <div class="spec-head">
+    <div>
+      <h2>Performer Gap Coach</h2>
+      <p class="lede" style="margin-top:16px">A weekly number that shows the gap between your best and newest reps closing, and the moves that close it.</p>
+    </div>
+    <div class="quote">The internal measure of AI success: how fast the gap between low and high performers is bridging.</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Conversion rate, top vs bottom quartile reps</h3>
+      <div class="toggle" role="group" aria-label="Compare">
+        <button id="tWithout" aria-pressed="true">Without Coach</button>
+        <button id="tWith" aria-pressed="false">With Coach</button>
+      </div>
+    </div>
+    <div class="coach-wrap">
+      <div>
+        <div class="chartbox"><svg class="chart" id="chart" viewBox="0 0 600 280" width="100%" role="img" aria-label="Line chart of conversion rate over 12 weeks for top and bottom quartile reps"></svg></div>
+        <div class="legend"><span><i style="background:var(--teal)"></i>Top quartile</span><span><i style="background:var(--amber)"></i>Bottom quartile</span></div>
+        <p class="sample" style="margin-top:12px">Illustrative numbers for an inside-sales team of 80 reps over one quarter.</p>
+      </div>
+      <div>
+        <div class="muted small">Performer gap in week 12</div>
+        <div class="gapnum" id="gapnum">20 pts</div>
+        <p class="small muted" id="gapnote" style="margin-top:8px">Unchanged from week 1.</p>
+        <div class="muted small" style="margin-top:20px">Patterns learned from top reps</div>
+        <ul class="patterns">
+          <li>Call within 15 minutes of a brochure or pricing page open</li>
+          <li>Switch to WhatsApp after two missed calls</li>
+          <li>Answer fee objections with EMI options before discounts</li>
+        </ul>
+        <div class="nudge" id="nudge">
+          <p><b>For Ankit, right now:</b> Riya opened the fee brochure twice in the last hour. Top reps call within 15 minutes of this.</p>
+          <p class="why">Why: 3 of your top 5 reps convert 2x more leads with this move.</p>
+          <button class="rowbtn" id="nAct">Call Riya now</button><button class="rowbtn" id="nSkip">Skip with a reason</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Sales leaders can see who is underperforming, but not why, and coaching happens in weekly reviews long after the moment has passed. AI ROI gets reported as hours saved, which doesn't help a CXO justify renewal.</p></div>
+    <div><h3>Who it's for</h3><ul><li>Reps in their first year, who get in-the-moment guidance</li><li>Team leads, who see which behaviours separate their reps</li><li>CXOs, who get one metric that shows AI is changing outcomes</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Learns behaviour patterns from calls, messages and stage changes of top-quartile reps</li><li>Spots the same moments in other reps' pipelines and suggests the move, with its reason</li><li>The rep acts or skips with a reason; skips improve the model</li><li>A weekly performer gap index on the leadership dashboard</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>Performer gap index, week over week</li><li>Nudge acceptance rate, and conversion on accepted nudges</li><li>Time to productivity for new reps</li><li>Renewal and expansion rate of accounts using Coach</li></ul></div>
+    <div><h3>First version</h3><p>Three high-signal patterns per industry, built on call summaries and activity data Superleap already captures, with nudges inside the lead view and the gap index on one dashboard tile.</p></div>
+    <div><h3>Risks and open questions</h3><ul><li>Reps may read nudges as surveillance; framing as "what top reps do" matters</li><li>Small teams may lack enough data per pattern; pooled industry benchmarks could fill the gap</li></ul></div>
+    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I helped drive 80% CSAT, a 22% drop in repeat tickets and a 4.9 out of 5 G2 rating across 94 reviews, by finding the patterns behind good outcomes and making them repeatable. Coach applies the same idea to sales reps.</p></div>
+  </div>
+  <div class="next"><a href="scanner.html">Previous: Migration Scanner</a><a href="prospect.html">Next: Prospect agent</a></div>
+</section>
+
+</main>
+<footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap.</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(name, attrs){ var e = document.createElementNS(NS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  /* coach chart */
+  var svg = document.getElementById('chart');
+  var top = [31,31,32,31,32,32,33,32,33,33,34,33];
+  var without = [13,12,13,12,13,13,12,13,13,14,13,13];
+  var withC = [13,14,15,15,17,18,19,20,21,22,23,24];
+  var X = function(i){ return 50 + i*(530/11); };
+  var Y = function(v){ return 250 - v/40*220; };
+  [0,10,20,30,40].forEach(function(v){
+    svg.appendChild(el('line',{x1:50,x2:580,y1:Y(v),y2:Y(v),stroke:'var(--line)','stroke-width':1}));
+    var t = el('text',{x:40,y:Y(v)+4,'text-anchor':'end'}); t.textContent = v + '%'; svg.appendChild(t);
+  });
+  [0,3,7,11].forEach(function(i){ var t = el('text',{x:X(i),y:272,'text-anchor':'middle'}); t.textContent = 'Week ' + (i+1); svg.appendChild(t); });
+  function pts(arr){ return arr.map(function(v,i){ return X(i) + ',' + Y(v); }).join(' '); }
+  var gapArea = el('polygon',{fill:'var(--amber-bg)',opacity:0.7});
+  svg.appendChild(gapArea);
+  svg.appendChild(el('polyline',{points:pts(top),fill:'none',stroke:'var(--teal)','stroke-width':3,'stroke-linejoin':'round'}));
+  var bottomLine = el('polyline',{fill:'none',stroke:'var(--amber)','stroke-width':3,'stroke-linejoin':'round'});
+  svg.appendChild(bottomLine);
+  var cur = without.slice();
+  function drawBottom(arr){
+    bottomLine.setAttribute('points', pts(arr));
+    var poly = top.map(function(v,i){ return X(i)+','+Y(v); }).concat(arr.slice().reverse().map(function(v,j){ return X(arr.length-1-j)+','+Y(v); }));
+    gapArea.setAttribute('points', poly.join(' '));
+    var gap = Math.round(top[11]-arr[11]);
+    document.getElementById('gapnum').textContent = gap + ' pts';
+  }
+  drawBottom(cur);
+  function morph(target, note){
+    var from = cur.slice(), t0 = performance.now();
+    function step(t){
+      var k = reduce ? 1 : Math.min(1,(t-t0)/800);
+      var e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
+      cur = from.map(function(v,i){ return v + (target[i]-v)*e; });
+      drawBottom(cur);
+      if(k<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    document.getElementById('gapnote').textContent = note;
+  }
+  var tW = document.getElementById('tWith'), tWo = document.getElementById('tWithout');
+  tW.addEventListener('click', function(){ tW.setAttribute('aria-pressed','true'); tWo.setAttribute('aria-pressed','false'); morph(withC,'Down from 18 pts in week 1, as bottom-quartile reps adopt top-rep moves.'); });
+  tWo.addEventListener('click', function(){ tWo.setAttribute('aria-pressed','true'); tW.setAttribute('aria-pressed','false'); morph(without,'Unchanged from week 1.'); });
+  var nudge = document.getElementById('nudge');
+  document.getElementById('nAct').addEventListener('click', function(){
+    nudge.innerHTML = '<p><b>Call started with Riya.</b> Coach logged the move, so Ankit\'s pattern score and the team gap index update tonight.</p>';
+  });
+  document.getElementById('nSkip').addEventListener('click', function(){
+    nudge.innerHTML = '<p><b>Skipped:</b> "Riya asked to be called after 6 pm." Coach will remind Ankit at 6 pm and learn that stated call times outrank speed.</p>';
+  });
+
+})();
+</script>
+</body>
+</html>
