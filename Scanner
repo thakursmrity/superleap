@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Migration Scanner, a concept for Superleap by Smrity</title>
+<meta name="description" content="Check how ready a CRM export is to move to Superleap. Runs entirely in the browser.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><clipPath id='r'><rect width='32' height='32' rx='7'/></clipPath><g clip-path='url(%23r)'><rect width='32' height='32' fill='%23111111'/><path d='M0 32 A32 32 0 0 1 32 0 L32 32Z' fill='%2319C584'/><circle cx='22' cy='21.5' r='5.7' fill='%23ffffff'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="index.html">Smrity <span>for Superleap</span></a>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html">Overview</a>
+      <a href="scanner.html" aria-current="page">Migration Scanner</a>
+      <a href="coach.html">Performer Gap Coach</a>
+      <a href="prospect.html">Prospect agent</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="page" id="migration">
+  <div class="spec-head">
+    <div>
+      <h2>Migration Scanner</h2>
+      <p class="lede" style="margin-top:16px">Know how ready a prospect's CRM data is before Superleap commits to a go-live date.</p>
+      <div class="hero-actions" style="margin-top:20px">
+        <a class="btn ghost" href="Superleap_Migration_Readiness_Scanner_PRD.pdf" target="_blank" rel="noopener">Read the PRD (PDF)</a>
+      </div>
+    </div>
+    <div class="quote">"The human is not supposed to be the operator anymore and the role is changing from an operator to the supervisor."<small>Subham Kumar Boundia, ET Insights. Before a team hands work to an agent, they need to trust the data that arrived.</small></div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Scan a CRM export</h3>
+      <span class="sc-lock"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Your file never leaves this browser</span>
+    </div>
+
+    <div class="sc-load">
+      <div>
+        <label class="sc-drop" id="drop" for="file">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <strong>Drop a CSV here, or click to choose</strong>
+          <span>Leads, Contacts, Accounts or Deals export &middot; up to 50 MB</span>
+        </label>
+        <input type="file" id="file" accept=".csv,text/csv" class="sr">
+      </div>
+      <div class="sc-samples">
+        <h4>No file handy? Try a sample</h4>
+        <p>Generated data with planted problems, for demos and training.</p>
+        <div id="sampleList"></div>
+      </div>
+    </div>
+
+    <div class="sc-status" id="status" role="status" aria-live="polite">
+      <div id="statusText">Reading file...</div>
+      <div class="sc-bar"><i id="barFill"></i></div>
+    </div>
+
+    <div id="results" aria-label="Results">
+      <div class="sc-summary">
+        <div class="sc-ring" aria-hidden="true">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="64" fill="none" stroke="var(--line)" stroke-width="13"/>
+            <circle id="ringArc" cx="75" cy="75" r="64" fill="none" stroke="var(--teal)" stroke-width="13" stroke-linecap="round" stroke-dasharray="402.1" stroke-dashoffset="402.1" style="transition: stroke-dashoffset .8s ease"/>
+          </svg>
+          <div class="num"><div><b id="scoreNum">0</b><small>out of 100</small></div></div>
+        </div>
+        <div>
+          <span class="sc-band" id="band">Ready</span>
+          <p class="sc-readout" id="readout"></p>
+          <p class="sc-action" id="action"></p>
+          <div class="sc-meta">
+            <span>File <b id="mFile"></b></span>
+            <span><b id="mRows"></b> rows</span>
+            <span><b id="mCols"></b> columns</span>
+            <span>Scanned in <b id="mTime"></b></span>
+            <span>Object <select id="objSel" aria-label="Object type">
+              <option value="leads">Leads</option><option value="contacts">Contacts</option>
+              <option value="accounts">Accounts</option><option value="deals">Deals</option>
+            </select></span>
+          </div>
+          <details class="sc-how">
+            <summary>How is this score calculated?</summary>
+            <ol>
+              <li><b>Fail rate per check:</b> the share of rows that fail it (for sparse columns, the share of columns).</li>
+              <li><b>Check score</b> <code>= max(0, 1 &minus; 2 &times; fail rate)</code>. 10% failing scores 0.8; once half the rows fail, it scores 0.</li>
+              <li><b>Readiness score</b> <code>= 100 &times; &Sigma;(weight &times; check score) &divide; &Sigma;(weights)</code>, rounded down, over the checks that apply to this file. Weights: Blocker 5, High 3, Medium 2, Low 1. Stale records are shown, not scored.</li>
+              <li><b>Blocker cap:</b> if more than 5% of rows fail the Blocker check, the score cannot exceed 64.</li>
+            </ol>
+            <p class="bands">Bands: Ready 85 to 100 &middot; Needs cleanup 65 to 84 &middot; Not ready 0 to 64</p>
+          </details>
+        </div>
+      </div>
+
+      <div class="sc-section">
+        <div><h3>Issues to fix</h3><p>Ranked by severity and rows affected. Open any issue to see example rows.</p></div>
+        <div class="sc-exports">
+          <button class="sc-btn" id="exIssues">Issues report</button>
+          <button class="sc-btn" id="exOwners">Owner list</button>
+          <button class="sc-btn primary" id="exDedup">De-duplicated CSV</button>
+        </div>
+      </div>
+      <div id="issues"></div>
+      <div class="sc-card sc-passed" id="passed"></div>
+
+      <div class="sc-section">
+        <div><h3>Owner mapping</h3><p id="ownerSub">Every owner below must be matched to a Superleap user before import.</p></div>
+      </div>
+      <div class="sc-card sc-owners sc-scroll" id="owners"></div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Superleap commits to go-live dates before it has seen the prospect's data. Effort is estimated from conversations, so duplicates, unassigned records, broken dates and inconsistent stage values are discovered during the load. That stretches timelines, adds forward-deployed engineering hours, and risks the deployment guarantee.</p></div>
+    <div><h3>Who it's for</h3><ul><li>Superleap AEs, who run a scan on a sample export during evaluation</li><li>Superleap deployment leads, who run a full scan at kickoff</li><li>The prospect's CRM admin, who gets the issues report to fix at the source</li><li>The prospect's sponsor, who sees migration risk before signing</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Load a CSV export; everything runs in the browser and nothing is uploaded</li><li>12 rule-based checks: required fields, duplicates, emails, dates, owner mapping, references, phones, picklist drift, encoding, sparse columns, length and stale records</li><li>A 0 to 100 readiness score with a band and the next step for the AE</li><li>Three exports: issues report, owner list for mapping, de-duplicated CSV</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>North star: share of deals reaching proposal stage with a readiness scan</li><li>Go-live accuracy for scanned vs unscanned deals</li><li>Rows rejected on first load, and cleanup hours per migration</li><li>Guardrails: data stays on the device, and clean files do not score below 85</li></ul></div>
+    <div><h3>First version</h3><p>One CSV at a time, 12 checks, the score, drill-down and three exports. Out of scope for v1: loading data into Superleap, API connections to other CRMs, AI field mapping, logins and saved history, and cross-file relationship checks.</p></div>
+    <div><h3>Risks and open questions</h3><ul><li>Prospects may decline to share data before signing; browser-only processing and a small sample export help</li><li>Superleap's own required fields are not public, so the checks follow common CRM import rules</li><li>AEs may skip the scan under deal pressure, so it has to take under five minutes</li></ul></div>
+    <div class="wide"><h3>Research behind it</h3><p>Data quality is consistently named as a leading cause of CRM projects missing their goals. <a href="https://retail-insider.com/?p=200808" target="_blank" rel="noopener">Retail Insider</a> cites Gartner on poor data quality as the leading cause of CRM failure, and Panorama Consulting on data migration as the biggest implementation challenge for 62% of organisations. <a href="https://www.lowcode.agency/blog/crm-implementation-failure-rate" target="_blank" rel="noopener">LowCode Agency</a> puts reported CRM failure rates between 30 and 55 percent. The full evidence is in the PRD.</p></div>
+    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I've moved customers off Shopify and legacy systems many times, carrying over customer records, contacts, price lists, credit limits and order history. The same patterns kept appearing in customers' source data: duplicates, unmapped values and missing references caused most import issues, and the fix belonged in that source data. Every check in this scanner comes from that experience.</p></div>
+  </div>
+  <div class="next"><a href="index.html">Back to overview</a><a href="coach.html">Next: Performer Gap Coach</a></div>
+</section>
+
+</main>
+<footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap. The scanner follows common CRM import rules; Superleap's own required fields may differ.</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ---------- helpers ---------- */
+  const $ = (id) => document.getElementById(id);
+  const norm = (h) => String(h || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const isBlank = (v) => v === undefined || v === null || String(v).trim() === "";
+  const fmt = (n) => Number(n).toLocaleString("en-IN");
+  const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const tick = () => new Promise((r) => setTimeout(r, 0));
+  const ROWNUM = (i) => i + 2; // spreadsheet row (header is row 1)
+
+  function jaroWinkler(a, b) {
+    if (a === b) return 1;
+    const la = a.length, lb = b.length;
+    if (!la || !lb) return 0;
+    const md = Math.max(0, Math.floor(Math.max(la, lb) / 2) - 1);
+    const am = new Array(la).fill(false), bm = new Array(lb).fill(false);
+    let m = 0;
+    for (let i = 0; i < la; i++) {
+      for (let j = Math.max(0, i - md); j < Math.min(lb, i + md + 1); j++) {
+        if (!bm[j] && a[i] === b[j]) { am[i] = bm[j] = true; m++; break; }
+      }
+    }
+    if (!m) return 0;
+    let t = 0, k = 0;
+    for (let i = 0; i < la; i++) if (am[i]) { while (!bm[k]) k++; if (a[i] !== b[k]) t++; k++; }
+    const j = (m / la + m / lb + (m - t / 2) / m) / 3;
+    let p = 0; while (p < 4 && a[p] && a[p] === b[p]) p++;
+    return j + p * 0.1 * (1 - j);
+  }
+
+  /* ---------- column roles ---------- */
+  function detectRoles(fields) {
+    const r = { email: null, phone: null, first: null, last: null, full: null, company: null, owner: null, dealname: null,
+                stage: null, picklists: [], dates: [], refs: [], id: null, amount: null, all: fields };
+    for (const f of fields) {
+      const n = norm(f);
+      if (!r.email && n.includes("email") && !/secondary|alternate|alt|other/.test(n)) r.email = f;
+      else if (!r.phone && /(phone|mobile|contactno|contactnumber|whatsapp)/.test(n) && !/secondary|alternate|alt|other|fax/.test(n)) r.phone = f;
+      if (/^(firstname|fname|givenname)$/.test(n)) r.first = f;
+      if (/^(lastname|lname|surname|familyname)$/.test(n)) r.last = f;
+      if (!r.full && /^(name|fullname|leadname|contactname|customername)$/.test(n)) r.full = f;
+      if (!r.company && /(company|accountname|organization|organisation|^account$|businessname)/.test(n) && !n.endsWith("id")) r.company = f;
+      if (!r.owner && /(owner|assignedto|counsellor|counselor|salesrep|^rep$)/.test(n) && !n.endsWith("id")) r.owner = f;
+      if (!r.owner && /(ownerid)/.test(n)) r.owner = f;
+      if (!r.dealname && /(dealname|opportunityname|opportunity$|^deal$)/.test(n)) r.dealname = f;
+      if (!r.stage && /(stage)/.test(n)) r.stage = f;
+      if (!r.amount && /(amount|dealvalue|value$)/.test(n)) r.amount = f;
+      if (/(stage|status|source|^type$|leadtype|industry|rating|priority|category|segment)/.test(n)) r.picklists.push(f);
+      if (/(date|createdon|createdat|modifiedon|modifiedat|lastactivity|closedon)/.test(n) && !/update(d)?by|createdby|modifiedby/.test(n)) r.dates.push(f);
+      if (/(accountid|contactid|parentid|companyid|primarycontactid)/.test(n)) r.refs.push(f);
+      if (!r.id && /^(id|recordid|leadid|dealid|contactid|accountid|opportunityid)$/.test(n)) r.id = f;
+    }
+    // a column used as the record's own id is not a reference
+    r.refs = r.refs.filter((f) => f !== r.id);
+    return r;
+  }
+
+  function detectObject(fields) {
+    const n = fields.map(norm).join("|");
+    if (/(stage|opportunity|dealname|closedate|amount)/.test(n)) return "deals";
+    if (/(leadstatus|leadsource|leadid|leadowner)/.test(n)) return "leads";
+    if (/(email|phone|mobile)/.test(n) && /(firstname|lastname|contactname|fullname)/.test(n)) return /(accountid|accountname)/.test(n) ? "contacts" : "leads";
+    if (/(industry|accountname|website|employees)/.test(n)) return "accounts";
+    return "leads";
+  }
+
+  /* ---------- value tests ---------- */
+  const EMAIL_RE = /^[^\s@,;]+@[^\s@,;]+\.[a-z]{2,}$/i;
+  const PLACEHOLDER_LOCAL = /^(test|testing|na|n\/a|none|null|abc|xyz|asdf|noemail|no|dummy|sample|nil|unknown|example)$/i;
+  const PLACEHOLDER_DOMAIN = /^(example\.(com|org|in)|test\.(com|in)|abc\.com|xyz\.com|mailinator\.com|email\.com)$/i;
+  function emailProblem(v) {
+    const s = String(v).trim();
+    if (!EMAIL_RE.test(s)) return "Not a valid email format";
+    const [loc, dom] = s.toLowerCase().split("@");
+    if (PLACEHOLDER_LOCAL.test(loc) || PLACEHOLDER_DOMAIN.test(dom)) return "Placeholder or test address";
+    return null;
+  }
+  function phoneProblem(v) {
+    const s = String(v).trim();
+    if (/[a-z]/i.test(s.replace(/ext\.?\s*\d+$/i, ""))) return "Contains letters";
+    const plus = s.startsWith("+");
+    const d = s.replace(/\D/g, "");
+    if (!d.length) return "No digits";
+    if (/^(\d)\1+$/.test(d) || /^(0123456789|1234567890|9876543210)$/.test(d.slice(-10))) return "Dummy number";
+    if (plus && !d.startsWith("91")) return d.length >= 8 && d.length <= 15 ? null : "Wrong length for an international number";
+    if (d.length === 10) return /^[6-9]/.test(d) ? null : (/^[1-5]/.test(d) ? null : "Invalid Indian mobile prefix");
+    if (d.length === 11 && d.startsWith("0")) return null;
+    if (d.length === 12 && d.startsWith("91")) return /^[6-9]/.test(d.slice(2)) ? null : "Invalid Indian mobile prefix";
+    if (d.length < 10) return "Too few digits";
+    return "Too many digits";
+  }
+  const phoneKey = (v) => { const d = String(v || "").replace(/\D/g, ""); return d.length >= 10 ? d.slice(-10) : ""; };
+  const emailKey = (v) => String(v || "").trim().toLowerCase();
+  const companyKey = (v) => norm(String(v || "").toLowerCase().replace(/\b(pvt|private|ltd|limited|llp|inc|corp|co|company|technologies|tech|solutions)\b\.?/g, ""));
+
+  const MONTHS = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12 };
+  function parseDate(raw) {
+    const s = String(raw).trim().split(/[T ]/)[0];
+    let m, y, mo, d, fam, order = null;
+    if ((m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/))) { y = +m[1]; mo = +m[2]; d = +m[3]; fam = "ISO"; }
+    else if ((m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2}|\d{4})$/))) {
+      const a = +m[1], b = +m[2]; y = +m[3]; if (y < 100) y += 2000; fam = "SLASH";
+      if (a > 12 && b <= 12) { d = a; mo = b; order = "DMY"; }
+      else if (b > 12 && a <= 12) { mo = a; d = b; order = "MDY"; }
+      else if (a <= 12 && b <= 12) { d = a; mo = b; order = "AMB"; }
+      else return { bad: "Impossible date" };
+    } else if ((m = String(raw).trim().match(/^(\d{1,2})[\s\-]([a-z]{3,9})[\s\-,]+(\d{4})/i)) && MONTHS[m[2].toLowerCase().slice(0, 3)]) {
+      d = +m[1]; mo = MONTHS[m[2].toLowerCase().slice(0, 3)]; y = +m[3]; fam = "TEXT";
+    } else return { bad: "Unrecognised date format" };
+    if (mo < 1 || mo > 12 || d < 1) return { bad: "Impossible date" };
+    const dim = new Date(y, mo, 0).getDate();
+    if (d > dim) return { bad: "Impossible date" };
+    if (y < 1990) return { bad: "Implausible year" };
+    return { fam, order, date: new Date(y, mo - 1, d) };
+  }
+
+  /* ---------- check definitions ---------- */
+  const W = { Blocker: 5, High: 3, Medium: 2, Low: 1, Info: 0 };
+  const META = {
+    required: { name: "Contact and required fields", sev: "Blocker",
+      why: "Records without an identifier cannot be contacted or deduplicated, and the CRM will not fill these in on its own.",
+      fix: "Fill the missing fields in the source CRM, or drop records that cannot be completed. Enrichment tools rarely work for consumer leads.",
+      phrase: "are missing required fields" },
+    dups: { name: "Duplicate records", sev: "High",
+      why: "Duplicates inflate pipeline counts, break assignment rules and trigger automated messages twice.",
+      fix: "Merge duplicates in the source CRM, keeping the record with the most recent activity. The de-duplicated CSV keeps the first copy of each.",
+      phrase: "are duplicates" },
+    email: { name: "Email validity", sev: "High",
+      why: "Invalid or placeholder emails bounce, hurt sender reputation and block email-based de-duplication.",
+      fix: "Correct typos at the source; clear placeholders such as test@ or na@ rather than importing them.",
+      phrase: "have invalid emails" },
+    dates: { name: "Date consistency", sev: "High",
+      why: "Mixed or ambiguous formats swap days and months on import, which corrupts ageing reports and follow-up schedules.",
+      fix: "Export all dates in one format, ideally YYYY-MM-DD. Resolve rows where day and month order conflict.",
+      phrase: "have date problems" },
+    owner: { name: "Owner mapping", sev: "High",
+      why: "Every record's owner must map to a Superleap user. Unassigned records disappear from every rep's view and break assignment rules.",
+      fix: "Assign owners at the source, then complete the owner list export by matching each value to a Superleap user.",
+      phrase: "have no usable owner" },
+    refs: { name: "Broken references", sev: "High",
+      why: "Records pointing to a missing account or contact load as orphans, so links between accounts, contacts and deals break.",
+      fix: "Fill the missing IDs, or export the referenced object alongside so the links can be matched.",
+      phrase: "have broken references" },
+    phone: { name: "Phone format", sev: "Medium",
+      why: "Junk or malformed numbers break dialers, WhatsApp flows and phone-based de-duplication.",
+      fix: "Standardise to +91 followed by 10 digits for Indian numbers; clear dummy values like 9999999999.",
+      phrase: "have invalid phone numbers" },
+    picklist: { name: "Picklist drift", sev: "Medium",
+      why: "One value written many ways splits reports into separate buckets or gets rejected by Superleap's dropdowns.",
+      fix: "Pick one standard value per group and bulk-update the variants at the source.",
+      phrase: "use inconsistent picklist values" },
+    encoding: { name: "Encoding issues", sev: "Medium",
+      why: "Garbled characters show up in front of customers, and line breaks inside fields can split one record into broken rows.",
+      fix: "Re-export as UTF-8. Replace line breaks inside short fields with spaces.",
+      phrase: "have encoding problems" },
+    sparse: { name: "Sparse columns", sev: "Low",
+      why: "Mostly empty columns are usually unused custom fields. Mapping them adds effort and clutter.",
+      fix: "Agree with the prospect which of these to drop rather than recreate in Superleap.",
+      phrase: "" },
+    length: { name: "Length overflow", sev: "Low",
+      why: "Values longer than the target field's limit get cut off or rejected on load.",
+      fix: "Move long text into a notes or description field, or shorten it at the source.",
+      phrase: "have values too long for their field" },
+    stale: { name: "Stale records", sev: "Info",
+      why: "Records with no activity in two years are candidates to archive instead of migrating. Shown for planning, not scored.",
+      fix: "Agree an archive rule with the prospect, for example no activity in 24 months.",
+      phrase: "" },
+  };
+  const ORDER = ["required", "dups", "email", "dates", "owner", "refs", "phone", "picklist", "encoding", "sparse", "length", "stale"];
+
+  function newCheck(id) {
+    return { id, ...META[id], weight: W[META[id].sev], applicable: true, flagged: new Map(), total: 0, unit: "rows", note: "", colFlags: [] };
+  }
+  function flag(c, i, col, value, note) {
+    if (!c.flagged.has(i)) c.flagged.set(i, []);
+    c.flagged.get(i).push({ col, value, note });
+  }
+
+  /* ---------- the checks ---------- */
+  async function runChecks(rows, fields, obj, progress) {
+    const R = detectRoles(fields);
+    const n = rows.length;
+    const out = {};
+    const nameOf = (r) => R.full ? String(r[R.full] || "").trim() : [R.first && r[R.first], R.last && r[R.last]].filter(Boolean).join(" ").trim();
+
+    // 1 required
+    let c = newCheck("required"); c.total = n;
+    const hasNameCol = !!(R.full || R.first || R.last);
+    for (let i = 0; i < n; i++) {
+      const r = rows[i];
+      if (obj === "leads" || obj === "contacts") {
+        if (!hasNameCol) { if (i === 0) c.note = "No name column found."; flag(c, i, "Name", "", "No name column"); }
+        else if (!nameOf(r)) flag(c, i, R.full || R.first, "", "Missing name");
+        const e = R.email && !isBlank(r[R.email]), p = R.phone && !isBlank(r[R.phone]);
+        if (!e && !p) flag(c, i, [R.email, R.phone].filter(Boolean).join(" / ") || "Email / Phone", "", "Neither email nor phone");
+      } else if (obj === "deals") {
+        if (!R.dealname || isBlank(r[R.dealname])) flag(c, i, R.dealname || "Deal name", "", R.dealname ? "Missing deal name" : "No deal name column");
+        if (!R.stage || isBlank(r[R.stage])) flag(c, i, R.stage || "Stage", "", R.stage ? "Missing stage" : "No stage column");
+      } else {
+        if (!R.company || isBlank(r[R.company])) flag(c, i, R.company || "Account name", "", R.company ? "Missing account name" : "No account name column");
+      }
+    }
+    out.required = c; await progress(1);
+
+    // 2 duplicates
+    c = newCheck("dups"); c.total = n;
+    const parent = Array.from({ length: n }, (_, i) => i);
+    const reason = new Map();
+    const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+    const union = (a, b, why) => { const ra = find(a), rb = find(b); if (ra === rb) return; const lo = Math.min(ra, rb), hi = Math.max(ra, rb); parent[hi] = lo; if (!reason.has(Math.max(a, b))) reason.set(Math.max(a, b), [Math.min(a, b), why]); };
+    const exact = (keyFn, why) => { const seen = new Map(); for (let i = 0; i < n; i++) { const k = keyFn(rows[i]); if (!k) continue; if (seen.has(k)) union(seen.get(k), i, why); else seen.set(k, i); } };
+    let fuzzyKeyName, fuzzyKeyCo, fuzzyThresh = 0.93;
+    if (obj === "deals") {
+      exact((r) => R.dealname && r[R.dealname] ? norm(r[R.dealname]) + "|" + companyKey(R.company ? r[R.company] : "") : "", "same deal name and account");
+      fuzzyKeyName = (r) => norm(R.dealname ? r[R.dealname] : ""); fuzzyKeyCo = (r) => companyKey(R.company ? r[R.company] : "") + "|" + norm(R.amount ? r[R.amount] : ""); fuzzyThresh = 0.97;
+    } else if (obj === "accounts") {
+      exact((r) => companyKey(R.company ? r[R.company] : ""), "same account name");
+      fuzzyKeyName = (r) => companyKey(R.company ? r[R.company] : ""); fuzzyKeyCo = () => "";
+    } else {
+      if (R.email) exact((r) => emailKey(r[R.email]), "same email");
+      if (R.phone) exact((r) => phoneKey(r[R.phone]), "same phone");
+      fuzzyKeyName = (r) => norm(nameOf(r)); fuzzyKeyCo = (r) => companyKey(R.company ? r[R.company] : "");
+    }
+    const blocks = new Map();
+    for (let i = 0; i < n; i++) {
+      const a = fuzzyKeyName(rows[i]); if (a.length < 3) continue;
+      const k = a.slice(0, 4) + "|" + fuzzyKeyCo(rows[i]).slice(0, 3);
+      if (!blocks.has(k)) blocks.set(k, []); const b = blocks.get(k); if (b.length < 200) b.push(i);
+    }
+    for (const b of blocks.values()) {
+      for (let x = 0; x < b.length; x++) for (let y = x + 1; y < b.length; y++) {
+        const i = b[x], j = b[y]; if (find(i) === find(j)) continue;
+        const coA = fuzzyKeyCo(rows[i]), coB = fuzzyKeyCo(rows[j]);
+        if (obj !== "accounts" && (!coA || !coB)) continue;
+        if (jaroWinkler(fuzzyKeyName(rows[i]), fuzzyKeyName(rows[j])) >= fuzzyThresh && (obj === "accounts" || (obj === "deals" ? coA === coB : jaroWinkler(coA, coB) >= 0.9)))
+          union(i, j, obj === "accounts" ? "near-identical account name" : obj === "deals" ? "near-identical deal name, same account and amount" : "near-identical name at the same company");
+      }
+    }
+    const dupRows = new Set();
+    for (let i = 0; i < n; i++) if (find(i) !== i) {
+      dupRows.add(i);
+      const [of, why] = reason.get(i) || [find(i), "matching record"];
+      const show = obj === "deals" ? (R.dealname ? rows[i][R.dealname] : "") : obj === "accounts" ? (R.company ? rows[i][R.company] : "") : (R.email && rows[i][R.email]) || nameOf(rows[i]);
+      flag(c, i, "", show, `Duplicate of row ${ROWNUM(of)} (${why})`);
+    }
+    c.dupRows = dupRows;
+    out.dups = c; await progress(2);
+
+    // 3 email
+    c = newCheck("email"); c.total = n;
+    if (!R.email) { c.applicable = false; c.note = "No email column found."; }
+    else for (let i = 0; i < n; i++) { const v = rows[i][R.email]; if (isBlank(v)) continue; const p = emailProblem(v); if (p) flag(c, i, R.email, v, p); }
+    out.email = c; await progress(3);
+
+    // 4 dates
+    c = newCheck("dates"); c.total = n;
+    if (!R.dates.length) { c.applicable = false; c.note = "No date columns found."; }
+    const now = new Date(); now.setDate(now.getDate() + 1);
+    for (const col of R.dates) {
+      const parsed = new Array(n); const fam = { ISO: 0, SLASH: 0, TEXT: 0 }; let dmy = 0, mdy = 0;
+      for (let i = 0; i < n; i++) { const v = rows[i][col]; if (isBlank(v)) continue; const p = parseDate(v); parsed[i] = p; if (p.bad) continue; fam[p.fam]++; if (p.order === "DMY") dmy++; if (p.order === "MDY") mdy++; }
+      const dom = Object.entries(fam).sort((a, b) => b[1] - a[1])[0][0];
+      const conflict = dmy > 0 && mdy > 0; const domOrder = dmy >= mdy ? "DMY" : "MDY";
+      const futureMatters = /(created|modified|lastactivity|activity|updated)/.test(norm(col));
+      for (let i = 0; i < n; i++) {
+        const p = parsed[i]; if (!p) continue; const v = rows[i][col];
+        if (p.bad) { flag(c, i, col, v, p.bad); continue; }
+        if (p.fam !== dom) { flag(c, i, col, v, `Format differs from this column's main format (${dom === "ISO" ? "YYYY-MM-DD" : dom === "SLASH" ? "DD/MM/YYYY" : "DD-Mon-YYYY"})`); continue; }
+        if (conflict && p.order && p.order !== domOrder) { flag(c, i, col, v, p.order === "AMB" ? "Day and month cannot be told apart" : `${p.order === "MDY" ? "Month-first" : "Day-first"} date in a ${domOrder === "DMY" ? "day-first" : "month-first"} column`); continue; }
+        if (futureMatters && p.date > now) flag(c, i, col, v, "Date is in the future");
+      }
+    }
+    out.dates = c; await progress(4);
+
+    // 5 owner
+    c = newCheck("owner"); c.total = n;
+    const owners = new Map();
+    const ownerType = (v) => isBlank(v) ? "Blank" : /@/.test(v) ? "Email" : (/^[a-z0-9]{15,18}$/i.test(String(v).trim()) && /\d/.test(v)) ? "System ID" : "Name only";
+    if (!R.owner) {
+      if (obj === "leads" || obj === "deals") { c.note = "No owner column found, so every record would be unassigned."; for (let i = 0; i < n; i++) flag(c, i, "Owner", "", "No owner column"); }
+      else { c.applicable = false; c.note = "No owner column found."; }
+    } else for (let i = 0; i < n; i++) {
+      const v = rows[i][R.owner]; const t = ownerType(v); const key = isBlank(v) ? "(blank)" : String(v).trim();
+      if (!owners.has(key)) owners.set(key, { value: key, type: t, count: 0 }); owners.get(key).count++;
+      if (t === "Blank") flag(c, i, R.owner, "", "No owner assigned");
+      else if (t === "System ID") flag(c, i, R.owner, v, "Old CRM system ID; cannot be matched to a person");
+    }
+    c.owners = [...owners.values()].sort((a, b) => b.count - a.count); c.ownerCol = R.owner;
+    out.owner = c; await progress(5);
+
+    // 6 references
+    c = newCheck("refs"); c.total = n;
+    if (!R.refs.length) { c.applicable = false; c.note = "No reference columns (such as Account ID) found."; }
+    else {
+      const ids = R.id ? new Set(rows.map((r) => String(r[R.id] || "").trim()).filter(Boolean)) : null;
+      for (const col of R.refs) {
+        const vals = rows.map((r) => String(r[col] || "").trim());
+        const inFile = ids ? vals.filter((v) => v && ids.has(v)).length : 0;
+        const checkMembership = ids && inFile > vals.filter(Boolean).length * 0.5;
+        for (let i = 0; i < n; i++) {
+          if (!vals[i]) flag(c, i, col, "", "Reference is blank");
+          else if (checkMembership && !ids.has(vals[i])) flag(c, i, col, vals[i], "Points to a record not in this file");
+        }
+      }
+    }
+    out.refs = c; await progress(6);
+
+    // 7 phone
+    c = newCheck("phone"); c.total = n;
+    if (!R.phone) { c.applicable = false; c.note = "No phone column found."; }
+    else for (let i = 0; i < n; i++) { const v = rows[i][R.phone]; if (isBlank(v)) continue; const p = phoneProblem(v); if (p) flag(c, i, R.phone, v, p); }
+    out.phone = c; await progress(7);
+
+    // 8 picklist drift
+    c = newCheck("picklist"); c.total = n;
+    const SYN = { won: "closedwon", lost: "closedlost", closewon: "closedwon", closelost: "closedlost" };
+    const groupsOut = [];
+    let anyPick = false;
+    for (const col of R.picklists) {
+      const counts = new Map();
+      for (const r of rows) { const v = r[col]; if (isBlank(v)) continue; const s = String(v).trim(); counts.set(s, (counts.get(s) || 0) + 1); }
+      if (!counts.size || counts.size > 60) continue; anyPick = true;
+      const groups = new Map();
+      for (const [raw, cnt] of counts) { let k = norm(raw); k = SYN[k] || k; if (!groups.has(k)) groups.set(k, []); groups.get(k).push([raw, cnt]); }
+      for (const g of groups.values()) {
+        if (g.length < 2) continue;
+        g.sort((a, b) => b[1] - a[1]); const main = g[0][0]; const variants = new Set(g.slice(1).map((x) => x[0]));
+        groupsOut.push({ col, main, variants: [...variants] });
+        for (let i = 0; i < n; i++) { const v = rows[i][col]; if (!isBlank(v) && variants.has(String(v).trim())) flag(c, i, col, v, `Variant of "${main}"`); }
+      }
+    }
+    if (!anyPick) { c.applicable = false; c.note = "No picklist columns (stage, status, source) found."; }
+    c.groups = groupsOut;
+    out.picklist = c; await progress(8);
+
+    // 9 encoding
+    c = newCheck("encoding"); c.total = n;
+    const MOJI = /Ã[\u0080-¿]|â€|Â[ -¿]|�|à¤|à¥/;
+    const LONGTEXT = /(description|notes?|comments?|remarks|body|details|summary)/;
+    for (let i = 0; i < n; i++) for (const f of fields) {
+      const v = rows[i][f]; if (isBlank(v)) continue; const s = String(v);
+      if (MOJI.test(s)) flag(c, i, f, s.slice(0, 80), "Garbled characters");
+      else if (/[\r\n]/.test(s) && !LONGTEXT.test(norm(f))) flag(c, i, f, s.replace(/[\r\n]+/g, " ↵ ").slice(0, 80), "Line break inside a short field");
+    }
+    out.encoding = c; await progress(9);
+
+    // 10 sparse columns (column-based)
+    c = newCheck("sparse"); c.total = fields.length; c.unit = "columns";
+    for (const f of fields) {
+      let filled = 0; for (const r of rows) if (!isBlank(r[f])) filled++;
+      const empty = 1 - filled / Math.max(n, 1);
+      if (empty > 0.9) c.colFlags.push({ col: f, note: `${pct(n - filled, n)}% empty (${fmt(filled)} of ${fmt(n)} filled)` });
+    }
+    out.sparse = c; await progress(10);
+
+    // 11 length
+    c = newCheck("length"); c.total = n;
+    for (let i = 0; i < n; i++) for (const f of fields) {
+      if (LONGTEXT.test(norm(f))) continue; const v = rows[i][f];
+      if (!isBlank(v) && String(v).length > 255) flag(c, i, f, String(v).slice(0, 60) + "...", `${String(v).length} characters (limit 255)`);
+    }
+    out.length = c; await progress(11);
+
+    // 12 stale
+    c = newCheck("stale"); c.total = n;
+    const actCol = R.dates.find((d) => /lastactivity|activitydate/.test(norm(d))) || R.dates.find((d) => /modified|updated/.test(norm(d)));
+    if (!actCol) { c.applicable = false; c.note = "No last activity or modified date column found."; }
+    else {
+      const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 24);
+      for (let i = 0; i < n; i++) { const v = rows[i][actCol]; if (isBlank(v)) continue; const p = parseDate(v); if (!p.bad && p.date < cutoff) flag(c, i, actCol, v, "No activity in 24+ months"); }
+    }
+    out.stale = c; await progress(12);
+
+    return { checks: out, roles: R };
+  }
+
+  /* ---------- scoring ---------- */
+  function affected(c) { return c.unit === "columns" ? c.colFlags.length : c.flagged.size; }
+  function passRate(c) { return c.total ? 1 - affected(c) / c.total : 1; }
+  const SENSITIVITY = 2; // PRD section 7: check score = max(0, 1 - 2 x fail rate)
+  function score(checks, overrides = {}) {
+    let sw = 0, s = 0, capped = false;
+    for (const id of ORDER) {
+      const c = checks[id]; if (!c.applicable || !c.weight) continue;
+      const fail = 1 - (overrides[id] ?? passRate(c));
+      sw += c.weight; s += c.weight * Math.max(0, 1 - SENSITIVITY * fail); // a check scores zero once 1/SENSITIVITY of rows fail it
+      if (c.sev === "Blocker" && fail > 0.05) capped = true;
+    }
+    let v = sw ? Math.floor((100 * s) / sw + 1e-9) : 100;
+    if (capped) v = Math.min(v, 64);
+    return v;
+  }
+  const bandOf = (v) => v >= 85 ? ["Ready", "ready"] : v >= 65 ? ["Needs cleanup", "cleanup"] : ["Not ready", "notready"];
+  const ACTIONS = {
+    ready: "<b>Next step:</b> commit the standard timeline and plan a 5 to 10 percent test load.",
+    cleanup: "<b>Next step:</b> add a cleanup phase and buffer to the go-live date, and share the issues report with the prospect.",
+    notready: "<b>Next step:</b> agree a cleanup plan with the prospect before committing a go-live date.",
+  };
+
+  function readout(checks, v) {
+    const lifts = ORDER.map((id) => checks[id]).filter((c) => c.applicable && c.weight && affected(c) > 0)
+      .map((c) => ({ c, gain: score(checks, { [c.id]: 1 }) - v })).sort((a, b) => b.gain - a.gain || affected(b.c) - affected(a.c));
+    if (!lifts.length) return "No scored issues found in this file.";
+    const top = lifts.slice(0, 2);
+    const parts = top.map(({ c }) => c.unit === "columns" ? `${affected(c)} columns are almost empty` : `${pct(affected(c), c.total)}% of rows ${c.phrase}`);
+    const ov = {}; top.forEach(({ c }) => (ov[c.id] = 1));
+    const after = score(checks, ov);
+    const s1 = parts.length === 2 ? `${parts[0]} and ${parts[1]}` : parts[0];
+    return `${s1.charAt(0).toUpperCase() + s1.slice(1)}.` + (after > v ? ` Fixing ${top.length === 2 ? "these two" : "this"} raises the score to ${after}.` : "");
+  }
+
+  /* ---------- rendering ---------- */
+  let STATE = null;
+
+  function render() {
+    const { checks, rows, fields, fileName, ms, obj } = STATE;
+    const v = score(checks); const [bandText, bandCls] = bandOf(v);
+    $("results").classList.add("show");
+    $("scoreNum").textContent = v;
+    const arc = $("ringArc"); arc.style.stroke = bandCls === "ready" ? "var(--teal)" : bandCls === "cleanup" ? "var(--amber)" : "var(--red)";
+    requestAnimationFrame(() => (arc.style.strokeDashoffset = String(402.1 * (1 - v / 100))));
+    const b = $("band"); b.textContent = bandText; b.className = "sc-band " + bandCls;
+    $("readout").textContent = readout(checks, v);
+    $("action").innerHTML = ACTIONS[bandCls];
+    $("mFile").textContent = fileName; $("mRows").textContent = fmt(rows.length); $("mCols").textContent = fields.length;
+    $("mTime").textContent = ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(1)} s`;
+    $("objSel").value = obj;
+
+    const sevRank = { Blocker: 0, High: 1, Medium: 2, Low: 3, Info: 4 };
+    const withIssues = ORDER.map((id) => checks[id]).filter((c) => c.applicable && affected(c) > 0)
+      .sort((a, b) => sevRank[a.sev] - sevRank[b.sev] || affected(b) / b.total - affected(a) / a.total);
+    const box = $("issues"); box.innerHTML = "";
+    if (!withIssues.length) box.innerHTML = `<div class="sc-card" style="padding:18px">No issues found in this file.</div>`;
+    for (const c of withIssues) {
+      const a = affected(c); const el = document.createElement("div"); el.className = "sc-card sc-issue";
+      let detail = `<p class="sc-fix"><b>Fix at the source:</b> ${esc(c.fix)}</p>`;
+      if (c.unit === "columns") {
+        detail += `<div class="sc-scroll"><table class="sc-tbl"><thead><tr><th>Column</th><th>Fill rate</th></tr></thead><tbody>` +
+          c.colFlags.map((f) => `<tr><td>${esc(f.col)}</td><td>${esc(f.note)}</td></tr>`).join("") + `</tbody></table></div>`;
+      } else {
+        if (c.id === "picklist" && c.groups.length) {
+          detail += `<div class="sc-scroll"><table class="sc-tbl" style="margin-bottom:12px"><thead><tr><th>Column</th><th>Standard value</th><th>Variants found</th></tr></thead><tbody>` +
+            c.groups.slice(0, 12).map((g) => `<tr><td>${esc(g.col)}</td><td>${esc(g.main)}</td><td class="sc-v">${g.variants.map(esc).join(", ")}</td></tr>`).join("") + `</tbody></table></div>`;
+        }
+        const ex = [...c.flagged.entries()].slice(0, 8);
+        detail += `<div class="sc-scroll"><table class="sc-tbl"><thead><tr><th>Row</th><th>Column</th><th>Value</th><th>Problem</th></tr></thead><tbody>` +
+          ex.map(([i, list]) => `<tr><td>${ROWNUM(i)}</td><td>${esc(list[0].col)}</td><td class="sc-v">${esc(list[0].value) || "<em>empty</em>"}</td><td>${esc(list.map((x) => x.note).join("; "))}</td></tr>`).join("") +
+          `</tbody></table></div>`;
+        if (a > 8) detail += `<p class="sc-more">Showing 8 of ${fmt(a)} rows. Download the issues report for the full list.</p>`;
+      }
+      if (c.note) detail += `<p class="sc-more">${esc(c.note)}</p>`;
+      el.innerHTML = `<button aria-expanded="false">
+          <div><div class="sc-t"><b>${esc(c.name)}</b><span class="sc-sev ${c.sev}">${c.sev}</span></div><p class="sc-why">${esc(c.why)}</p></div>
+          <div style="display:flex;align-items:center;gap:14px"><div class="sc-count"><b>${fmt(a)}</b><small>${c.unit} &middot; ${pct(a, c.total)}%</small></div>
+          <svg class="sc-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+        </button><div class="sc-detail">${detail}</div>`;
+      const btn = el.querySelector("button");
+      btn.addEventListener("click", () => { el.classList.toggle("open"); btn.setAttribute("aria-expanded", el.classList.contains("open")); });
+      box.appendChild(el);
+    }
+    const passed = ORDER.map((id) => checks[id]).filter((c) => c.applicable && affected(c) === 0);
+    const na = ORDER.map((id) => checks[id]).filter((c) => !c.applicable);
+    $("passed").innerHTML = (passed.length ? passed.map((c) => `<span class="sc-pill">&#10003; ${esc(c.name)}</span>`).join("") : "") +
+      na.map((c) => `<span class="sc-pill na" title="${esc(c.note)}">${esc(c.name)}: not applicable</span>`).join("");
+    $("passed").style.display = passed.length || na.length ? "flex" : "none";
+
+    const oc = checks.owner;
+    if (!oc.ownerCol) { $("ownerSub").textContent = oc.note || "No owner column in this file."; $("owners").innerHTML = ""; $("owners").style.display = "none"; }
+    else {
+      $("owners").style.display = "block";
+      const named = oc.owners.filter((o) => o.type === "Name only").length;
+      $("ownerSub").textContent = `${fmt(oc.owners.length)} distinct owner values in "${oc.ownerCol}". Each must be matched to a Superleap user before import.` + (named ? ` ${named} are names only, so match them carefully.` : "");
+      $("owners").innerHTML = `<table class="sc-tbl"><thead><tr><th>Owner value</th><th>Type</th><th>Records</th></tr></thead><tbody>` +
+        oc.owners.slice(0, 25).map((o) => `<tr><td>${esc(o.value)}</td><td><span class="sc-tag ${o.type === "Blank" || o.type === "System ID" ? "bad" : ""}">${o.type}</span></td><td>${fmt(o.count)}</td></tr>`).join("") +
+        `</tbody></table>` + (oc.owners.length > 25 ? `<p class="sc-more" style="padding:0 10px">Showing 25 of ${fmt(oc.owners.length)}. Download the owner list for all.</p>` : "");
+    }
+    $("results").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }
+
+  /* ---------- exports ---------- */
+  function download(name, csv) {
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  const base = () => STATE.fileName.replace(/\.csv$/i, "");
+  $("exIssues").addEventListener("click", () => {
+    const out = [];
+    for (const id of ORDER) {
+      const c = STATE.checks[id]; if (!c.applicable) continue;
+      if (c.unit === "columns") c.colFlags.forEach((f) => out.push({ Row: "", Check: c.name, Severity: c.sev, Column: f.col, Value: "", Problem: f.note, "Fix at source": c.fix }));
+      else for (const [i, list] of c.flagged) for (const x of list) out.push({ Row: ROWNUM(i), Check: c.name, Severity: c.sev, Column: x.col, Value: x.value, Problem: x.note, "Fix at source": c.fix });
+    }
+    download(`${base()}_issues_report.csv`, Papa.unparse(out.length ? out : [{ Row: "", Check: "None", Severity: "", Column: "", Value: "", Problem: "No issues found", "Fix at source": "" }]));
+  });
+  $("exOwners").addEventListener("click", () => {
+    const oc = STATE.checks.owner;
+    const out = (oc.owners || []).map((o) => ({ "Owner value": o.value, Type: o.type, Records: o.count, "Superleap user": "" }));
+    download(`${base()}_owner_list.csv`, Papa.unparse(out.length ? out : [{ "Owner value": "No owner column found", Type: "", Records: "", "Superleap user": "" }]));
+  });
+  $("exDedup").addEventListener("click", () => {
+    const d = STATE.checks.dups.dupRows; const keep = STATE.rows.filter((_, i) => !d.has(i));
+    download(`${base()}_deduplicated.csv`, Papa.unparse({ fields: STATE.fields, data: keep.map((r) => STATE.fields.map((f) => r[f] ?? "")) }));
+  });
+
+  /* ---------- load + run ---------- */
+  const status = (msg, p, err) => { const s = $("status"); s.classList.add("show"); s.classList.toggle("error", !!err); $("statusText").textContent = msg; $("barFill").style.width = (p ?? 0) + "%"; s.querySelector(".sc-bar").style.display = err ? "none" : "block"; };
+
+  async function analyse(rows, fields, fileName, obj) {
+    const t0 = performance.now();
+    const prog = async (k) => { status(`Running checks... ${k} of 12`, 20 + (k / 12) * 80); await tick(); };
+    const { checks } = await runChecks(rows, fields, obj, prog);
+    STATE = { checks, rows, fields, fileName, obj, ms: Math.round(performance.now() - t0) };
+    $("status").classList.remove("show");
+    render();
+  }
+
+  function parseAndRun(input, fileName) {
+    status("Reading file...", 5);
+    $("results").classList.remove("show");
+    Papa.parse(input, {
+      header: true, skipEmptyLines: "greedy", transformHeader: (h) => h.replace(/^﻿/, "").trim(),
+      complete: (res) => {
+        const fields = (res.meta.fields || []).filter((f) => f !== "");
+        const rows = res.data;
+        if (!fields.length || !rows.length) return status("This file has no data rows. Check that it is a CSV with a header row.", 0, true);
+        if (fields.length < 2) return status("Only one column was found. The file may use a different separator, or may not be a CSV.", 0, true);
+        status(`Parsed ${fmt(rows.length)} rows. Running checks...`, 20);
+        setTimeout(() => analyse(rows, fields, fileName, detectObject(fields)), 20);
+      },
+      error: (e) => status("Could not read this file: " + (e && e.message ? e.message : "unknown error"), 0, true),
+    });
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    if (!/\.csv$/i.test(file.name) && file.type !== "text/csv") return status("Please choose a .csv file. Excel files can be saved as CSV first.", 0, true);
+    if (file.size > 50 * 1024 * 1024) return status("This file is over 50 MB. Export a sample of up to 200,000 rows to scan it here.", 0, true);
+    parseAndRun(file, file.name);
+  }
+
+  $("file").addEventListener("change", (e) => handleFile(e.target.files[0]));
+  const drop = $("drop");
+  ["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (e) => handleFile(e.dataTransfer.files[0]));
+  $("objSel").addEventListener("change", (e) => { if (STATE) { status("Re-running checks...", 20); setTimeout(() => analyse(STATE.rows, STATE.fields, STATE.fileName, e.target.value), 20); } });
+
+  /* ---------- sample data ---------- */
+  function rng(seed) { return () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const FIRST = ["Aarav","Vivaan","Aditya","Ananya","Diya","Ishaan","Kabir","Meera","Riya","Saanvi","Arjun","Neha","Rohan","Priya","Karan","Pooja","Vikram","Sneha","Rahul","Anjali","Manpreet","Gurleen","Harsh","Tanvi","Nikhil","Shreya","Aman","Simran","Yash","Kavya","Farhan","Zoya","Siddharth","Ira","Dev","Nisha"];
+  const LAST = ["Sharma","Verma","Gupta","Singh","Reddy","Iyer","Nair","Patel","Mehta","Kapoor","Joshi","Rao","Das","Bose","Malhotra","Chopra","Gill","Sandhu","Kulkarni","Menon","Khan","Banerjee","Pillai","Agarwal"];
+  const COS = ["Nimbus Logistics","Saffron Foods","Kestrel Fintech","Indus Retail","Lotus Healthcare","Vertex Motors","Monsoon Media","Peacock Textiles","Banyan Infra","Ganga Pharma","Aravali Steel","Coral Hospitality","Tiger Analytics Labs","Kaveri Agro","Neelgiri Tea","Zephyr Travel","Orbit Edtech","Pinnacle Insurance","Sahyadri Exports","Quill Publishing"];
+  const CITIES = ["Mumbai","Delhi","Bengaluru","Hyderabad","Chennai","Pune","Kolkata","Ahmedabad","Jaipur","Chandigarh","Lucknow","Kochi","Indore","Mohali"];
+  const SOURCES = ["Website","Referral","Webinar","Google Ads","Facebook Ads","Event","Partner"];
+  const STATUSES = ["New","Contacted","Qualified","Nurturing","Unqualified"];
+  const STAGES = ["Prospecting","Qualification","Proposal","Negotiation","Closed Won","Closed Lost"];
+  const OWNERS = ["Ritika Bansal","Arjun Mehra","Sana Qureshi","Vikas Yadav","Megha Rawat","Imran Sheikh","Pallavi Desai","Tarun Bhatia","Lavanya Iyer","Kunal Saxena","Deepa Nair","Rohit Arora"];
+  const ownerEmail = (o) => o.toLowerCase().replace(" ", ".") + "@brightpath.in";
+  const DRIFT = { "Closed Won": ["closed won","Won","Closed-Won","CLOSED WON"], "Closed Lost": ["Lost","closed lost"], "Qualified": ["qualified","QUALIFIED"], "Contacted": ["contacted","Contacted "], "Website": ["website","Web site","WEBSITE"], "Google Ads": ["google ads","GoogleAds"], "Referral": ["referral","Referal"], "Proposal": ["proposal","Proposal Sent"] };
+
+  function genSample(kind) {
+    const cfg = {
+      clean: { seed: 7, rows: 400, obj: "leads", dup: 0.004, miss: 0, badEmail: 0, junkPhone: 0.004, dateMix: 0, blankOwner: 0, idOwner: 0, drift: 0, enc: 0, long: 0, stale: 0.05, sparse: 0 },
+      typical: { seed: 11, rows: 1200, obj: "deals", dup: 0.18, miss: 0.04, badEmail: 0, junkPhone: 0, dateMix: 0.07, blankOwner: 0.22, idOwner: 0.03, drift: 0.3, enc: 0.04, long: 0.02, stale: 0.18, sparse: 1, missRef: 0.22 },
+      messy: { seed: 23, rows: 1500, obj: "leads", dup: 0.11, miss: 0.09, badEmail: 0.07, junkPhone: 0.08, dateMix: 0.12, blankOwner: 0.1, idOwner: 0.04, drift: 0.16, enc: 0.04, long: 0.02, stale: 0.28, sparse: 2 },
+    }[kind];
+    const R = rng(cfg.seed), pick = (a) => a[Math.floor(R() * a.length)], chance = (p) => R() < p;
+    const pad = (x) => String(x).padStart(2, "0");
+    const today = new Date();
+    const daysAgo = (d) => new Date(today.getTime() - d * 864e5);
+    const iso = (dt) => `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+    const fmtDate = (dt) => {
+      if (!chance(cfg.dateMix)) return iso(dt);
+      const r = R();
+      if (r < 0.45) return `${pad(dt.getDate())}/${pad(dt.getMonth() + 1)}/${dt.getFullYear()}`;
+      if (r < 0.75) { const d2 = new Date(dt); if (d2.getDate() <= 12) d2.setDate(13 + Math.floor(R() * 15)); return `${pad(d2.getMonth() + 1)}/${pad(d2.getDate())}/${d2.getFullYear()}`; }
+      if (r < 0.9) return `${dt.getDate()}-${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][dt.getMonth()]}-${dt.getFullYear()}`;
+      return `31/02/${dt.getFullYear()}`;
+    };
+    const phone = () => { const d = String(6 + Math.floor(R() * 4)) + String(Math.floor(R() * 1e9)).padStart(9, "0"); const r = R(); return r < 0.4 ? `+91 ${d.slice(0, 5)} ${d.slice(5)}` : r < 0.8 ? d : `0${d}`; };
+    const junkPhone = () => pick(["9999999999", "12345", "0000000000", "N/A", "98765abc12", "+91 98765 4321 00"]);
+    const owner = () => { if (chance(cfg.blankOwner)) return ""; if (chance(cfg.idOwner)) return "0051x" + Math.floor(R() * 1e10).toString(36).toUpperCase().padStart(10, "0") + "AQ"; const o = pick(OWNERS); return chance(0.75) ? ownerEmail(o) : o; };
+    const drift = (v) => (chance(cfg.drift) && DRIFT[v]) ? pick(DRIFT[v]) : v;
+    const mojibake = (s) => s.replace(/a/, "Ã©").replace(/e/, "â€™");
+    const rows = [];
+    if (cfg.obj === "leads") {
+      for (let i = 0; i < cfg.rows; i++) {
+        const f = pick(FIRST), l = pick(LAST), co = pick(COS);
+        const created = daysAgo(30 + Math.floor(R() * 1000));
+        const act = chance(cfg.stale) ? daysAgo(760 + Math.floor(R() * 500)) : daysAgo(Math.floor(R() * 300));
+        let email = `${f}.${l}${Math.floor(R() * 90 + 10)}@${pick(["gmail.com", "yahoo.co.in", "outlook.com", norm(co).slice(0, 10) + ".in"])}`.toLowerCase();
+        let ph = phone();
+        if (chance(cfg.badEmail)) email = pick(["test@test.com", "na@na.com", f.toLowerCase() + "@gmail", f.toLowerCase() + ".gmail.com", "none", f.toLowerCase() + "@@yahoo.com"]);
+        if (chance(cfg.junkPhone)) ph = junkPhone();
+        if (chance(cfg.miss)) { email = ""; ph = ""; }
+        const row = { "Lead ID": "L-" + (100000 + i), "First Name": f, "Last Name": l, "Email": email, "Phone": ph, "Company": co, "City": pick(CITIES),
+          "Lead Source": drift(pick(SOURCES)), "Lead Status": drift(pick(STATUSES)), "Lead Owner": owner(), "Created Date": fmtDate(created), "Last Activity Date": fmtDate(act) };
+        if (cfg.sparse >= 1) row["Fax"] = chance(0.03) ? "0172-" + Math.floor(R() * 9e6 + 1e6) : "";
+        if (cfg.sparse >= 2) row["Secondary Email"] = chance(0.05) ? `${f}.${l}@work.in`.toLowerCase() : "";
+        if (chance(cfg.enc)) row["Company"] = mojibake(row["Company"]);
+        if (chance(cfg.enc / 2)) row["City"] = row["City"] + "\n(branch)";
+        if (chance(cfg.long)) row["Company"] = (co + " ").repeat(30).trim();
+        rows.push(row);
+      }
+      const nd = Math.round(cfg.rows * cfg.dup);
+      for (let k = 0; k < nd; k++) {
+        const src = rows[Math.floor(R() * rows.length * 0.8)]; const d = { ...src, "Lead ID": "L-" + (200000 + k) };
+        const r = R();
+        if (r < 0.4) d["Email"] = String(src["Email"]).toUpperCase();
+        else if (r < 0.65) { d["Email"] = ""; d["Phone"] = String(src["Phone"]).replace(/\D/g, "").slice(-10); }
+        else { d["Email"] = `${d["First Name"]}${d["Last Name"]}@work-mail.in`.toLowerCase(); d["Phone"] = phone(); d["Last Name"] = d["Last Name"].length > 4 ? d["Last Name"].slice(0, -1) + d["Last Name"].slice(-1).toUpperCase() : d["Last Name"]; d["Company"] = src["Company"] + " Pvt Ltd"; }
+        d["Lead Owner"] = owner();
+        rows.splice(Math.floor(R() * rows.length), 0, d);
+      }
+    } else {
+      const accts = []; COS.forEach((c) => CITIES.slice(0, 6).forEach((city) => accts.push({ id: "A-" + (5000 + accts.length), name: `${c} ${city}` })));
+      const usedNames = new Set();
+      for (let i = 0; i < cfg.rows; i++) {
+        const a = pick(accts); const st = pick(STAGES);
+        const created = daysAgo(20 + Math.floor(R() * 900));
+        const close = new Date(created.getTime() + (20 + Math.floor(R() * 150)) * 864e5);
+        const mod = chance(cfg.stale) ? daysAgo(760 + Math.floor(R() * 400)) : daysAgo(Math.floor(R() * 200));
+        let dn;
+        do { dn = `${a.name} - ${pick(["Annual licence", "Onboarding", "Expansion", "Renewal", "Pilot", "Add-on seats", "Sales team rollout", "Support desk"])} Q${1 + Math.floor(R() * 4)} ${2023 + Math.floor(R() * 4)}`; } while (usedNames.has(norm(dn)) && usedNames.size < 5000);
+        usedNames.add(norm(dn));
+        const row = { "Deal ID": "D-" + (300000 + i), "Deal Name": dn, "Account ID": chance(cfg.missRef) ? "" : a.id, "Account Name": a.name,
+          "Amount": String(Math.round((50000 + R() * 2.5e6) / 1000) * 1000), "Stage": drift(st), "Close Date": fmtDate(close), "Deal Owner": owner(),
+          "Created Date": fmtDate(created), "Last Modified Date": fmtDate(mod), "Next Step": pick(["Send proposal", "Demo with finance", "Security review", "Pricing call", "Legal review", ""]),
+          "Description": pick(["", "Inbound via partner.", "Champion is the sales ops head.\nBudget approved for Q3.", "Evaluating against Salesforce."]), "Campaign Code": chance(0.03) ? "CMP-" + Math.floor(R() * 900 + 100) : "" };
+        if (chance(cfg.miss)) row["Stage"] = "";
+        if (chance(cfg.enc)) row["Account Name"] = mojibake(row["Account Name"]);
+        if (chance(cfg.long)) row["Next Step"] = "Follow up on pricing, legal, security, procurement and onboarding questions raised in the last three calls; ".repeat(4).trim();
+        rows.push(row);
+      }
+      const nd = Math.round(cfg.rows * cfg.dup);
+      for (let k = 0; k < nd; k++) { const src = rows[Math.floor(R() * rows.length * 0.8)]; rows.splice(Math.floor(R() * rows.length), 0, { ...src, "Deal ID": "D-" + (400000 + k), "Deal Name": chance(0.5) ? src["Deal Name"] + " " : src["Deal Name"].toUpperCase() }); }
+    }
+    return Papa.unparse(rows);
+  }
+
+  const SAMPLES = [
+    { id: "clean", label: "Clean leads", desc: "400 rows, a few minor issues" },
+    { id: "typical", label: "Typical deals", desc: "1,200 rows, common real-world problems" },
+    { id: "messy", label: "Messy leads", desc: "1,500 rows, years of neglected data" },
+  ];
+  const cache = {};
+  const sampleCsv = (id) => (cache[id] ||= genSample(id));
+  $("sampleList").innerHTML = SAMPLES.map((s) => `<div class="sc-sample"><div><b>${s.label}</b><small>${s.desc}</small></div>
+    <div class="sc-acts"><button class="sc-btn" data-run="${s.id}">Scan</button><button class="sc-link" data-dl="${s.id}">Download</button></div></div>`).join("");
+  $("sampleList").addEventListener("click", (e) => {
+    const t = e.target.closest("button"); if (!t) return;
+    if (t.dataset.run) parseAndRun(sampleCsv(t.dataset.run), `sample_${t.dataset.run}.csv`);
+    if (t.dataset.dl) download(`sample_${t.dataset.dl}.csv`, sampleCsv(t.dataset.dl));
+  });
+
+  if (!window.Papa) status("The CSV library could not load. Check your internet connection and refresh.", 0, true);
+})();
+</script>
+</body>
+</html>
