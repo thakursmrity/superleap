@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prospect agent, a concept for Superleap by Smrity</title>
+<meta name="description" content="Finds new pipeline from what the CRM already knows about who buys, with Confidence-Tiered Autonomy.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><clipPath id='r'><rect width='32' height='32' rx='7'/></clipPath><g clip-path='url(%23r)'><rect width='32' height='32' fill='%23111111'/><path d='M0 32 A32 32 0 0 1 32 0 L32 32Z' fill='%2319C584'/><circle cx='22' cy='21.5' r='5.7' fill='%23ffffff'/></g></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="index.html">Smrity <span>for Superleap</span></a>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html">Overview</a>
+      <a href="scanner.html">Migration Scanner</a>
+      <a href="coach.html">Performer Gap Coach</a>
+      <a href="prospect.html" aria-current="page">Prospect agent</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="page" id="prospect">
+  <div class="spec-head">
+    <div>
+      <h2>Prospect agent</h2>
+      <p class="lede" style="margin-top:16px">Finds new pipeline from what your CRM already knows about who buys, and decides which outreach it can send on its own.</p>
+    </div>
+    <div class="quote">AI can help one person do the work of three, without them outsourcing their thinking.</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-bar">
+      <h3>Confidence-Tiered Autonomy</h3>
+      <span class="sample">Sample queue: 10 drafted messages for an edtech and BFSI sales team</span>
+    </div>
+    <div class="pro-wrap">
+      <div>
+        <div class="slider">
+          <label for="trust">Drafts this rep approves without edits: <b id="trustval">60%</b></label>
+          <input type="range" id="trust" min="50" max="95" step="1" value="60">
+          <span class="small muted">Autonomy is earned. As the rep's approval rate rises, the confidence needed to send on its own drops.</span>
+        </div>
+        <svg class="matrix" id="matrix" viewBox="0 0 520 380" width="100%" role="img" aria-label="Scatter plot of drafted messages by confidence and stakes, with the zone that sends on its own shaded"></svg>
+        <div class="legend"><span><i style="background:var(--teal)"></i>Sends on its own</span><span><i style="background:var(--amber)"></i>Waits for the rep</span><span><i style="background:var(--red);border-radius:2px"></i>Flagged</span></div>
+      </div>
+      <div>
+        <div class="detail" id="detail" aria-live="polite">
+          <span class="muted small">Select any message on the chart or in the lanes to see why it was routed there.</span>
+        </div>
+      </div>
+    </div>
+    <div class="lanecols">
+      <div class="lanecol auto"><h4>Sends on its own</h4><div id="lAuto"></div></div>
+      <div class="lanecol review"><h4>Waits for the rep</h4><div id="lReview"></div></div>
+      <div class="lanecol anom"><h4>Flagged to look at</h4><div id="lAnom"></div></div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div><h3>The problem</h3><p>Superleap's agents work leads a team already has, so new pipeline still comes from separate tools like Apollo or Clay that sit outside the CRM, guess at fit, and push generic sequences. Teams either review every message, losing the time AI should save, or send everything, risking their brand.</p></div>
+    <div><h3>Who it's for</h3><ul><li>Inside sales teams that need pipeline beyond inbound</li><li>Sales heads who want outbound without a separate tool stack</li><li>Reps, who supervise the agent instead of researching</li></ul></div>
+    <div><h3>How it works</h3><ul><li>Learns the ideal customer profile from the company's own closed-won deals</li><li>Watches buying signals: hiring, funding, expansion, engagement</li><li>Drafts outreach for email and WhatsApp in the company's voice</li><li>Scores each message on confidence and stakes, separately</li><li>Routes to one of three lanes; anomaly checks always override</li></ul></div>
+    <div><h3>Confidence-Tiered Autonomy</h3><ul><li><span class="pill auto">Runs on its own</span> high confidence, low stakes, no flags</li><li><span class="pill review">Waits for a person</span> medium confidence, or high stakes</li><li><span class="pill anom">Flagged</span> conflicts like an open deal, a complaint, a job change, or a regulated claim</li><li>Thresholds loosen or tighten per rep and per message type, based on approvals and edits</li></ul></div>
+    <div><h3>What we'd measure</h3><ul><li>Qualified pipeline created per rep per week</li><li>Reply and meeting rate by lane</li><li>Share of messages sent without review, over time</li><li>Flags caught before send</li></ul></div>
+    <div><h3>Risks and open questions</h3><ul><li>Cold outreach rules differ by channel; WhatsApp needs opt-in handling</li><li>Thin closed-won history makes the profile weak; start with an industry template</li><li>Should high-stakes accounts ever be eligible for autopilot?</li></ul></div>
+    <div class="wide"><h3>Where the idea comes from</h3><p>I borrowed the lanes from my approach to AI demand forecasting and automated reordering at Xorosoft: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner, and unusual demand was flagged rather than acted on. Sales outreach has the same shape. Most of it is routine, some of it matters too much to send unseen, and a little of it is plainly wrong.</p></div>
+  </div>
+  <div class="next"><a href="coach.html">Previous: Performer Gap Coach</a><a href="index.html">Back to overview</a></div>
+</section>
+
+</main>
+<footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap.</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(name, attrs){ var e = document.createElementNS(NS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  /* prospect matrix */
+  var msgs = [
+    {t:'Follow-up to Neha, opened pricing twice', c:92, s:20, why:'Strong ICP match with 14 closed-won lookalikes, fresh engagement, clean data, and it is a follow-up, not a first touch.'},
+    {t:'First touch: VP Sales at a mid-size NBFC', c:81, s:78, why:'Good fit, but a large target account where a weak first impression is costly. High stakes always go to the rep.'},
+    {t:'Follow-up after webinar attendance', c:86, s:30, why:'Attended 40 of 45 minutes and asked a question. Low risk, routine follow-up.'},
+    {t:'First touch: edtech hiring 40 counsellors', c:74, s:42, why:'Hiring signal is strong, but the contact role is a guess from job titles. Moderate confidence.'},
+    {t:'Contact already in Rohit\'s open deal', c:88, s:55, flag:'This person is in an active deal owned by another rep. Sending would cross wires.'},
+    {t:'Re-engage deal lost in 2025', c:58, s:60, why:'Lost on price last year. The new angle may land, but tone matters, so the rep should shape it.'},
+    {t:'Contact changed jobs last week', c:70, s:35, flag:'The email on file belongs to the old company. Needs a person to confirm the new role.'},
+    {t:'Reply to inbound fee question', c:95, s:25, why:'Answers a direct question with approved fee details. The safest kind of message there is.'},
+    {t:'Message mentions loan interest rates', c:83, s:48, flag:'Regulated claim for a BFSI customer. Compliance review is required before any send.'},
+    {t:'Intro to founder, funded 3 days ago', c:79, s:28, why:'Funding signal is fresh and the company matches the profile of past wins. Low stakes for a short intro.'}
+  ];
+  var mx = document.getElementById('matrix');
+  var MX = function(c){ return 50 + (c-40)/60*450; };
+  var MY = function(s){ return 330 - s/100*300; };
+  function laneOf(m, T){ if(m.flag) return 'anom'; if(m.c >= T && m.s < 50) return 'auto'; return 'review'; }
+  var colors = {auto:'var(--teal)', review:'var(--amber)', anom:'var(--red)'};
+  var laneName = {auto:'Sends on its own', review:'Waits for the rep', anom:'Flagged to look at'};
+  var zone = el('rect',{fill:'var(--teal-bg)',opacity:0.8});
+  mx.appendChild(zone);
+  [40,60,80,100].forEach(function(c){ mx.appendChild(el('line',{x1:MX(c),x2:MX(c),y1:30,y2:330,stroke:'var(--line)'})); var t=el('text',{x:MX(c),y:350,'text-anchor':'middle'}); t.textContent=c+'%'; mx.appendChild(t); });
+  [0,50,100].forEach(function(s){ mx.appendChild(el('line',{x1:50,x2:500,y1:MY(s),y2:MY(s),stroke:'var(--line)'})); });
+  var tl = el('text',{x:275,y:372,'text-anchor':'middle'}); tl.textContent='Confidence the message is right'; mx.appendChild(tl);
+  var sl = el('text',{x:56,y:22}); sl.textContent='Stakes if it goes wrong (high at top)'; mx.appendChild(sl);
+  var zl = el('text',{x:496,y:318,'text-anchor':'end',style:'fill:var(--teal-ink)'}); zl.textContent='Sends on its own'; mx.appendChild(zl);
+  var dots = msgs.map(function(m,i){
+    var g;
+    if(m.flag){ g = el('rect',{x:MX(m.c)-7,y:MY(m.s)-7,width:14,height:14,rx:2,transform:'rotate(45 '+MX(m.c)+' '+MY(m.s)+')'}); }
+    else { g = el('circle',{cx:MX(m.c),cy:MY(m.s),r:8}); }
+    g.setAttribute('class','dot'); g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label', m.t);
+    g.addEventListener('click', function(){ select(i); });
+    g.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); select(i); } });
+    mx.appendChild(g); return g;
+  });
+  var T = 90, selected = -1;
+  function render(){
+    var rate = +document.getElementById('trust').value;
+    document.getElementById('trustval').textContent = rate + '%';
+    T = Math.round(92 - (rate-50)*0.5);
+    zone.setAttribute('x', MX(T)); zone.setAttribute('width', MX(100)-MX(T)); zone.setAttribute('y', MY(50)); zone.setAttribute('height', MY(0)-MY(50));
+    var cols = {auto:[], review:[], anom:[]};
+    msgs.forEach(function(m,i){
+      var l = laneOf(m,T); m.lane = l;
+      dots[i].setAttribute('fill', colors[l]);
+      dots[i].setAttribute('stroke', i===selected ? 'var(--ink)' : 'var(--surface)');
+      dots[i].setAttribute('stroke-width', i===selected ? 3 : 2);
+      cols[l].push('<button data-m="'+i+'">'+m.t+'</button>');
+    });
+    document.getElementById('lAuto').innerHTML = cols.auto.join('');
+    document.getElementById('lReview').innerHTML = cols.review.join('');
+    document.getElementById('lAnom').innerHTML = cols.anom.join('');
+    if(selected >= 0) select(selected, true);
+  }
+  function select(i, quiet){
+    selected = i; var m = msgs[i];
+    var reason;
+    if(m.lane === 'anom') reason = m.flag + ' Flags always override confidence.';
+    else if(m.lane === 'auto') reason = m.why + ' Confidence ' + m.c + '% clears this rep\'s current bar of ' + T + '%, and stakes are low.';
+    else if(m.s >= 50) reason = m.why;
+    else reason = m.why + ' Confidence ' + m.c + '% is below this rep\'s current bar of ' + T + '%.';
+    document.getElementById('detail').innerHTML = '<span class="pill '+m.lane+'">'+laneName[m.lane]+'</span><h4>'+m.t+'</h4><p>'+reason+'</p><p class="small muted">Confidence '+m.c+'%, stakes '+m.s+' of 100</p>';
+    if(!quiet) render();
+  }
+  document.querySelector('.lanecols').addEventListener('click', function(e){ var b = e.target.closest('button[data-m]'); if(b) select(+b.getAttribute('data-m')); });
+  document.getElementById('trust').addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
