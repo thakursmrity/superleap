@@ -431,3 +431,7 @@ body{overflow-x:clip}
   .scene,[data-step],.tag,.cv-top,.cv-bot,.cv-area,.cursor{transition:none!important;animation:none!important}
   .app-live i,.caret,.hs-hint svg{animation:none}
 }
+/* link to main portfolio */
+.port-link{color:#0D1C1E;background:var(--mint);text-decoration:none;font-size:14px;font-weight:500;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.port-link:hover{filter:brightness(1.08)}
+.hs-port{margin-top:16px;align-self:flex-start}
