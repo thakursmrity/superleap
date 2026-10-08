@@ -4,12 +4,131 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Performer Gap Coach, a concept for Superleap by Smrity</title>
-<meta name="description" content="A weekly number that shows the gap between best and newest reps closing, and the moves that close it.">
+<meta name="description" content="A layer on Coach SuperAgent that suggests the next best move in the moment, learned from what already works on the team, and gives leadership one number for AI impact.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><clipPath id='r'><rect width='32' height='32' rx='7'/></clipPath><g clip-path='url(%23r)'><rect width='32' height='32' fill='%23111111'/><path d='M0 32 A32 32 0 0 1 32 0 L32 32Z' fill='%2319C584'/><circle cx='22' cy='21.5' r='5.7' fill='%23ffffff'/></g></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+/* Coach page only. gc- prefix keeps it separate from shared site styles. */
+.gc-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-bottom:44px}
+.gc-ceo{background:var(--deep);color:#fff;border-radius:20px;padding:34px 34px 28px;position:relative;overflow:hidden}
+.gc-ceo::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(63,211,160,.35),transparent 70%)}
+.gc-ceo .kicker{color:var(--mint)}
+.gc-ceo blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,30px);line-height:1.35;color:#fff;position:relative;z-index:1}
+.gc-ceo cite{display:block;margin-top:16px;font-style:normal;font-size:14px;color:var(--on-deep);position:relative;z-index:1}
+.gc-hero h2{max-width:16ch}
+.gc-hero .lede{margin-top:18px}
+.gc-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.gc-badge{font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;background:var(--teal-bg);color:var(--teal-ink)}
+.gc-badge.alt{background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+
+.gc-views{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.gc-view{border:0;background:var(--bg);color:var(--muted);padding:12px 14px;text-align:left;font-size:14px;line-height:1.3;border-right:1px solid var(--line)}
+.gc-view:last-child{border-right:0}
+.gc-view b{display:block;color:var(--ink);font-weight:500;font-size:15px}
+.gc-view[aria-selected="true"]{background:var(--teal-bg);color:var(--teal-ink)}
+.gc-view[aria-selected="true"] b{color:var(--teal-ink)}
+.gc-panel[hidden]{display:none}
+
+.gc-rep{display:grid;grid-template-columns:1.5fr 1fr;gap:24px}
+.gc-feedhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.gc-feedhead h3{font-size:18px}
+.gc-move{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--bg);margin-bottom:12px;transition:background .3s,border-color .3s}
+.gc-move.done{background:var(--teal-bg);border-color:var(--teal-bg)}
+.gc-move.later{background:var(--surface)}
+.gc-mtop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.gc-lead{display:flex;gap:10px;align-items:center}
+.gc-av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--amber-bg);color:var(--amber-ink);flex-shrink:0}
+.gc-lead b{font-weight:500;display:block}
+.gc-lead small{color:var(--muted);font-size:13px}
+.gc-timer{font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;background:var(--amber-bg);color:var(--amber-ink);white-space:nowrap}
+.gc-do{font-size:17px;font-weight:500;margin:12px 0 4px;max-width:none}
+.gc-why{font-size:14px;color:var(--muted);margin:0 0 12px;max-width:none}
+.gc-why::before{content:"Why this works: ";color:var(--ink);font-weight:500}
+.gc-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.gc-acts .btn{padding:7px 14px;font-size:14px}
+.gc-reasons{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.gc-reasons[hidden]{display:none}
+.gc-msg{font-size:15px;margin:0;max-width:none}
+.gc-msg small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+
+.gc-side{display:flex;flex-direction:column;gap:14px}
+.gc-card{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--surface)}
+.gc-card h4{margin:0 0 8px;font-size:14px;font-weight:500;color:var(--muted)}
+.gc-big{font-size:38px;font-weight:700;letter-spacing:-0.03em;line-height:1}
+.gc-dots{display:flex;gap:6px;margin-top:10px}
+.gc-dots i{width:28px;height:8px;border-radius:4px;background:var(--line);transition:background .3s}
+.gc-dots i.on{background:var(--mint)}
+.gc-trend{display:flex;align-items:flex-end;gap:6px;height:64px;margin-top:10px}
+.gc-trend span{flex:1;background:var(--teal-bg);border-radius:4px 4px 0 0;position:relative}
+.gc-trend span.now{background:var(--teal)}
+.gc-trend-l{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.gc-win{font-size:14px;margin:0;max-width:none}
+
+.gc-lead-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:24px}
+.gc-credit{font-size:13px;color:var(--muted)}
+.gc-adopt{display:flex;align-items:center;gap:8px;min-width:120px}
+.gc-adopt .bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.gc-adopt .bar i{display:block;height:100%;background:var(--mint)}
+.gc-adopt b{font-size:13px;font-weight:500;width:36px;text-align:right}
+.gc-note{font-size:14px;color:var(--muted);border-left:3px solid var(--mint);padding:4px 0 4px 12px;margin:16px 0 0;max-width:none}
+
+.gc-layers{display:grid;gap:10px;margin-top:24px}
+.gc-layer{display:grid;grid-template-columns:200px 1fr auto;gap:18px;align-items:center;padding:18px 20px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.gc-layer .when{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gc-layer h3{font-size:18px}
+.gc-layer p{margin:4px 0 0;font-size:15px;color:var(--muted)}
+.gc-layer.new{background:var(--deep);border-color:var(--deep)}
+.gc-layer.new .when{color:var(--mint)}
+.gc-layer.new h3{color:#fff}
+.gc-layer.new p{color:var(--on-deep)}
+
+.gc-sec{margin-top:88px}
+.gc-sec > h2{margin-bottom:12px}
+.gc-num{color:var(--teal);margin-right:8px}
+.gc-principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.gc-pr{border-radius:14px;padding:20px;background:var(--surface);border:1px solid var(--line)}
+.gc-pr .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--teal-bg);color:var(--teal-ink);font-weight:700;margin-bottom:12px}
+.gc-pr h3{font-size:17px;margin-bottom:6px}
+.gc-pr p{font-size:15px;color:var(--muted);margin:0}
+.gc-pr .not{display:block;margin-top:10px;font-size:13px;color:var(--amber-ink)}
+
+.gc-flow{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:f}
+.gc-flow li{counter-increment:f;border-top:3px solid var(--mint);padding-top:14px}
+.gc-flow li::before{content:counter(f);font-size:28px;font-weight:700;color:var(--teal);display:block;line-height:1;margin-bottom:8px}
+.gc-flow b{display:block;font-weight:500;margin-bottom:4px}
+.gc-flow span{font-size:15px;color:var(--muted)}
+
+.gc-scope{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.gc-scope > div{border-radius:14px;padding:20px 22px;border:1px solid var(--line);background:var(--surface)}
+.gc-scope h3{font-size:17px;margin-bottom:10px}
+.gc-scope ul{margin:0;padding-left:20px;font-size:15px}
+.gc-scope li{margin-bottom:6px}
+.gc-scope .in{border-color:var(--teal-bg);background:linear-gradient(170deg,var(--surface),var(--teal-bg))}
+
+.gc-road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.gc-road > div{border-radius:14px;padding:20px;background:var(--surface);border:1px solid var(--line)}
+.gc-road .pill{margin-bottom:10px}
+.gc-road h3{font-size:17px;margin-bottom:6px}
+.gc-road p{font-size:15px;color:var(--muted);margin:0}
+
+.gc-me{margin-top:88px;background:var(--deep);border-radius:20px;padding:40px}
+.gc-me h2{color:#fff}
+.gc-me p{color:var(--on-deep);font-size:18px;margin-top:14px;max-width:62ch}
+
+@media (max-width:860px){
+  .gc-hero,.gc-rep,.gc-lead-grid,.gc-scope{grid-template-columns:1fr}
+  .gc-principles,.gc-road{grid-template-columns:1fr}
+  .gc-flow{grid-template-columns:1fr 1fr}
+  .gc-layer{grid-template-columns:1fr;gap:6px}
+  .gc-views{grid-template-columns:1fr}
+  .gc-view{border-right:0;border-bottom:1px solid var(--line)}
+  .gc-view:last-child{border-bottom:0}
+  .gc-me{padding:28px}
+}
+</style>
 </head>
 <body>
 <header class="top">
@@ -26,119 +145,464 @@
 </header>
 
 <main>
-
 <section class="page" id="coach">
-  <div class="spec-head">
-    <div>
-      <h2>Performer Gap Coach</h2>
-      <p class="lede" style="margin-top:16px">A weekly number that shows the gap between your best and newest reps closing, and the moves that close it.</p>
+
+  <!-- Opening: the CEO line and the idea -->
+  <div class="gc-hero">
+    <div class="gc-ceo">
+      <p class="kicker">Where this starts</p>
+      <blockquote>"The internal measure of AI success: how fast the gap between low and high performers is bridging."</blockquote>
+      <cite>Subham Kumar Boundia, Co-founder and CEO, Superleap</cite>
     </div>
-    <div class="quote">The internal measure of AI success: how fast the gap between low and high performers is bridging.</div>
+    <div>
+      <p class="kicker">Concept 2 &middot; A layer on Coach SuperAgent</p>
+      <h2>Performer Gap Coach: the next best move, in the moment</h2>
+      <p class="lede">Coach SuperAgent tells a rep how the last call went. This layer tells them what to do next, using moves that already work on their own team. Leadership gets one number that shows AI is lifting the whole floor.</p>
+      <div class="gc-badges">
+        <span class="gc-badge">Before the action, not after</span>
+        <span class="gc-badge">Compares moves, never people</span>
+        <span class="gc-badge alt">Prototype with sample data</span>
+      </div>
+    </div>
   </div>
 
+  <!-- Prototype -->
   <div class="demo">
     <div class="demo-bar">
-      <h3>Conversion rate, top vs bottom quartile reps</h3>
-      <div class="toggle" role="group" aria-label="Compare">
-        <button id="tWithout" aria-pressed="true">Without Coach</button>
-        <button id="tWith" aria-pressed="false">With Coach</button>
+      <h3>Try it from three seats</h3>
+      <span class="sample">Illustrative data: an inside-sales admissions team of 80 reps over one quarter.</span>
+    </div>
+
+    <div class="gc-views" role="tablist" aria-label="Choose a view">
+      <button class="gc-view" role="tab" id="tab-rep" aria-controls="p-rep" aria-selected="true"><b>Rep</b>Ankit, 4 months in</button>
+      <button class="gc-view" role="tab" id="tab-lead" aria-controls="p-lead" aria-selected="false" tabindex="-1"><b>Team lead</b>Moves that are spreading</button>
+      <button class="gc-view" role="tab" id="tab-cxo" aria-controls="p-cxo" aria-selected="false" tabindex="-1"><b>Leadership</b>The performer gap index</button>
+    </div>
+
+    <!-- Rep view -->
+    <div class="gc-panel" id="p-rep" role="tabpanel" aria-labelledby="tab-rep">
+      <div class="gc-rep">
+        <div>
+          <div class="gc-feedhead">
+            <h3>Your next best moves</h3>
+            <span class="small muted">Triggered by what your leads just did</span>
+          </div>
+          <div id="feed"></div>
+        </div>
+        <div class="gc-side">
+          <div class="gc-card">
+            <h4>Moves made today</h4>
+            <div class="gc-big"><span id="doneCount">0</span> <span class="muted" style="font-size:20px;font-weight:500">of 3</span></div>
+            <div class="gc-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+          <div class="gc-card">
+            <h4>Your conversion, you vs you</h4>
+            <div class="gc-trend" aria-label="Conversion over your last five weeks: 11, 12, 12, 13 and 15 percent">
+              <span style="height:52%"></span><span style="height:58%"></span><span style="height:58%"></span><span style="height:64%"></span><span class="now" id="nowBar" style="height:72%"></span>
+            </div>
+            <div class="gc-trend-l"><span>4 weeks ago</span><span id="nowLbl">This week 15%</span></div>
+          </div>
+          <div class="gc-card">
+            <h4>Your win this week</h4>
+            <p class="gc-win">Your WhatsApp follow-up got Karan's sister to book a campus visit. That move is now one of the team's top three.</p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="coach-wrap">
-      <div>
-        <div class="chartbox"><svg class="chart" id="chart" viewBox="0 0 600 280" width="100%" role="img" aria-label="Line chart of conversion rate over 12 weeks for top and bottom quartile reps"></svg></div>
-        <div class="legend"><span><i style="background:var(--teal)"></i>Top quartile</span><span><i style="background:var(--amber)"></i>Bottom quartile</span></div>
-        <p class="sample" style="margin-top:12px">Illustrative numbers for an inside-sales team of 80 reps over one quarter.</p>
+
+    <!-- Team lead view -->
+    <div class="gc-panel" id="p-lead" role="tabpanel" aria-labelledby="tab-lead" hidden>
+      <div class="gc-lead-grid">
+        <div>
+          <div class="gc-feedhead">
+            <h3>Moves that work on your team</h3>
+            <span class="small muted">Learned from closed admissions this quarter</span>
+          </div>
+          <div class="tablebox">
+            <table class="compare" style="margin-top:0">
+              <thead><tr><th>Move</th><th>Team using it</th><th>Lift</th><th></th></tr></thead>
+              <tbody id="movesTbl"></tbody>
+            </table>
+          </div>
+          <p class="gc-note">Every move credits the rep whose pipeline it was first spotted in. Top reps become the team's teachers, and nobody is ranked.</p>
+        </div>
+        <div class="gc-side">
+          <div class="gc-card">
+            <h4>Moves made by the team this week</h4>
+            <div class="gc-big">148</div>
+            <p class="small muted" style="margin:8px 0 0">Up from 96 last week</p>
+          </div>
+          <div class="gc-card">
+            <h4>Monday huddle</h4>
+            <ul class="patterns" id="huddle" style="margin-top:0"><li class="muted">Add a move to talk through as a team.</li></ul>
+          </div>
+        </div>
       </div>
-      <div>
-        <div class="muted small">Performer gap in week 12</div>
-        <div class="gapnum" id="gapnum">20 pts</div>
-        <p class="small muted" id="gapnote" style="margin-top:8px">Unchanged from week 1.</p>
-        <div class="muted small" style="margin-top:20px">Patterns learned from top reps</div>
-        <ul class="patterns">
-          <li>Call within 15 minutes of a brochure or pricing page open</li>
-          <li>Switch to WhatsApp after two missed calls</li>
-          <li>Answer fee objections with EMI options before discounts</li>
-        </ul>
-        <div class="nudge" id="nudge">
-          <p><b>For Ankit, right now:</b> Riya opened the fee brochure twice in the last hour. Top reps call within 15 minutes of this.</p>
-          <p class="why">Why: 3 of your top 5 reps convert 2x more leads with this move.</p>
-          <button class="rowbtn" id="nAct">Call Riya now</button><button class="rowbtn" id="nSkip">Skip with a reason</button>
+    </div>
+
+    <!-- Leadership view -->
+    <div class="gc-panel" id="p-cxo" role="tabpanel" aria-labelledby="tab-cxo" hidden>
+      <div class="demo-bar" style="margin-bottom:12px">
+        <h3>Conversion rate, top vs bottom quartile reps</h3>
+        <div class="toggle" role="group" aria-label="Compare">
+          <button id="tWithout" aria-pressed="false">Without Coach</button>
+          <button id="tWith" aria-pressed="true">With Coach</button>
+        </div>
+      </div>
+      <div class="coach-wrap">
+        <div>
+          <div class="chartbox"><svg class="chart" id="chart" viewBox="0 0 600 280" width="100%" role="img" aria-label="Line chart of conversion rate over 12 weeks for top and bottom quartile reps"></svg></div>
+          <div class="legend"><span><i style="background:var(--teal)"></i>Top quartile</span><span><i style="background:var(--amber)"></i>Bottom quartile</span></div>
+        </div>
+        <div>
+          <div class="muted small">Performer gap in week 12</div>
+          <div class="gapnum" id="gapnum">9 pts</div>
+          <p class="small muted" id="gapnote" style="margin-top:8px">Down from 18 pts in week 1.</p>
+          <div class="gc-card" style="margin-top:18px">
+            <h4>What this means for the business</h4>
+            <p class="gc-win" id="cxoNote">The floor rose from 13% to 24% while top reps held at 33%. Same team, same leads, more admissions. That is the AI ROI story for renewal, not hours saved.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="spec-grid">
-    <div><h3>The problem</h3><p>Sales leaders can see who is underperforming, but not why, and coaching happens in weekly reviews long after the moment has passed. AI ROI gets reported as hours saved, which doesn't help a CXO justify renewal.</p></div>
-    <div><h3>Who it's for</h3><ul><li>Reps in their first year, who get in-the-moment guidance</li><li>Team leads, who see which behaviours separate their reps</li><li>CXOs, who get one metric that shows AI is changing outcomes</li></ul></div>
-    <div><h3>How it works</h3><ul><li>Learns behaviour patterns from calls, messages and stage changes of top-quartile reps</li><li>Spots the same moments in other reps' pipelines and suggests the move, with its reason</li><li>The rep acts or skips with a reason; skips improve the model</li><li>A weekly performer gap index on the leadership dashboard</li></ul></div>
-    <div><h3>What we'd measure</h3><ul><li>Performer gap index, week over week</li><li>Nudge acceptance rate, and conversion on accepted nudges</li><li>Time to productivity for new reps</li><li>Renewal and expansion rate of accounts using Coach</li></ul></div>
-    <div><h3>First version</h3><p>Three high-signal patterns per industry, built on call summaries and activity data Superleap already captures, with nudges inside the lead view and the gap index on one dashboard tile.</p></div>
-    <div><h3>Risks and open questions</h3><ul><li>Reps may read nudges as surveillance; framing as "what top reps do" matters</li><li>Small teams may lack enough data per pattern; pooled industry benchmarks could fill the gap</li></ul></div>
-    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I helped drive 80% CSAT, a 22% drop in repeat tickets and a 4.9 out of 5 G2 rating across 94 reviews, by finding the patterns behind good outcomes and making them repeatable. Coach applies the same idea to sales reps.</p></div>
+  <!-- Where it sits -->
+  <div class="gc-sec">
+    <p class="kicker">Where it sits in Superleap</p>
+    <h2>One more layer, built on what Superleap already captures</h2>
+    <div class="gc-layers">
+      <div class="gc-layer new">
+        <span class="when">Before the next action</span>
+        <div><h3>Performer Gap Coach</h3><p>Spots the moment in a lead's journey and suggests the move that works, with the reason.</p></div>
+        <span class="pill done">This concept</span>
+      </div>
+      <div class="gc-layer">
+        <span class="when">After the call</span>
+        <div><h3>Coach SuperAgent</h3><p>Analyses every call and delivers personalised guidance on what went well and what to change.</p></div>
+        <a class="small" href="https://superleap.com/coach-superagent" target="_blank" rel="noopener">See Coach &#8599;</a>
+      </div>
+      <div class="gc-layer">
+        <span class="when">Context underneath</span>
+        <div><h3>SuperSense</h3><p>Conversation and customer intelligence: call summaries, activity and intent signals the patterns are learned from.</p></div>
+        <span></span>
+      </div>
+    </div>
   </div>
+
+  <!-- PRD vision -->
+  <div class="gc-sec">
+    <p class="kicker">Product vision</p>
+    <h2><span class="gc-num">1.</span>Problem</h2>
+    <p class="lede">Leaders can see who is behind, but not why. Coaching happens in weekly reviews, long after the moment has passed. The few moves that make top reps great live in their heads, not in the CRM. And AI ROI is reported as hours saved, which does not help a CXO justify renewal.</p>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">2.</span>Users and jobs</h2>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>User</th><th>Job to be done</th><th>What they get</th></tr></thead>
+        <tbody>
+          <tr><th>Rep in first year (primary)</th><td>Know what to do next without waiting for a review</td><td class="new">A timely move with its reason, and progress measured against their own past</td></tr>
+          <tr><th>Top rep</th><td>Be recognised for what they do well</td><td class="new">Credit when a move from their pipeline spreads across the team</td></tr>
+          <tr><th>Team lead</th><td>Coach a large team with limited time</td><td class="new">The few moves worth teaching this week, and which ones are spreading</td></tr>
+          <tr><th>CXO</th><td>Prove AI is changing outcomes at renewal</td><td class="new">One weekly number: the performer gap index</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">3.</span>How it works</h2>
+    <ol class="gc-flow">
+      <li><b>Learn</b><span>Find behaviours that separate closed leads from lost ones, using call summaries, messages and stage changes.</span></li>
+      <li><b>Spot</b><span>Watch for the same moment in every rep's pipeline: a brochure reopened, two missed calls, a fee question.</span></li>
+      <li><b>Suggest</b><span>Show the move inside the lead view, with the evidence behind it and the time window.</span></li>
+      <li><b>Learn again</b><span>The rep acts or says not now with a reason. Both teach the model, and the gap index updates weekly.</span></li>
+    </ol>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">4.</span>Design principles</h2>
+    <p class="lede">The point is to lift people, so the product has to feel like a helpful senior colleague, not a scoreboard.</p>
+    <div class="gc-principles">
+      <div class="gc-pr"><div class="ic">1</div><h3>Compare moves, not people</h3><p>The reason always describes the lead's behaviour and what works, never another rep.</p><span class="not">Not: "Your top 5 reps do this."</span></div>
+      <div class="gc-pr"><div class="ic">2</div><h3>You vs you</h3><p>A rep sees progress against their own last four weeks. No leaderboards in the rep view.</p><span class="not">Not: a team ranking.</span></div>
+      <div class="gc-pr"><div class="ic">3</div><h3>Credit the source</h3><p>When a move spreads, the rep it came from is named and thanked. Top reps become teachers.</p><span class="not">Not: anonymous "best practice".</span></div>
+      <div class="gc-pr"><div class="ic">4</div><h3>The rep can say not now</h3><p>Every move can be skipped with a reason. Reps know their leads, and the model learns from them.</p><span class="not">Not: a mandatory task.</span></div>
+      <div class="gc-pr"><div class="ic">5</div><h3>Everyone gets moves</h3><p>Moves trigger on lead behaviour, so new and top reps both get them when the moment comes.</p><span class="not">Not: only for low performers.</span></div>
+      <div class="gc-pr"><div class="ic">6</div><h3>The gap is a team number</h3><p>Leadership sees the gap across the team. Individual move data stays with the rep and their direct lead.</p><span class="not">Not: a tool for review-day evidence.</span></div>
+    </div>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">5.</span>Success metrics</h2>
+    <p class="lede">Starting hypotheses, set before launch so there is something to measure against. Recalibrate after the first quarter with design partners.</p>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>Type</th><th>Metric</th><th>Why it matters</th><th>v1 target</th></tr></thead>
+        <tbody>
+          <tr><th>North star</th><td>Performer gap index</td><td>Conversion gap between top and bottom quartile, week over week. The CEO's own measure of AI success.</td><td class="new">Gap halves within two quarters</td></tr>
+          <tr><th>Outcome</th><td>Time to productivity</td><td>Weeks for a new rep to reach team median conversion.</td><td class="new">30% faster</td></tr>
+          <tr><th>Outcome</th><td>Conversion on accepted moves</td><td>Proves the moves themselves work, not just that reps click.</td><td class="new">1.5x vs similar leads without a move</td></tr>
+          <tr><th>Adoption</th><td>Move acceptance rate</td><td>Share of suggested moves the rep acts on.</td><td class="new">60% or higher</td></tr>
+          <tr><th>Business</th><td>Renewal and expansion</td><td>Accounts using Coach vs those not using it.</td><td class="new">Tracked from the first renewal cycle</td></tr>
+          <tr><th>Guardrail</th><td>Rep sentiment</td><td>Quarterly pulse: "Coach helps me" vs "Coach watches me".</td><td class="new">70% or more say helps</td></tr>
+          <tr><th>Guardrail</th><td>Move precision</td><td>Moves a rep marks as wrong for the lead.</td><td class="new">Under 10%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">6.</span>First version</h2>
+    <div class="gc-scope">
+      <div class="in">
+        <h3>In scope</h3>
+        <ul>
+          <li>Three high-signal moves per industry, starting with education admissions</li>
+          <li>Built on call summaries and activity data Superleap already captures</li>
+          <li>Moves shown inside the lead view, with reason and time window</li>
+          <li>Act or not now with a reason</li>
+          <li>Team lead view of moves and adoption, with credit to the source rep</li>
+          <li>Gap index on one leadership dashboard tile</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Out of scope for v1</h3>
+        <ul>
+          <li>Live in-call prompts (Coach SuperAgent covers the call itself)</li>
+          <li>Auto-actions without the rep, such as sending messages</li>
+          <li>Individual rankings or leaderboards</li>
+          <li>Moves learned across customers without consent</li>
+          <li>Tying moves to incentives or compensation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">7.</span>Risks and mitigations</h2>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>Risk</th><th>Likelihood</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><th>Reps read moves as surveillance</th><td>Medium</td><td>Moves-not-people copy, you vs you progress, no rankings, sentiment as a guardrail metric</td></tr>
+          <tr><th>Managers use move data to shame reps</th><td>Medium</td><td>Gap index only at team level; individual data visible to the rep and direct lead only</td></tr>
+          <tr><th>A move is correlation, not cause</th><td>High</td><td>Compare accepted moves against similar leads without one; retire moves that stop lifting conversion</td></tr>
+          <tr><th>Small teams lack data per move</th><td>Medium</td><td>Start with pooled industry patterns, with customer consent, then personalise as data grows</td></tr>
+          <tr><th>Too many nudges become noise</th><td>Medium</td><td>Cap at a few moves a day, only above a confidence threshold</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="gc-sec">
+    <h2><span class="gc-num">8.</span>Roadmap</h2>
+    <div class="gc-road">
+      <div><span class="pill done">Now (v1)</span><h3>Three moves, one number</h3><p>Prove reps act on moves and that accepted moves lift conversion in one industry.</p></div>
+      <div><span class="pill review">Next (v2)</span><h3>Moves learned per team</h3><p>Each customer's own playbook emerges from its data; team leads can add and retire moves.</p></div>
+      <div><span class="pill auto">Later (v3)</span><h3>Moves that act</h3><p>With rep approval, SuperAgents draft the WhatsApp or schedule the call, closing the loop from moment to action.</p></div>
+    </div>
+  </div>
+
+  <div class="gc-me">
+    <h2>Why I'm close to this</h2>
+    <p>At Xorosoft I helped drive 80% CSAT, a 22% drop in repeat tickets and a 4.9 out of 5 G2 rating across 94 reviews, by finding the patterns behind good outcomes and making them repeatable for the whole team. Coach applies the same idea to sales reps.</p>
+  </div>
+
   <div class="next"><a href="/scanner/">Previous: Migration Scanner</a><a href="/prospect/">Next: Prospect agent</a></div>
 </section>
-
 </main>
 <footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap.</footer>
 
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- view tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gc-view'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (tab.id === 'tab-cxo') animateChart();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ selectTab(t); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var n = tabs[(i + d + tabs.length) % tabs.length];
+      n.focus(); selectTab(n);
+    });
+  });
+
+  /* ---------- rep feed ---------- */
+  var moves = [
+    { id:'riya', init:'R', name:'Riya Sharma', meta:'B.Tech enquiry, Pune', timer:'11 min left',
+      signal:'Opened the fee brochure twice in the last hour.',
+      act:'Call Riya now', actLabel:'Call now',
+      why:'Leads who reopen the fee brochure convert 2x more when called within 15 minutes.',
+      done:'Call started with Riya. Great timing: she is still on the fees page.' },
+    { id:'karan', init:'K', name:'Karan Mehta', meta:'MBA enquiry, Indore', timer:'Today',
+      signal:'Two missed calls since yesterday.',
+      act:'Send a WhatsApp with this week\u2019s campus visit slots', actLabel:'Send WhatsApp',
+      why:'After two missed calls, a WhatsApp gets a reply 3x more often than a third call.',
+      done:'WhatsApp sent to Karan with three visit slots. You will get a heads up when he replies.' },
+    { id:'neha', init:'N', name:'Neha Gupta', meta:'Design course, Jaipur', timer:'Before next call',
+      signal:'Asked about fees on yesterday\u2019s call.',
+      act:'Lead with the EMI plan before any discount', actLabel:'Add to call notes',
+      why:'EMI-first answers keep the full fee in 7 of 10 closed admissions.',
+      done:'EMI plan pinned to Neha\u2019s call notes for your next conversation.' }
+  ];
+  var reasons = {
+    'Already spoke today':'Coach will hold similar moves for leads you reached in the last few hours.',
+    'Lead asked for a later time':'Coach will remind you at the time the lead asked for. A stated time beats speed.',
+    'Not the right move for this lead':'Thanks. Your team lead sees this so the move can be tuned.',
+    'Something else':'Noted. Every reason helps Coach suggest better moves.'
+  };
+  var feed = document.getElementById('feed');
+  var doneCount = 0;
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function renderMove(m){
+    var card = document.createElement('div');
+    card.className = 'gc-move';
+    card.innerHTML =
+      '<div class="gc-mtop"><div class="gc-lead"><span class="gc-av" aria-hidden="true">' + m.init + '</span><div><b>' + esc(m.name) + '</b><small>' + esc(m.meta) + '</small></div></div>' +
+      '<span class="gc-timer">' + esc(m.timer) + '</span></div>' +
+      '<p class="small muted" style="margin:10px 0 0">' + esc(m.signal) + '</p>' +
+      '<p class="gc-do">' + esc(m.act) + '</p>' +
+      '<p class="gc-why">' + esc(m.why) + '</p>' +
+      '<div class="gc-acts"><button class="btn js-act">' + esc(m.actLabel) + '</button><button class="rowbtn js-later" style="margin-top:0">Not now</button></div>' +
+      '<div class="gc-reasons" hidden></div>';
+    var rbox = card.querySelector('.gc-reasons');
+    Object.keys(reasons).forEach(function(r){
+      var b = document.createElement('button');
+      b.className = 'rowbtn'; b.textContent = r;
+      b.addEventListener('click', function(){
+        card.className = 'gc-move later';
+        card.innerHTML = '<p class="gc-msg"><b>Not now: </b>' + esc(r) + '<small>' + esc(reasons[r]) + '</small></p>';
+      });
+      rbox.appendChild(b);
+    });
+    card.querySelector('.js-later').addEventListener('click', function(){
+      rbox.hidden = !rbox.hidden;
+      if (!rbox.hidden) rbox.querySelector('button').focus();
+    });
+    card.querySelector('.js-act').addEventListener('click', function(){
+      card.className = 'gc-move done';
+      card.innerHTML = '<p class="gc-msg"><b>Done.</b> ' + esc(m.done) + '<small>Logged as a move made. It counts toward your week, not anyone else\u2019s scoreboard.</small></p>';
+      doneCount++;
+      document.getElementById('doneCount').textContent = doneCount;
+      var dots = document.querySelectorAll('.gc-dots i');
+      for (var i = 0; i < dots.length; i++) dots[i].className = i < doneCount ? 'on' : '';
+      if (doneCount === 3) {
+        document.getElementById('nowBar').style.height = '78%';
+        document.getElementById('nowLbl').textContent = 'This week 15%, trending up';
+      }
+    });
+    feed.appendChild(card);
+  }
+  moves.forEach(renderMove);
+
+  /* ---------- team lead table ---------- */
+  var teamMoves = [
+    { move:'Call within 15 minutes of a brochure reopen', from:'Priya', use:62, lift:'2.0x' },
+    { move:'Switch to WhatsApp after two missed calls', from:'Ankit', use:48, lift:'3.1x reply' },
+    { move:'Lead with EMI before any discount', from:'Farhan', use:35, lift:'+18% full fee' }
+  ];
+  var tbody = document.getElementById('movesTbl');
+  var huddle = document.getElementById('huddle');
+  var huddleEmpty = true;
+  teamMoves.forEach(function(t){
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<th>' + esc(t.move) + '<span class="gc-credit" style="display:block;font-weight:400">First spotted in ' + esc(t.from) + '\u2019s pipeline</span></th>' +
+      '<td><div class="gc-adopt"><span class="bar"><i style="width:' + t.use + '%"></i></span><b>' + t.use + '%</b></div></td>' +
+      '<td class="new">' + esc(t.lift) + '</td>' +
+      '<td><button class="rowbtn" style="margin-top:0;white-space:nowrap">Add to huddle</button></td>';
+    var btn = tr.querySelector('button');
+    btn.addEventListener('click', function(){
+      if (btn.disabled) return;
+      if (huddleEmpty) { huddle.innerHTML = ''; huddleEmpty = false; }
+      var li = document.createElement('li');
+      li.innerHTML = esc(t.move) + ' <span class="muted small">with a thank you to ' + esc(t.from) + '</span>';
+      huddle.appendChild(li);
+      btn.textContent = 'Added'; btn.disabled = true;
+    });
+    tbody.appendChild(tr);
+  });
+
+  /* ---------- leadership chart ---------- */
   var NS = 'http://www.w3.org/2000/svg';
-  function el(name, attrs){ var e = document.createElementNS(NS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
-  /* coach chart */
+  function el(name, attrs){ var e = document.createElementNS(NS, name); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   var svg = document.getElementById('chart');
-  var top = [31,31,32,31,32,32,33,32,33,33,34,33];
+  var topQ = [31,31,32,31,32,32,33,32,33,33,34,33];
   var without = [13,12,13,12,13,13,12,13,13,14,13,13];
   var withC = [13,14,15,15,17,18,19,20,21,22,23,24];
-  var X = function(i){ return 50 + i*(530/11); };
-  var Y = function(v){ return 250 - v/40*220; };
+  var X = function(i){ return 50 + i * (530 / 11); };
+  var Y = function(v){ return 250 - v / 40 * 220; };
   [0,10,20,30,40].forEach(function(v){
-    svg.appendChild(el('line',{x1:50,x2:580,y1:Y(v),y2:Y(v),stroke:'var(--line)','stroke-width':1}));
-    var t = el('text',{x:40,y:Y(v)+4,'text-anchor':'end'}); t.textContent = v + '%'; svg.appendChild(t);
+    svg.appendChild(el('line', {x1:50, x2:580, y1:Y(v), y2:Y(v), stroke:'var(--line)', 'stroke-width':1}));
+    var t = el('text', {x:40, y:Y(v) + 4, 'text-anchor':'end'}); t.textContent = v + '%'; svg.appendChild(t);
   });
-  [0,3,7,11].forEach(function(i){ var t = el('text',{x:X(i),y:272,'text-anchor':'middle'}); t.textContent = 'Week ' + (i+1); svg.appendChild(t); });
-  function pts(arr){ return arr.map(function(v,i){ return X(i) + ',' + Y(v); }).join(' '); }
-  var gapArea = el('polygon',{fill:'var(--amber-bg)',opacity:0.7});
+  [0,3,7,11].forEach(function(i){ var t = el('text', {x:X(i), y:272, 'text-anchor':'middle'}); t.textContent = 'Week ' + (i + 1); svg.appendChild(t); });
+  function pts(arr){ return arr.map(function(v, i){ return X(i) + ',' + Y(v); }).join(' '); }
+  var gapArea = el('polygon', {fill:'var(--amber-bg)', opacity:0.7});
   svg.appendChild(gapArea);
-  svg.appendChild(el('polyline',{points:pts(top),fill:'none',stroke:'var(--teal)','stroke-width':3,'stroke-linejoin':'round'}));
-  var bottomLine = el('polyline',{fill:'none',stroke:'var(--amber)','stroke-width':3,'stroke-linejoin':'round'});
+  svg.appendChild(el('polyline', {points:pts(topQ), fill:'none', stroke:'var(--teal)', 'stroke-width':3, 'stroke-linejoin':'round'}));
+  var bottomLine = el('polyline', {fill:'none', stroke:'var(--amber)', 'stroke-width':3, 'stroke-linejoin':'round'});
   svg.appendChild(bottomLine);
   var cur = without.slice();
   function drawBottom(arr){
     bottomLine.setAttribute('points', pts(arr));
-    var poly = top.map(function(v,i){ return X(i)+','+Y(v); }).concat(arr.slice().reverse().map(function(v,j){ return X(arr.length-1-j)+','+Y(v); }));
+    var poly = topQ.map(function(v, i){ return X(i) + ',' + Y(v); })
+      .concat(arr.slice().reverse().map(function(v, j){ return X(arr.length - 1 - j) + ',' + Y(v); }));
     gapArea.setAttribute('points', poly.join(' '));
-    var gap = Math.round(top[11]-arr[11]);
-    document.getElementById('gapnum').textContent = gap + ' pts';
+    document.getElementById('gapnum').textContent = Math.round(topQ[11] - arr[11]) + ' pts';
   }
   drawBottom(cur);
-  function morph(target, note){
+  function morph(target){
     var from = cur.slice(), t0 = performance.now();
     function step(t){
-      var k = reduce ? 1 : Math.min(1,(t-t0)/800);
-      var e = k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
-      cur = from.map(function(v,i){ return v + (target[i]-v)*e; });
+      var k = reduce ? 1 : Math.min(1, (t - t0) / 900);
+      var e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      cur = from.map(function(v, i){ return v + (target[i] - v) * e; });
       drawBottom(cur);
-      if(k<1) requestAnimationFrame(step);
+      if (k < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
-    document.getElementById('gapnote').textContent = note;
   }
   var tW = document.getElementById('tWith'), tWo = document.getElementById('tWithout');
-  tW.addEventListener('click', function(){ tW.setAttribute('aria-pressed','true'); tWo.setAttribute('aria-pressed','false'); morph(withC,'Down from 18 pts in week 1, as bottom-quartile reps adopt top-rep moves.'); });
-  tWo.addEventListener('click', function(){ tWo.setAttribute('aria-pressed','true'); tW.setAttribute('aria-pressed','false'); morph(without,'Unchanged from week 1.'); });
-  var nudge = document.getElementById('nudge');
-  document.getElementById('nAct').addEventListener('click', function(){
-    nudge.innerHTML = '<p><b>Call started with Riya.</b> Coach logged the move, so Ankit\'s pattern score and the team gap index update tonight.</p>';
-  });
-  document.getElementById('nSkip').addEventListener('click', function(){
-    nudge.innerHTML = '<p><b>Skipped:</b> "Riya asked to be called after 6 pm." Coach will remind Ankit at 6 pm and learn that stated call times outrank speed.</p>';
-  });
-
+  var mode = 'with', played = false;
+  function setMode(m){
+    mode = m;
+    tW.setAttribute('aria-pressed', m === 'with' ? 'true' : 'false');
+    tWo.setAttribute('aria-pressed', m === 'with' ? 'false' : 'true');
+    if (m === 'with') {
+      morph(withC);
+      document.getElementById('gapnote').textContent = 'Down from 18 pts in week 1, as more reps make the moves that work.';
+      document.getElementById('cxoNote').textContent = 'The floor rose from 13% to 24% while top reps held at 33%. Same team, same leads, more admissions. That is the AI ROI story for renewal, not hours saved.';
+    } else {
+      morph(without);
+      document.getElementById('gapnote').textContent = 'Unchanged from week 1.';
+      document.getElementById('cxoNote').textContent = 'Without in-the-moment moves, the gap holds at about 20 points. What top reps know stays with them.';
+    }
+  }
+  function animateChart(){
+    if (played) return;
+    played = true;
+    setMode('with');
+  }
+  tW.addEventListener('click', function(){ setMode('with'); });
+  tWo.addEventListener('click', function(){ setMode('without'); });
 })();
 </script>
 </body>
