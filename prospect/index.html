@@ -4,12 +4,152 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Prospect agent, a concept for Superleap by Smrity</title>
-<meta name="description" content="Finds new pipeline from what the CRM already knows about who buys, with Confidence-Tiered Autonomy.">
+<meta name="description" content="The layer before Qualify SuperAgent: finds new accounts from what the CRM already knows about who buys, writes from a real signal, and earns the right to send on its own.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><clipPath id='r'><rect width='32' height='32' rx='7'/></clipPath><g clip-path='url(%23r)'><rect width='32' height='32' fill='%23111111'/><path d='M0 32 A32 32 0 0 1 32 0 L32 32Z' fill='%2319C584'/><circle cx='22' cy='21.5' r='5.7' fill='%23ffffff'/></g></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+/* Prospect page only. pa- prefix keeps it separate from shared site styles. */
+.pa-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-bottom:44px}
+.pa-ceo{background:var(--deep);color:#fff;border-radius:20px;padding:34px 34px 28px;position:relative;overflow:hidden}
+.pa-ceo::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(63,211,160,.35),transparent 70%)}
+.pa-ceo .kicker{color:var(--mint)}
+.pa-ceo blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,30px);line-height:1.35;color:#fff;position:relative;z-index:1}
+.pa-ceo cite{display:block;margin-top:16px;font-style:normal;font-size:14px;color:var(--on-deep);position:relative;z-index:1}
+.pa-hero h2{max-width:17ch}
+.pa-hero .lede{margin-top:18px}
+.pa-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.pa-badge{font-size:13px;font-weight:500;padding:5px 11px;border-radius:999px;background:var(--teal-bg);color:var(--teal-ink)}
+.pa-badge.alt{background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+
+.pa-run{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.pa-step{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative}
+.pa-step b{display:block;font-size:26px;font-weight:700;letter-spacing:-0.02em;line-height:1.1}
+.pa-step span{font-size:13px;color:var(--muted);line-height:1.3;display:block}
+.pa-step.last{background:var(--teal-bg);border-color:var(--teal-bg)}
+.pa-step.last b,.pa-step.last span{color:var(--teal-ink)}
+
+.pa-views{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.pa-view{border:0;background:var(--bg);color:var(--muted);padding:12px 14px;text-align:left;font-size:14px;line-height:1.3;border-right:1px solid var(--line)}
+.pa-view:last-child{border-right:0}
+.pa-view b{display:block;color:var(--ink);font-weight:500;font-size:15px}
+.pa-view[aria-selected="true"]{background:var(--teal-bg);color:var(--teal-ink)}
+.pa-view[aria-selected="true"] b{color:var(--teal-ink)}
+.pa-panel[hidden]{display:none}
+
+.pa-find{display:grid;grid-template-columns:1fr 1.4fr;gap:24px}
+.pa-card{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--surface)}
+.pa-card h4{margin:0 0 10px;font-size:14px;font-weight:500;color:var(--muted)}
+.pa-icp{list-style:none;margin:0;padding:0}
+.pa-icp li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.pa-icp li:last-child{border-bottom:0}
+.pa-icp em{font-style:normal;font-size:13px;font-weight:500;color:var(--teal-ink);background:var(--teal-bg);padding:2px 8px;border-radius:999px;white-space:nowrap;align-self:center}
+.pa-supp{font-size:14px;color:var(--muted);border-left:3px solid var(--mint);padding:4px 0 4px 12px;margin:14px 0 0;max-width:none}
+.pa-feed{display:flex;flex-direction:column;gap:8px}
+.pa-acct{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.pa-acct:hover{border-color:var(--teal)}
+.pa-acct:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.pa-av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--amber-bg);color:var(--amber-ink)}
+.pa-acct b{font-weight:500;display:block;font-size:15px}
+.pa-acct small{display:block;font-size:13px;color:var(--muted);line-height:1.35}
+.pa-fit{text-align:right}
+.pa-fit b{font-size:18px}
+.pa-fit small{font-size:11px}
+.pa-kind{font-size:11px;font-weight:500;padding:1px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:1px}
+
+.pa-write{display:grid;grid-template-columns:240px 1fr;gap:20px}
+.pa-pick{display:flex;flex-direction:column;gap:4px;max-height:560px;overflow:auto}
+.pa-pick button{border:1px solid transparent;background:transparent;color:var(--ink);text-align:left;padding:8px 10px;border-radius:8px;font-size:14px;line-height:1.3}
+.pa-pick button small{display:block;color:var(--muted);font-size:12px}
+.pa-pick button:hover{background:var(--bg)}
+.pa-pick button[aria-current="true"]{background:var(--teal-bg);color:var(--teal-ink)}
+.pa-pick button[aria-current="true"] small{color:var(--teal-ink)}
+.pa-wgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pa-wgrid .full{grid-column:1/-1}
+.pa-why-now{font-size:16px;font-weight:500;margin:0;max-width:none}
+.pa-comm{list-style:none;margin:0;padding:0;font-size:14px}
+.pa-comm li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.pa-comm li:last-child{border-bottom:0}
+.pa-comm span{color:var(--muted);font-size:13px;text-align:right}
+.pa-draft{font-family:var(--serif);font-size:16px;line-height:1.55;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0;max-width:none}
+.pa-draft mark{background:var(--teal-bg);color:var(--teal-ink);padding:0 3px;border-radius:3px}
+.pa-draft mark.bad{background:var(--red-bg);color:var(--red-ink)}
+.pa-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pa-chip{font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.pa-seq{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pa-seq li{border-top:3px solid var(--mint);padding-top:8px;font-size:13px;color:var(--muted)}
+.pa-seq li b{display:block;color:var(--ink);font-weight:500;font-size:14px}
+
+.pa-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pa-actions .btn{padding:7px 14px;font-size:14px}
+.pa-status{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;border-radius:999px;background:var(--surface);color:var(--teal-ink);margin-left:6px}
+.lanecol button.done{opacity:.6;text-decoration:line-through}
+
+.pa-layers{display:grid;gap:10px;margin-top:24px}
+.pa-layer{display:grid;grid-template-columns:200px 1fr auto;gap:18px;align-items:center;padding:18px 20px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.pa-layer .when{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pa-layer h3{font-size:18px}
+.pa-layer p{margin:4px 0 0;font-size:15px;color:var(--muted)}
+.pa-layer.new{background:var(--deep);border-color:var(--deep)}
+.pa-layer.new .when{color:var(--mint)}
+.pa-layer.new h3{color:#fff}
+.pa-layer.new p{color:var(--on-deep)}
+
+.pa-sec{margin-top:88px}
+.pa-sec > h2{margin-bottom:12px}
+.pa-num{color:var(--teal);margin-right:8px}
+.pa-flow{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:f}
+.pa-flow li{counter-increment:f;border-top:3px solid var(--mint);padding-top:14px}
+.pa-flow li::before{content:counter(f);font-size:28px;font-weight:700;color:var(--teal);display:block;line-height:1;margin-bottom:8px}
+.pa-flow b{display:block;font-weight:500;margin-bottom:4px}
+.pa-flow span{font-size:15px;color:var(--muted)}
+.pa-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.pa-tier{border-radius:14px;padding:20px;border:1px solid var(--line);background:var(--surface)}
+.pa-tier h3{font-size:17px;margin-bottom:10px}
+.pa-tier ul{margin:0;padding-left:18px;font-size:15px;color:var(--muted)}
+.pa-tier li{margin-bottom:6px}
+.pa-tier.auto{background:var(--teal-bg);border-color:var(--teal-bg)}
+.pa-tier.auto h3,.pa-tier.auto ul{color:var(--teal-ink)}
+.pa-tier.anom{background:var(--red-bg);border-color:var(--red-bg)}
+.pa-tier.anom h3,.pa-tier.anom ul{color:var(--red-ink)}
+.pa-principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.pa-pr{border-radius:14px;padding:20px;background:var(--surface);border:1px solid var(--line)}
+.pa-pr .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--teal-bg);color:var(--teal-ink);font-weight:700;margin-bottom:12px}
+.pa-pr h3{font-size:17px;margin-bottom:6px}
+.pa-pr p{font-size:15px;color:var(--muted);margin:0}
+.pa-scope{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.pa-scope > div{border-radius:14px;padding:20px 22px;border:1px solid var(--line);background:var(--surface)}
+.pa-scope h3{font-size:17px;margin-bottom:10px}
+.pa-scope ul{margin:0;padding-left:20px;font-size:15px}
+.pa-scope li{margin-bottom:6px}
+.pa-scope .in{border-color:var(--teal-bg);background:linear-gradient(170deg,var(--surface),var(--teal-bg))}
+.pa-road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.pa-road > div{border-radius:14px;padding:20px;background:var(--surface);border:1px solid var(--line)}
+.pa-road .pill{margin-bottom:10px}
+.pa-road h3{font-size:17px;margin-bottom:6px}
+.pa-road p{font-size:15px;color:var(--muted);margin:0}
+.pa-me{margin-top:88px;background:var(--deep);border-radius:20px;padding:40px}
+.pa-me h2{color:#fff}
+.pa-me p{color:var(--on-deep);font-size:18px;margin-top:14px;max-width:64ch}
+
+@media (max-width:860px){
+  .pa-hero,.pa-find,.pa-write,.pa-wgrid,.pa-scope{grid-template-columns:1fr}
+  .pa-run{grid-template-columns:repeat(2,1fr)}
+  .pa-run .pa-step.last{grid-column:1/-1}
+  .pa-views{grid-template-columns:1fr}
+  .pa-view{border-right:0;border-bottom:1px solid var(--line)}
+  .pa-view:last-child{border-bottom:0}
+  .pa-pick{flex-direction:row;overflow-x:auto;max-height:none}
+  .pa-pick button{flex:0 0 auto}
+  .pa-seq{grid-template-columns:1fr 1fr}
+  .pa-flow{grid-template-columns:1fr 1fr}
+  .pa-tiers,.pa-principles,.pa-road{grid-template-columns:1fr}
+  .pa-layer{grid-template-columns:1fr;gap:6px}
+  .pa-me{padding:28px}
+}
+</style>
 </head>
 <body>
 <header class="top">
@@ -26,130 +166,488 @@
 </header>
 
 <main>
-
 <section class="page" id="prospect">
-  <div class="spec-head">
-    <div>
-      <h2>Prospect agent</h2>
-      <p class="lede" style="margin-top:16px">Finds new pipeline from what your CRM already knows about who buys, and decides which outreach it can send on its own.</p>
+
+  <!-- Opening -->
+  <div class="pa-hero">
+    <div class="pa-ceo">
+      <p class="kicker">Where this starts</p>
+      <blockquote>"AI can help one person do the work of three, without them outsourcing their thinking."</blockquote>
+      <cite>Subham Kumar Boundia, Co-founder and CEO, Superleap</cite>
     </div>
-    <div class="quote">AI can help one person do the work of three, without them outsourcing their thinking.</div>
+    <div>
+      <p class="kicker">Concept 3 &middot; The layer before Qualify SuperAgent</p>
+      <h2>Prospect agent: new pipeline, from what your CRM already knows</h2>
+      <p class="lede">A rep today is three people: a researcher finding accounts, an SDR writing to them, and the judge of what is safe to send. The agent does the first two from the team's own closed-won history. The rep keeps the judgement, and hands it over only as the agent earns it.</p>
+      <div class="pa-badges">
+        <span class="pa-badge">Signal before sequence</span>
+        <span class="pa-badge">Confidence-Tiered Autonomy</span>
+        <span class="pa-badge alt">Prototype with sample data</span>
+      </div>
+    </div>
   </div>
 
+  <!-- Prototype -->
   <div class="demo">
     <div class="demo-bar">
-      <h3>Confidence-Tiered Autonomy</h3>
-      <span class="sample">Sample queue: 10 drafted messages for an edtech and BFSI sales team</span>
+      <h3>This morning's run</h3>
+      <span class="sample">Sample customer: a payments platform's mid-market sales team selling to D2C brands, edtechs and lenders. All companies are fictional.</span>
     </div>
-    <div class="pro-wrap">
-      <div>
-        <div class="slider">
-          <label for="trust">Drafts this rep approves without edits: <b id="trustval">60%</b></label>
-          <input type="range" id="trust" min="50" max="95" step="1" value="60">
-          <span class="small muted">Autonomy is earned. As the rep's approval rate rises, the confidence needed to send on its own drops.</span>
+
+    <div class="pa-run" aria-label="Funnel for this morning's run">
+      <div class="pa-step"><b>1,240</b><span>accounts watched for signals</span></div>
+      <div class="pa-step"><b>38</b><span>match the profile and have a fresh signal</span></div>
+      <div class="pa-step"><b>22</b><span>with a verified person to write to</span></div>
+      <div class="pa-step"><b>10</b><span>drafts in the sample queue</span></div>
+      <div class="pa-step last"><b id="runAuto">2</b><span>can send on their own today</span></div>
+    </div>
+
+    <div class="pa-views" role="tablist" aria-label="The three jobs">
+      <button class="pa-view" role="tab" id="tab-find" aria-controls="p-find" aria-selected="true"><b>1 &middot; Find</b>The researcher&rsquo;s job</button>
+      <button class="pa-view" role="tab" id="tab-write" aria-controls="p-write" aria-selected="false" tabindex="-1"><b>2 &middot; Write</b>The SDR&rsquo;s job</button>
+      <button class="pa-view" role="tab" id="tab-route" aria-controls="p-route" aria-selected="false" tabindex="-1"><b>3 &middot; Route</b>The rep&rsquo;s judgement, earned over time</button>
+    </div>
+
+    <!-- Find -->
+    <div class="pa-panel" id="p-find" role="tabpanel" aria-labelledby="tab-find">
+      <div class="pa-find">
+        <div>
+          <div class="pa-card">
+            <h4>Who buys, learned from 46 closed-won deals</h4>
+            <ul class="pa-icp">
+              <li>D2C, edtech or NBFC, 50 to 500 people <em>78% of wins</em></li>
+              <li>Raised funding in the last 90 days <em>2.4x win rate</em></li>
+              <li>Selling on 2 or more channels <em>1.9x win rate</em></li>
+              <li>Finance or ops head as first contact <em>3 of 4 wins</em></li>
+              <li>Hiring finance, ops or counsellor roles <em>1.6x win rate</em></li>
+            </ul>
+            <p class="pa-supp">Kept out before anyone writes: 4 existing customers, 2 contacts in open deals, 1 on the do-not-contact list, 3 with bounced emails last quarter.</p>
+          </div>
         </div>
-        <svg class="matrix" id="matrix" viewBox="0 0 520 380" width="100%" role="img" aria-label="Scatter plot of drafted messages by confidence and stakes, with the zone that sends on its own shaded"></svg>
-        <div class="legend"><span><i style="background:var(--teal)"></i>Sends on its own</span><span><i style="background:var(--amber)"></i>Waits for the rep</span><span><i style="background:var(--red);border-radius:2px"></i>Flagged</span></div>
-      </div>
-      <div>
-        <div class="detail" id="detail" aria-live="polite">
-          <span class="muted small">Select any message on the chart or in the lanes to see why it was routed there.</span>
+        <div>
+          <div class="demo-bar" style="margin-bottom:12px"><h3 style="font-size:16px">Why now: accounts with a fresh signal</h3><span class="small muted">Select one to see the draft</span></div>
+          <div class="pa-feed" id="feed"></div>
         </div>
       </div>
     </div>
-    <div class="lanecols">
-      <div class="lanecol auto"><h4>Sends on its own</h4><div id="lAuto"></div></div>
-      <div class="lanecol review"><h4>Waits for the rep</h4><div id="lReview"></div></div>
-      <div class="lanecol anom"><h4>Flagged to look at</h4><div id="lAnom"></div></div>
+
+    <!-- Write -->
+    <div class="pa-panel" id="p-write" role="tabpanel" aria-labelledby="tab-write" hidden>
+      <div class="pa-write">
+        <nav class="pa-pick" id="pick" aria-label="Drafts"></nav>
+        <div id="writeView"></div>
+      </div>
+    </div>
+
+    <!-- Route -->
+    <div class="pa-panel" id="p-route" role="tabpanel" aria-labelledby="tab-route" hidden>
+      <div class="pro-wrap">
+        <div>
+          <div class="slider">
+            <label for="trust">Drafts this rep has approved without edits: <b id="trustval">60%</b></label>
+            <input type="range" id="trust" min="50" max="95" step="1" value="60">
+            <span class="small muted">Autonomy is earned. Approve drafts below and watch the bar for sending on its own drop, and the green zone grow.</span>
+          </div>
+          <svg class="matrix" id="matrix" viewBox="0 0 520 380" width="100%" role="img" aria-label="Scatter plot of drafted messages by confidence and stakes, with the zone that sends on its own shaded"></svg>
+          <div class="legend"><span><i style="background:var(--teal)"></i>Sends on its own</span><span><i style="background:var(--amber)"></i>Waits for the rep</span><span><i style="background:var(--red);border-radius:2px"></i>Flagged</span></div>
+        </div>
+        <div>
+          <div class="detail" id="detail" aria-live="polite">
+            <span class="muted small">Select any message on the chart or in the lanes to see why it was routed there, then approve, edit or reject it.</span>
+          </div>
+        </div>
+      </div>
+      <div class="lanecols">
+        <div class="lanecol auto"><h4>Sends on its own</h4><div id="lAuto"></div></div>
+        <div class="lanecol review"><h4>Waits for the rep</h4><div id="lReview"></div></div>
+        <div class="lanecol anom"><h4>Flagged to look at</h4><div id="lAnom"></div></div>
+      </div>
     </div>
   </div>
 
-  <div class="spec-grid">
-    <div><h3>The problem</h3><p>Superleap's agents work leads a team already has, so new pipeline still comes from separate tools like Apollo or Clay that sit outside the CRM, guess at fit, and push generic sequences. Teams either review every message, losing the time AI should save, or send everything, risking their brand.</p></div>
-    <div><h3>Who it's for</h3><ul><li>Inside sales teams that need pipeline beyond inbound</li><li>Sales heads who want outbound without a separate tool stack</li><li>Reps, who supervise the agent instead of researching</li></ul></div>
-    <div><h3>How it works</h3><ul><li>Learns the ideal customer profile from the company's own closed-won deals</li><li>Watches buying signals: hiring, funding, expansion, engagement</li><li>Drafts outreach for email and WhatsApp in the company's voice</li><li>Scores each message on confidence and stakes, separately</li><li>Routes to one of three lanes; anomaly checks always override</li></ul></div>
-    <div><h3>Confidence-Tiered Autonomy</h3><ul><li><span class="pill auto">Runs on its own</span> high confidence, low stakes, no flags</li><li><span class="pill review">Waits for a person</span> medium confidence, or high stakes</li><li><span class="pill anom">Flagged</span> conflicts like an open deal, a complaint, a job change, or a regulated claim</li><li>Thresholds loosen or tighten per rep and per message type, based on approvals and edits</li></ul></div>
-    <div><h3>What we'd measure</h3><ul><li>Qualified pipeline created per rep per week</li><li>Reply and meeting rate by lane</li><li>Share of messages sent without review, over time</li><li>Flags caught before send</li></ul></div>
-    <div><h3>Risks and open questions</h3><ul><li>Cold outreach rules differ by channel; WhatsApp needs opt-in handling</li><li>Thin closed-won history makes the profile weak; start with an industry template</li><li>Should high-stakes accounts ever be eligible for autopilot?</li></ul></div>
-    <div class="wide"><h3>Where the idea comes from</h3><p>I borrowed the lanes from my approach to AI demand forecasting and automated reordering at Xorosoft: routine, low-risk reorders were placed automatically, larger or uncertain ones waited for a planner, and unusual demand was flagged rather than acted on. Sales outreach has the same shape. Most of it is routine, some of it matters too much to send unseen, and a little of it is plainly wrong.</p></div>
+  <!-- Where it sits -->
+  <div class="pa-sec">
+    <p class="kicker">Where it sits in Superleap</p>
+    <h2>The step before a lead exists</h2>
+    <div class="pa-layers">
+      <div class="pa-layer new">
+        <span class="when">Before the lead exists</span>
+        <div><h3>Prospect agent</h3><p>Finds accounts that look like past wins and have a reason to talk now, finds the right person, and writes the first touch.</p></div>
+        <span class="pill done">This concept</span>
+      </div>
+      <div class="pa-layer">
+        <span class="when">Once there is interest</span>
+        <div><h3>Qualify SuperAgent</h3><p>Qualifies leads across voice, chat and WhatsApp, and routes high-fit opportunities to the right team.</p></div>
+        <a class="small" href="https://superleap.com/qualify-superagent" target="_blank" rel="noopener">See Qualify &#8599;</a>
+      </div>
+      <div class="pa-layer">
+        <span class="when">Throughout</span>
+        <div><h3>Enrich and Nurture SuperAgents</h3><p>Keep records complete and connect intent signals and nurturing into one revenue motion.</p></div>
+        <a class="small" href="https://superleap.com/superagents" target="_blank" rel="noopener">See SuperAgents &#8599;</a>
+      </div>
+    </div>
   </div>
+
+  <!-- PRD vision -->
+  <div class="pa-sec">
+    <p class="kicker">Product vision</p>
+    <h2><span class="pa-num">1.</span>Problem</h2>
+    <p class="lede">Superleap's agents work the leads a team already has. New pipeline still comes from separate tools that sit outside the CRM, guess at fit from generic filters, and push the same sequence to everyone. Reps spend hours researching before they write a word. Then teams either review every message, losing the time AI should save, or send everything and burn their domain and their brand.</p>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">2.</span>Users and jobs</h2>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>User</th><th>Job to be done</th><th>What they get</th></tr></thead>
+        <tbody>
+          <tr><th>Rep or SDR (primary)</th><td>Spend time in conversations, not research</td><td class="new">A ready queue of accounts with a reason to reach out, a draft, and a clear call on what needs them</td></tr>
+          <tr><th>Sales head</th><td>Build outbound pipeline without a separate tool stack</td><td class="new">Pipeline sourced inside the CRM, with fit learned from their own wins</td></tr>
+          <tr><th>RevOps or admin</th><td>Keep data clean and the brand safe</td><td class="new">Suppression, claim checks and sending limits enforced before anything goes out</td></tr>
+          <tr><th>Compliance (BFSI customers)</th><td>Stop regulated claims reaching prospects</td><td class="new">A hard flag on any claim outside the approved library, whatever the confidence</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">3.</span>How it works</h2>
+    <ol class="pa-flow">
+      <li><b>Learn who buys</b><span>Build the profile from the team's own closed-won deals: industry, size, channels, timing, first contact.</span></li>
+      <li><b>Watch for why now</b><span>Funding, hiring, expansion, a champion changing jobs, or engagement like pricing page visits.</span></li>
+      <li><b>Find the person</b><span>Map the buying committee, verify the contact, and suppress anyone already in a deal or opted out.</span></li>
+      <li><b>Write from the signal</b><span>Draft in the team's voice, opening with the reason for writing, using only approved claims and proof.</span></li>
+      <li><b>Route and learn</b><span>Score confidence and stakes, send to a lane, and learn from every approve, edit and reject.</span></li>
+    </ol>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">4.</span>Confidence-Tiered Autonomy</h2>
+    <p class="lede">Two separate scores decide each message. Confidence asks "is this right?" Stakes ask "how bad is it if it's wrong?" Flags override both.</p>
+    <div class="pa-tiers">
+      <div class="pa-tier auto"><h3>Sends on its own</h3><ul><li>Confidence above this rep's earned bar</li><li>Low stakes: a follow-up, a reply, a short intro</li><li>Verified contact, no flags</li></ul></div>
+      <div class="pa-tier"><h3>Waits for the rep</h3><ul><li>Medium confidence, such as an inferred job title</li><li>High stakes: a named target account, a lost deal, a senior first touch</li><li>The rep edits or approves in one tap</li></ul></div>
+      <div class="pa-tier anom"><h3>Flagged</h3><ul><li>Contact in someone else's open deal</li><li>Job change, bounced email or opt-out</li><li>A claim outside the approved library, or a regulated claim</li></ul></div>
+    </div>
+    <p class="small muted" style="margin-top:14px">The bar moves per rep and per message type. Approvals without edits lower it slowly. Edits and rejects raise it quickly. Trust is slow to earn and fast to lose.</p>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">5.</span>Prospecting principles built in</h2>
+    <div class="pa-principles">
+      <div class="pa-pr"><div class="ic">1</div><h3>Signal before sequence</h3><p>No reason to write, no message. Every draft opens with why now, not with the product.</p></div>
+      <div class="pa-pr"><div class="ic">2</div><h3>Suppress before you send</h3><p>Customers, open deals, opt-outs and past bounces are removed before a draft is ever written.</p></div>
+      <div class="pa-pr"><div class="ic">3</div><h3>Fewer, better messages</h3><p>Daily caps per sending inbox and per account. Two people at one company never get the same email on the same day.</p></div>
+      <div class="pa-pr"><div class="ic">4</div><h3>Protect the domain</h3><p>Verify every email, watch bounces and spam complaints, and pause sending the moment they climb.</p></div>
+      <div class="pa-pr"><div class="ic">5</div><h3>Opt-in before WhatsApp</h3><p>Cold first touch stays on email. WhatsApp is used only where the person has opted in.</p></div>
+      <div class="pa-pr"><div class="ic">6</div><h3>Every claim has a source</h3><p>Numbers, case studies and pricing come only from an approved library. Anything else is flagged.</p></div>
+    </div>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">6.</span>Success metrics</h2>
+    <p class="lede">Starting hypotheses, recalibrated after the first quarter with design partners.</p>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>Type</th><th>Metric</th><th>Why it matters</th><th>v1 target</th></tr></thead>
+        <tbody>
+          <tr><th>North star</th><td>Qualified meetings per rep per week</td><td>The outcome the rep and sales head actually want from outbound.</td><td class="new">2x the team's current baseline</td></tr>
+          <tr><th>Outcome</th><td>Positive reply rate</td><td>Replies that show interest, not just any reply. Proves the signal and the draft work.</td><td class="new">2x generic sequences</td></tr>
+          <tr><th>Outcome</th><td>Rep hours on research</td><td>The "work of three" claim, measured.</td><td class="new">50% fewer</td></tr>
+          <tr><th>Autonomy</th><td>Share sent without review</td><td>Should rise as trust is earned, with reply rates holding steady.</td><td class="new">Rising quarter on quarter</td></tr>
+          <tr><th>Quality</th><td>Draft edit rate</td><td>How often reps change a draft before approving.</td><td class="new">Under 30% by month three</td></tr>
+          <tr><th>Guardrail</th><td>Bounce and spam complaint rates</td><td>Protects the sending domain. Mailbox providers start filtering senders well before these become visible.</td><td class="new">Bounces under 2%, complaints under 0.1%</td></tr>
+          <tr><th>Guardrail</th><td>Flags caught before send</td><td>Open-deal clashes, opt-outs and unapproved claims that never reach a prospect.</td><td class="new">100% of hard rules</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">7.</span>First version</h2>
+    <div class="pa-scope">
+      <div class="in">
+        <h3>In scope</h3>
+        <ul>
+          <li>Profile learned from the customer's own closed-won deals</li>
+          <li>Four signals: funding, hiring, job change, pricing or webinar engagement</li>
+          <li>Email drafts in the team's voice, from an approved claims library</li>
+          <li>Suppression against customers, open deals and opt-outs</li>
+          <li>Three lanes, with the bar earned per rep</li>
+          <li>Sending caps and bounce monitoring per inbox</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Out of scope for v1</h3>
+        <ul>
+          <li>Cold WhatsApp or SMS first touches</li>
+          <li>Auto-send to named target accounts</li>
+          <li>Multi-step sequences that send without the rep</li>
+          <li>Phone and voice outreach</li>
+          <li>Buying contact data on the customer's behalf</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">8.</span>Risks and mitigations</h2>
+    <div class="tablebox">
+      <table class="compare">
+        <thead><tr><th>Risk</th><th>Likelihood</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><th>An auto-sent message embarrasses the brand</th><td>Medium</td><td>Only low-stakes types can ever auto-send; trust drops fast after a reject; one switch pauses autonomy for the team</td></tr>
+          <tr><th>Sending domain gets flagged as spam</th><td>Medium</td><td>Verified emails only, daily caps, bounce and complaint monitoring with automatic pause</td></tr>
+          <tr><th>Thin closed-won history gives a weak profile</th><td>High</td><td>Start from an industry template and let the team's own wins take over as they accumulate</td></tr>
+          <tr><th>Personal data and consent rules</th><td>Medium</td><td>Use business contact details for a stated purpose, honour opt-outs at once, and follow India's DPDP Act and channel rules</td></tr>
+          <tr><th>Reps rubber-stamp the review lane</th><td>Medium</td><td>Track approval speed; very fast approvals do not count toward earned trust</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pa-sec">
+    <h2><span class="pa-num">9.</span>Roadmap</h2>
+    <div class="pa-road">
+      <div><span class="pill done">Now (v1)</span><h3>Find, write, route</h3><p>Prove reps book more meetings from signal-led drafts, and that trust can be earned without hurting reply rates.</p></div>
+      <div><span class="pill review">Next (v2)</span><h3>Multi-threaded accounts</h3><p>Reach two or three people on the buying committee with coordinated, different messages, and hand warm replies to Qualify.</p></div>
+      <div><span class="pill auto">Later (v3)</span><h3>Signals from the whole platform</h3><p>Learn from which prospects become great customers, not just closed deals, so the profile targets retention as well as wins.</p></div>
+    </div>
+  </div>
+
+  <div class="pa-me">
+    <h2>Why I'm close to this</h2>
+    <p>I've spent the past year building AI outbound workflows hands-on: profiles from past wins, signal-led account lists, contact verification, and keeping a sending domain healthy. The lanes come from my work on AI demand forecasting at Xorosoft, where routine reorders went through automatically, larger or uncertain ones waited for a planner, and unusual demand was flagged rather than acted on. Outreach has the same shape: most of it is routine, some matters too much to send unseen, and a little is plainly wrong.</p>
+  </div>
+
   <div class="next"><a href="/coach/">Previous: Performer Gap Coach</a><a href="/">Back to overview</a></div>
 </section>
-
 </main>
 <footer>Concepts and sample data by Smrity, prepared for Superleap. Not affiliated with Superleap.</footer>
 
 <script>
 (function(){
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var NS = 'http://www.w3.org/2000/svg';
-  function el(name, attrs){ var e = document.createElementNS(NS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
-  /* prospect matrix */
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ---------- sample queue ---------- */
   var msgs = [
-    {t:'Follow-up to Neha, opened pricing twice', c:92, s:20, why:'Strong ICP match with 14 closed-won lookalikes, fresh engagement, clean data, and it is a follow-up, not a first touch.'},
-    {t:'First touch: VP Sales at a mid-size NBFC', c:81, s:78, why:'Good fit, but a large target account where a weak first impression is costly. High stakes always go to the rep.'},
-    {t:'Follow-up after webinar attendance', c:86, s:30, why:'Attended 40 of 45 minutes and asked a question. Low risk, routine follow-up.'},
-    {t:'First touch: edtech hiring 40 counsellors', c:74, s:42, why:'Hiring signal is strong, but the contact role is a guess from job titles. Moderate confidence.'},
-    {t:'Contact already in Rohit\'s open deal', c:88, s:55, flag:'This person is in an active deal owned by another rep. Sending would cross wires.'},
-    {t:'Re-engage deal lost in 2025', c:58, s:60, why:'Lost on price last year. The new angle may land, but tone matters, so the rep should shape it.'},
-    {t:'Contact changed jobs last week', c:70, s:35, flag:'The email on file belongs to the old company. Needs a person to confirm the new role.'},
-    {t:'Reply to inbound fee question', c:95, s:25, why:'Answers a direct question with approved fee details. The safest kind of message there is.'},
-    {t:'Message mentions loan interest rates', c:83, s:48, flag:'Regulated claim for a BFSI customer. Compliance review is required before any send.'},
-    {t:'Intro to founder, funded 3 days ago', c:79, s:28, why:'Funding signal is fresh and the company matches the profile of past wins. Low stakes for a short intro.'}
+    { acct:'Brewline Coffee', who:'Rohan Kapoor', role:'Co-founder', kind:'First touch', fit:90,
+      signal:'Raised a Series A three days ago', ch:'Email',
+      comm:[['Rohan Kapoor, Co-founder','Champion'],['Finance head (hiring now)','Economic buyer, later'],['Ops manager','Day-to-day user']],
+      draft:'Hi Rohan, congratulations on the <mark>Series A</mark>. Coffee brands at this stage usually add marketplaces and cafe counters next, and payments get messy across them. Happy to share how two brands your size keep settlements in one place?',
+      seq:true, c:79, s:28, why:'Funding is the strongest signal in past wins, and the company matches 14 closed-won lookalikes. A short intro to a founder is low stakes.' },
+    { acct:'Kaveri Naturals', who:'Neha Iyer', role:'Finance lead', kind:'Follow-up', fit:91,
+      signal:'Opened the pricing page twice since Tuesday', ch:'Email',
+      comm:[['Neha Iyer, Finance lead','Champion'],['CEO','Economic buyer']],
+      draft:'Hi Neha, saw you were back on <mark>our pricing page</mark>. D2C brands your size usually ask about settlement times and COD reconciliation first, so here is a one-page breakdown of both. Worth 15 minutes this week?',
+      seq:false, c:92, s:20, why:'Strong fit, fresh engagement, verified email, and it is a follow-up to an existing conversation, not a first touch.' },
+    { acct:'Northstar Finance', who:'Arjun Rao', role:'VP Payments', kind:'First touch', fit:88,
+      signal:'Announced 12 new branches this quarter', ch:'Email',
+      comm:[['Arjun Rao, VP Payments','Champion'],['CFO','Economic buyer'],['Head of IT','Technical evaluator'],['Compliance head','Must approve']],
+      draft:'Arjun, congratulations on the <mark>12 new branches</mark>. Lenders scaling branch collections often find reconciliation gaps between UPI and NACH. Our case study with a lender of similar size is attached. Open to comparing notes?',
+      seq:true, c:81, s:78, why:'Strong fit, but this is a named target account where a weak first impression is costly. High stakes always go to the rep, whatever the confidence.' },
+    { acct:'Learnly', who:'Kabir Shah', role:'Head of Operations', kind:'Follow-up', fit:84,
+      signal:'Attended 40 of 45 minutes of Tuesday’s webinar and asked about fee EMIs', ch:'Email',
+      comm:[['Kabir Shah, Head of Operations','Champion'],['Founder','Economic buyer']],
+      draft:'Hi Kabir, thanks for <mark>your question on fee EMIs</mark> in Tuesday’s session. Here is the three-minute walkthrough of how edtechs set up EMI at checkout. Happy to show it on your own fee plans.',
+      seq:false, c:86, s:30, why:'Engaged attendee who asked a direct question. A routine, low-risk follow-up.' },
+    { acct:'Brightpath Academy', who:'Sana Qureshi', role:'Head of Admissions (inferred)', kind:'First touch', fit:82,
+      signal:'Hiring 40 admission counsellors across six cities', ch:'Email',
+      comm:[['Sana Qureshi, Head of Admissions','Likely champion, role unverified'],['Director','Economic buyer']],
+      draft:'Hi Sana, saw Brightpath is <mark>hiring 40 counsellors</mark>. As admissions scale, fee collection is often the next bottleneck. Would it help to see how academies collect fees by payment link?',
+      seq:true, c:74, s:42, why:'The hiring signal is strong, but the contact’s role is inferred from a profile, not verified. Moderate confidence.' },
+    { acct:'Zestly Foods', who:'Priya Menon', role:'CFO', kind:'First touch', fit:86,
+      signal:'Visited the integrations page twice', ch:'Email',
+      comm:[['Priya Menon, CFO','In an open deal']],
+      draft:'Hi Priya, noticed interest in <mark>our integrations</mark>. Happy to walk through how they work with your stack.',
+      seq:false, c:88, s:55, flag:'Priya is already in an open deal owned by Rohit. Sending would cross wires, so the agent adds the signal to Rohit’s deal instead of writing.' },
+    { acct:'Urban Threads', who:'Dev Malhotra', role:'Founder', kind:'Re-engage', fit:79,
+      signal:'Lost in March 2025 on price. A new tier now fits their volume', ch:'Email',
+      comm:[['Dev Malhotra, Founder','Past champion'],['Finance manager','Economic buyer']],
+      draft:'Hi Dev, when we spoke last March, <mark>pricing didn’t work at your volumes</mark>. We have since launched a tier for brands under ₹5 crore monthly GMV. Worth a fresh look?',
+      seq:true, c:58, s:60, why:'Lost on price last year. The new angle may land, but tone matters with a past no, so the rep should shape it.' },
+    { acct:'Harbor Retail', who:'Vikram Joshi', role:'Former champion, changed jobs', kind:'First touch', fit:80,
+      signal:'Vikram, a champion at a current customer, joined Harbor Retail last week', ch:'Email',
+      comm:[['Vikram Joshi, new role unconfirmed','Past champion']],
+      draft:'Hi Vikram, congratulations on <mark>the move to Harbor Retail</mark>. Would love to help you set things up there the way we did at your last team.',
+      seq:false, c:70, s:35, flag:'A champion who changes jobs is a great signal, but the email on file still belongs to his old company and his new role is not confirmed. The rep should confirm before anything is sent.' },
+    { acct:'Tinytots Learning', who:'Ritu Bansal', role:'Founder', kind:'Reply', fit:83,
+      signal:'Asked on website chat: do you support recurring tuition fees?', ch:'Email',
+      comm:[['Ritu Bansal, Founder','Champion and buyer']],
+      draft:'Hi Ritu, yes. <mark>Recurring tuition fees</mark> work through autopay mandates, and parents can approve in one step on UPI. Here is a two-minute setup guide. Shall I set up a sandbox for your team?',
+      seq:false, c:95, s:25, why:'Answers a direct question with approved product facts. The safest kind of message there is.' },
+    { acct:'Glow Basket', who:'Ananya Das', role:'Head of Growth', kind:'First touch', fit:85,
+      signal:'Launched on two new marketplaces this month', ch:'Email',
+      comm:[['Ananya Das, Head of Growth','Champion'],['CFO','Economic buyer']],
+      draft:'Hi Ananya, congrats on <mark>the two new marketplaces</mark>. We offer <mark class="bad">the lowest fees in India</mark>, so you keep more of every order. Quick call?',
+      seq:true, c:83, s:48, flag:'The draft claims "the lowest fees in India", which is not in the approved claims library. Unverifiable claims are blocked before send, whatever the confidence.' }
   ];
+
+  /* ---------- tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.pa-view'));
+  function selectTab(id){
+    tabs.forEach(function(t){
+      var on = t.id === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ selectTab(t.id); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var n = tabs[(i + d + tabs.length) % tabs.length];
+      n.focus(); selectTab(n.id);
+    });
+  });
+
+  /* ---------- find ---------- */
+  var feed = document.getElementById('feed');
+  msgs.forEach(function(m, i){
+    var b = document.createElement('button');
+    b.className = 'pa-acct';
+    b.innerHTML = '<span class="pa-av" aria-hidden="true">' + esc(m.acct.charAt(0)) + '</span>' +
+      '<span><b>' + esc(m.acct) + '<span class="pa-kind">' + esc(m.kind) + '</span></b><small>' + esc(m.signal) + '</small></span>' +
+      '<span class="pa-fit"><b>' + m.fit + '</b><small class="muted"> fit</small></span>';
+    b.addEventListener('click', function(){ showWrite(i); selectTab('tab-write'); });
+    feed.appendChild(b);
+  });
+
+  /* ---------- write ---------- */
+  var pick = document.getElementById('pick');
+  var writeView = document.getElementById('writeView');
+  var cur = 0;
+  msgs.forEach(function(m, i){
+    var b = document.createElement('button');
+    b.innerHTML = esc(m.acct) + '<small>' + esc(m.kind) + '</small>';
+    b.addEventListener('click', function(){ showWrite(i); });
+    pick.appendChild(b);
+  });
+  function showWrite(i){
+    cur = i;
+    var m = msgs[i];
+    Array.prototype.forEach.call(pick.children, function(b, j){ b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
+    var comm = m.comm.map(function(c){ return '<li>' + esc(c[0]) + '<span>' + esc(c[1]) + '</span></li>'; }).join('');
+    var seq = m.seq
+      ? '<ul class="pa-seq"><li><b>Day 1</b>This email</li><li><b>Day 3</b>Rep views profile and connects</li><li><b>Day 6</b>Short follow-up with one useful link</li><li><b>Day 10</b>Polite last note</li></ul>'
+      : '<p class="small muted" style="margin:0">Single message. It answers or continues an existing conversation, so no sequence follows.</p>';
+    writeView.innerHTML =
+      '<div class="pa-wgrid">' +
+        '<div class="pa-card full"><h4>Why now</h4><p class="pa-why-now">' + esc(m.signal) + '</p>' +
+          '<div class="pa-meta"><span class="pa-chip">Fit ' + m.fit + ' of 100</span><span class="pa-chip">' + esc(m.kind) + '</span><span class="pa-chip">' + esc(m.ch) + ' first</span></div></div>' +
+        '<div class="pa-card"><h4>Writing to</h4><p style="margin:0 0 4px;font-weight:500">' + esc(m.who) + '</p><p class="small muted" style="margin:0">' + esc(m.role) + ' at ' + esc(m.acct) + '</p></div>' +
+        '<div class="pa-card"><h4>Buying committee</h4><ul class="pa-comm">' + comm + '</ul></div>' +
+        '<div class="pa-card full"><h4>Draft, opening with the signal</h4><p class="pa-draft">' + m.draft + '</p></div>' +
+        '<div class="pa-card full"><h4>What happens next</h4>' + seq +
+          '<div class="pa-actions"><button class="btn" id="toRoute">See how it is routed</button></div></div>' +
+      '</div>';
+    document.getElementById('toRoute').addEventListener('click', function(){ selectTab('tab-route'); select(i); });
+  }
+  showWrite(0);
+
+  /* ---------- route ---------- */
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(name, attrs){ var e = document.createElementNS(NS, name); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   var mx = document.getElementById('matrix');
-  var MX = function(c){ return 50 + (c-40)/60*450; };
-  var MY = function(s){ return 330 - s/100*300; };
-  function laneOf(m, T){ if(m.flag) return 'anom'; if(m.c >= T && m.s < 50) return 'auto'; return 'review'; }
+  var MX = function(c){ return 50 + (c - 40) / 60 * 450; };
+  var MY = function(s){ return 330 - s / 100 * 300; };
+  function laneOf(m, T){ if (m.flag) return 'anom'; if (m.c >= T && m.s < 50) return 'auto'; return 'review'; }
   var colors = {auto:'var(--teal)', review:'var(--amber)', anom:'var(--red)'};
   var laneName = {auto:'Sends on its own', review:'Waits for the rep', anom:'Flagged to look at'};
-  var zone = el('rect',{fill:'var(--teal-bg)',opacity:0.8});
+  var zone = el('rect', {fill:'var(--teal-bg)', opacity:0.8});
   mx.appendChild(zone);
-  [40,60,80,100].forEach(function(c){ mx.appendChild(el('line',{x1:MX(c),x2:MX(c),y1:30,y2:330,stroke:'var(--line)'})); var t=el('text',{x:MX(c),y:350,'text-anchor':'middle'}); t.textContent=c+'%'; mx.appendChild(t); });
-  [0,50,100].forEach(function(s){ mx.appendChild(el('line',{x1:50,x2:500,y1:MY(s),y2:MY(s),stroke:'var(--line)'})); });
-  var tl = el('text',{x:275,y:372,'text-anchor':'middle'}); tl.textContent='Confidence the message is right'; mx.appendChild(tl);
-  var sl = el('text',{x:56,y:22}); sl.textContent='Stakes if it goes wrong (high at top)'; mx.appendChild(sl);
-  var zl = el('text',{x:496,y:318,'text-anchor':'end',style:'fill:var(--teal-ink)'}); zl.textContent='Sends on its own'; mx.appendChild(zl);
-  var dots = msgs.map(function(m,i){
+  [40,60,80,100].forEach(function(c){
+    mx.appendChild(el('line', {x1:MX(c), x2:MX(c), y1:30, y2:330, stroke:'var(--line)'}));
+    var t = el('text', {x:MX(c), y:350, 'text-anchor':'middle'}); t.textContent = c + '%'; mx.appendChild(t);
+  });
+  [0,50,100].forEach(function(s){ mx.appendChild(el('line', {x1:50, x2:500, y1:MY(s), y2:MY(s), stroke:'var(--line)'})); });
+  var tl = el('text', {x:275, y:372, 'text-anchor':'middle'}); tl.textContent = 'Confidence the message is right'; mx.appendChild(tl);
+  var sl = el('text', {x:56, y:22}); sl.textContent = 'Stakes if it goes wrong (high at top)'; mx.appendChild(sl);
+  var zl = el('text', {x:496, y:318, 'text-anchor':'end', style:'fill:var(--teal-ink)'}); zl.textContent = 'Sends on its own'; mx.appendChild(zl);
+  var dots = msgs.map(function(m, i){
     var g;
-    if(m.flag){ g = el('rect',{x:MX(m.c)-7,y:MY(m.s)-7,width:14,height:14,rx:2,transform:'rotate(45 '+MX(m.c)+' '+MY(m.s)+')'}); }
-    else { g = el('circle',{cx:MX(m.c),cy:MY(m.s),r:8}); }
-    g.setAttribute('class','dot'); g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label', m.t);
+    if (m.flag) g = el('rect', {x:MX(m.c) - 7, y:MY(m.s) - 7, width:14, height:14, rx:2, transform:'rotate(45 ' + MX(m.c) + ' ' + MY(m.s) + ')'});
+    else g = el('circle', {cx:MX(m.c), cy:MY(m.s), r:8});
+    g.setAttribute('class', 'dot'); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', m.acct + ', ' + m.kind);
     g.addEventListener('click', function(){ select(i); });
-    g.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); select(i); } });
+    g.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); } });
     mx.appendChild(g); return g;
   });
-  var T = 90, selected = -1;
+
+  var trust = document.getElementById('trust');
+  var T = 87, selected = -1;
   function render(){
-    var rate = +document.getElementById('trust').value;
+    var rate = +trust.value;
     document.getElementById('trustval').textContent = rate + '%';
-    T = Math.round(92 - (rate-50)*0.5);
-    zone.setAttribute('x', MX(T)); zone.setAttribute('width', MX(100)-MX(T)); zone.setAttribute('y', MY(50)); zone.setAttribute('height', MY(0)-MY(50));
-    var cols = {auto:[], review:[], anom:[]};
-    msgs.forEach(function(m,i){
-      var l = laneOf(m,T); m.lane = l;
+    T = Math.round(92 - (rate - 50) * 0.5);
+    zone.setAttribute('x', MX(T)); zone.setAttribute('width', MX(100) - MX(T));
+    zone.setAttribute('y', MY(50)); zone.setAttribute('height', MY(0) - MY(50));
+    var cols = {auto:[], review:[], anom:[]}, autoCount = 0;
+    msgs.forEach(function(m, i){
+      var l = laneOf(m, T); m.lane = l;
+      if (l === 'auto' && !m.state) autoCount++;
       dots[i].setAttribute('fill', colors[l]);
-      dots[i].setAttribute('stroke', i===selected ? 'var(--ink)' : 'var(--surface)');
-      dots[i].setAttribute('stroke-width', i===selected ? 3 : 2);
-      cols[l].push('<button data-m="'+i+'">'+m.t+'</button>');
+      dots[i].setAttribute('opacity', m.state ? 0.35 : 1);
+      dots[i].setAttribute('stroke', i === selected ? 'var(--ink)' : 'var(--surface)');
+      dots[i].setAttribute('stroke-width', i === selected ? 3 : 2);
+      var st = m.state ? '<span class="pa-status">' + esc(m.state) + '</span>' : '';
+      cols[l].push('<button data-m="' + i + '"' + (m.state ? ' class="done"' : '') + '>' + esc(m.acct) + ': ' + esc(m.kind.toLowerCase()) + st + '</button>');
     });
     document.getElementById('lAuto').innerHTML = cols.auto.join('');
     document.getElementById('lReview').innerHTML = cols.review.join('');
     document.getElementById('lAnom').innerHTML = cols.anom.join('');
-    if(selected >= 0) select(selected, true);
+    document.getElementById('runAuto').textContent = autoCount;
+    if (selected >= 0) select(selected, true);
+  }
+  function nudge(delta){
+    trust.value = Math.max(50, Math.min(95, +trust.value + delta));
   }
   function select(i, quiet){
-    selected = i; var m = msgs[i];
+    selected = i;
+    var m = msgs[i];
+    if (!m.lane) m.lane = laneOf(m, T);
     var reason;
-    if(m.lane === 'anom') reason = m.flag + ' Flags always override confidence.';
-    else if(m.lane === 'auto') reason = m.why + ' Confidence ' + m.c + '% clears this rep\'s current bar of ' + T + '%, and stakes are low.';
-    else if(m.s >= 50) reason = m.why;
-    else reason = m.why + ' Confidence ' + m.c + '% is below this rep\'s current bar of ' + T + '%.';
-    document.getElementById('detail').innerHTML = '<span class="pill '+m.lane+'">'+laneName[m.lane]+'</span><h4>'+m.t+'</h4><p>'+reason+'</p><p class="small muted">Confidence '+m.c+'%, stakes '+m.s+' of 100</p>';
-    if(!quiet) render();
+    if (m.lane === 'anom') reason = m.flag + ' Flags always override confidence.';
+    else if (m.lane === 'auto') reason = m.why + ' Confidence ' + m.c + '% clears this rep’s current bar of ' + T + '%, and stakes are low.';
+    else if (m.s >= 50) reason = m.why;
+    else reason = m.why + ' Confidence ' + m.c + '% is below this rep’s current bar of ' + T + '%.';
+    var acts = '';
+    if (m.state) {
+      acts = '<p class="small" style="margin:10px 0 0"><b>' + esc(m.state) + '.</b> ' + esc(m.note) + '</p>';
+    } else if (m.lane === 'anom') {
+      acts = '<div class="pa-actions"><button class="btn ghost" data-a="fix">Send to the rep to fix</button><button class="rowbtn" data-a="reject" style="margin-top:0">Drop it</button></div>';
+    } else if (m.lane === 'auto') {
+      acts = '<div class="pa-actions"><button class="btn" data-a="approve">Let it send</button><button class="rowbtn" data-a="hold" style="margin-top:0">Hold for review</button></div>';
+    } else {
+      acts = '<div class="pa-actions"><button class="btn" data-a="approve">Approve as written</button><button class="rowbtn" data-a="edit" style="margin-top:0">Edit, then send</button><button class="rowbtn" data-a="reject" style="margin-top:0">Reject</button></div>';
+    }
+    var d = document.getElementById('detail');
+    d.innerHTML = '<span class="pill ' + m.lane + '">' + laneName[m.lane] + '</span>' +
+      '<h4>' + esc(m.acct) + ': ' + esc(m.kind.toLowerCase()) + ' to ' + esc(m.who) + '</h4>' +
+      '<p>' + esc(reason) + '</p>' +
+      '<p class="small muted">Confidence ' + m.c + '%, stakes ' + m.s + ' of 100</p>' + acts;
+    Array.prototype.forEach.call(d.querySelectorAll('[data-a]'), function(b){
+      b.addEventListener('click', function(){ act(i, b.getAttribute('data-a')); });
+    });
+    if (!quiet) render();
   }
-  document.querySelector('.lanecols').addEventListener('click', function(e){ var b = e.target.closest('button[data-m]'); if(b) select(+b.getAttribute('data-m')); });
-  document.getElementById('trust').addEventListener('input', render);
+  function act(i, a){
+    var m = msgs[i];
+    if (a === 'approve') { m.state = 'Sent'; m.note = 'Approved without edits, so this rep’s bar for similar messages drops a little.'; nudge(3); }
+    else if (a === 'edit') { m.state = 'Sent after edits'; m.note = 'The edit is saved as a voice example. Edits do not lower the bar.'; }
+    else if (a === 'reject') { m.state = 'Rejected'; m.note = 'Rejects raise the bar faster than approvals lower it. Trust is slow to earn and fast to lose.'; nudge(-5); }
+    else if (a === 'hold') { m.state = 'Held for review'; m.note = 'Holding a message the agent would have sent counts like an edit, so the bar stays where it is.'; }
+    else if (a === 'fix') { m.state = 'With the rep'; m.note = 'The flag and the draft are in the rep’s queue. Nothing is sent until the issue is fixed.'; }
+    render();
+  }
+  document.querySelector('.lanecols').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-m]'); if (b) select(+b.getAttribute('data-m'));
+  });
+  trust.addEventListener('input', render);
   render();
 })();
 </script>
