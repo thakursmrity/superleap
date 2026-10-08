@@ -11,6 +11,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+/* Scanner page header and closing card. mx- prefix keeps it separate from shared styles. */
+.mx-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-bottom:32px}
+.mx-ceo{background:var(--deep);color:#fff;border-radius:20px;padding:34px 34px 28px;position:relative;overflow:hidden}
+.mx-ceo::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(63,211,160,.35),transparent 70%)}
+.mx-ceo .kicker{color:var(--mint)}
+.mx-ceo blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,30px);line-height:1.35;color:#fff;position:relative;z-index:1}
+.mx-ceo cite{display:block;margin-top:16px;font-style:normal;font-size:14px;color:var(--on-deep);position:relative;z-index:1}
+.mx-hero .lede{margin-top:18px}
+.mx-me{margin-top:56px;background:var(--deep);border-radius:20px;padding:40px}
+.mx-me h2{color:#fff}
+.mx-me p{color:var(--on-deep);font-size:18px;margin:14px 0 0;max-width:none}
+@media (max-width:860px){
+  .mx-hero{grid-template-columns:1fr}
+  .mx-me{padding:28px}
+}
+</style>
 </head>
 <body>
 <header class="top">
@@ -29,15 +46,20 @@
 <main>
 
 <section class="page" id="migration">
-  <div class="spec-head">
+  <div class="mx-hero">
+    <div class="mx-ceo">
+      <p class="kicker">Where this starts</p>
+      <blockquote>"The human is not supposed to be the operator anymore and the role is changing from an operator to the supervisor."</blockquote>
+      <cite>Subham Kumar Boundia, Co-founder and CEO, Superleap, on ET Insights</cite>
+    </div>
     <div>
-      <h2>Migration Scanner</h2>
-      <p class="lede" style="margin-top:16px">Know how ready a prospect's CRM data is before Superleap commits to a go-live date.</p>
+      <p class="kicker">Concept 1 &middot; Before Superleap Deploy</p>
+      <h2>Migration Scanner: trust the data before the go-live date</h2>
+      <p class="lede">Know how ready a prospect's CRM data is before Superleap commits to a go-live date. Before a team hands work to an agent, they need to trust the data that arrived.</p>
       <div class="hero-actions" style="margin-top:20px">
         <a class="btn ghost" href="/Superleap_Migration_Readiness_Scanner.pdf" target="_blank" rel="noopener">Read the PRD (PDF)</a>
       </div>
     </div>
-    <div class="quote">"The human is not supposed to be the operator anymore and the role is changing from an operator to the supervisor."<small>Subham Kumar Boundia, ET Insights. Before a team hands work to an agent, they need to trust the data that arrived.</small></div>
   </div>
 
   <div class="demo">
@@ -129,8 +151,12 @@
     <div><h3>First version</h3><p>One CSV at a time, 12 checks, the score, drill-down and three exports. Out of scope for v1: loading data into Superleap, API connections to other CRMs, AI field mapping, logins and saved history, and cross-file relationship checks.</p></div>
     <div><h3>Risks and open questions</h3><ul><li>Prospects may decline to share data before signing; browser-only processing and a small sample export help</li><li>Superleap's own required fields are not public, so the checks follow common CRM import rules</li><li>AEs may skip the scan under deal pressure, so it has to take under five minutes</li></ul></div>
     <div class="wide"><h3>Research behind it</h3><p>Data quality is consistently named as a leading cause of CRM projects missing their goals. <a href="https://retail-insider.com/?p=200808" target="_blank" rel="noopener">Retail Insider</a> cites Gartner on poor data quality as the leading cause of CRM failure, and Panorama Consulting on data migration as the biggest implementation challenge for 62% of organisations. <a href="https://www.lowcode.agency/blog/crm-implementation-failure-rate" target="_blank" rel="noopener">LowCode Agency</a> puts reported CRM failure rates between 30 and 55 percent. The full evidence is in the PRD.</p></div>
-    <div class="wide"><h3>Why I'm close to this</h3><p>At Xorosoft I've moved customers off Shopify and legacy systems many times, carrying over customer records, contacts, price lists, credit limits and order history. The same patterns kept appearing in customers' source data: duplicates, unmapped values and missing references caused most import issues, and the fix belonged in that source data. Every check in this scanner comes from that experience.</p></div>
   </div>
+  <div class="mx-me">
+    <h2>Why I'm close to this</h2>
+    <p>At Xorosoft I've moved customers off Shopify and legacy systems many times, carrying over customer records, contacts, price lists, credit limits and order history. The same patterns kept appearing in customers' source data: duplicates, unmapped values and missing references caused most import issues, and the fix belonged in that source data. Every check in this scanner comes from that experience.</p>
+  </div>
+
   <div class="next"><a href="/">Back to overview</a><a href="/coach/">Next: Performer Gap Coach</a></div>
 </section>
 
